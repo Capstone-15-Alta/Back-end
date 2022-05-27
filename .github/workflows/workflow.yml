@@ -84,5 +84,4 @@ jobs:
             docker rmi hendrojun/springboot-capstoneproject:latest hendrojun/springboot-capstoneproject-coverage:latest
             docker pull hendrojun/springboot-capstoneproject:latest
             docker pull hendrojun/springboot-capstoneproject-coverage:latest
-#            docker run -d --rm --name springboot-capstoneproject-coverage -p 8000:80 hendrojun/springboot-capstoneproject-coverage:latest
             docker run -d --rm --name springboot-capstoneproject -p 80:8080 --env-file=.dev.env --network capstone15 hendrojun/springboot-capstoneproject:latest
