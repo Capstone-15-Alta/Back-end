@@ -8,7 +8,7 @@
 
 
 
-[Swagger UI](http://34.142.247.158/api/swagger-ui/index.html) 
+[Swagger UI](http://34.142.247.158/api/swagger-ui/) 
 
 [Code Coverage](http://34.142.247.158:8000)
 
