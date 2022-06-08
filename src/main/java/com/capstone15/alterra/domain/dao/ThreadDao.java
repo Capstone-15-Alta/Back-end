@@ -1,6 +1,7 @@
 package com.capstone15.alterra.domain.dao;
 
 import com.capstone15.alterra.domain.common.BaseResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -45,6 +47,10 @@ public class ThreadDao extends BaseResponse {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private CategoryDao category;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "thread")
+    private List<CommentDao> comments;
 
 
 }

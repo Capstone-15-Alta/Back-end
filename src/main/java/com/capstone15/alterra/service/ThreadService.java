@@ -1,8 +1,10 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
+import com.capstone15.alterra.domain.dao.CommentDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dto.CommentDto;
 import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.UserDto;
@@ -86,6 +88,26 @@ public class ThreadService {
             throw e;
         }
     }
+
+    public ResponseEntity<Object> getThreadByIdUser(Long id) {
+        log.info("Executing get all thread.");
+        try{
+            Optional<UserDao> userDaoOptional = userRepository.findById(id);
+            if(userDaoOptional.isEmpty()) {
+                log.info("user id: {} not found", id);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            List<ThreadDao> daoList = userDaoOptional.get().getThreads();
+            List<ThreadDto> list = new ArrayList<>();
+            for(ThreadDao dao : daoList){
+                list.add(mapper.map(dao, ThreadDto.class));
+            }
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when get all thread. Error: {}", e.getMessage());
+            log.trace("Get error when get all thread. ", e);
+            throw e;
+        }  }
 
     public ResponseEntity<Object> deleteThread(Long id, UserDao user) {
         log.info("Executing delete thread id: {}", id);
