@@ -1,9 +1,9 @@
 package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dto.CommentDto;
 import com.capstone15.alterra.domain.dto.ThreadDto;
-import com.capstone15.alterra.domain.dto.UserDto;
-import com.capstone15.alterra.service.ThreadService;
+import com.capstone15.alterra.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,46 +14,40 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/thread", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ThreadController {
+@RequestMapping(value = "/v1/comment", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CommentController {
 
     @Autowired
-    private ThreadService threadService;
+    private CommentService commentService;
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> addThread(@RequestBody ThreadDto request) {
+    public ResponseEntity<Object> addComment(@RequestBody CommentDto request) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadService.addThread(request, (UserDao) userDetails);
+        return commentService.addComment(request, (UserDao) userDetails);
     }
 
-    @GetMapping(value = "")
-    public ResponseEntity<Object> getAll() {
-        return threadService.getAllThread();
-    }
-
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<Object> getById(@PathVariable(value = "id") Long id){
-        return threadService.getThreadById(id);
+    @GetMapping(value = "/thread/{id}")
+    public ResponseEntity<Object> getByIdThread(@PathVariable(value = "id") Long id) {
+        return commentService.getCommentByIdThread(id);
     }
 
     @GetMapping(value = "/user/{id}")
     public ResponseEntity<Object> getByIdUser(@PathVariable(value = "id") Long id){
-        return threadService.getThreadByIdUser(id);
+        return commentService.getCommentByIdUser(id);
     }
 
-
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Object> deleteThread(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Object> deleteComment(@PathVariable(value = "id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadService.deleteThread(id, (UserDao) userDetails);
+        return commentService.deleteComment(id, (UserDao) userDetails);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateThread(@PathVariable(value = "id") Long id, @RequestBody ThreadDto request) {
+    public ResponseEntity<Object> updateComment(@PathVariable(value = "id") Long id, @RequestBody CommentDto request) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadService.updateThread(id, request, (UserDao) userDetails);
+        return commentService.updateComment(id, request, (UserDao) userDetails);
     }
 }
