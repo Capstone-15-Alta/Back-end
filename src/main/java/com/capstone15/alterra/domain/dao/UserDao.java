@@ -52,6 +52,10 @@ public class UserDao  implements UserDetails {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<CommentDao> comments;
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<ThreadFollowerDao> threadFollowers;
+
     @Column(columnDefinition = "boolean default true")
     private boolean active = true;
 
