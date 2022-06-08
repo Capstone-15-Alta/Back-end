@@ -42,5 +42,9 @@ public class ThreadDao extends BaseResponse {
     @JoinColumn(name = "user_id")
     private UserDao user;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryDao category;
+
 
 }

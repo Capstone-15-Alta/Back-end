@@ -95,7 +95,7 @@ public class ThreadService {
                 log.info("Thread {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            if(!threadDaoOptional.get().getUser().getId().equals(user.getId())) {
+            if(!threadDaoOptional.get().getUser().getId().equals(user.getId()) && user.getRoles().equals("USER")) {
                 log.info("Thread {} cant delete by user {}", id, user.getUsername());
                 return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -117,7 +117,7 @@ public class ThreadService {
                 log.info("thread {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            if(!threadDaoOptional.get().getUser().getId().equals(user.getId())) {
+            if(!threadDaoOptional.get().getUser().getId().equals(user.getId()) && user.getRoles().equals("USER")) {
                 log.info("Thread {} cant update by user {}", id, user.getUsername());
                 return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
