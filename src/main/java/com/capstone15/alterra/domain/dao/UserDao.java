@@ -1,5 +1,6 @@
 package com.capstone15.alterra.domain.dao;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,15 +29,32 @@ public class UserDao  implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
+    @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "roles")
     private String roles = "USER";
 
+    @Column(name = "phone")
     private String phone;
 
-    private Integer followers;
+    @Column(name = "followers")
+    private Integer followers = 0;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<ThreadDao> threads;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<CommentDao> comments;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<ThreadFollowerDao> threadFollowers;
 
     @Column(columnDefinition = "boolean default true")
     private boolean active = true;
