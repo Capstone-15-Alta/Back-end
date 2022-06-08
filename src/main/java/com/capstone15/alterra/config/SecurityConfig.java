@@ -61,6 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v1/auth/**").permitAll()
                 .antMatchers("/v1/customer/**").permitAll()
                 .antMatchers(AUTH_WHITELIST).permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/thread").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/v1/thread").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
         // remove session
