@@ -63,7 +63,7 @@ public class ThreadFollowerService {
                 threadFollowerDao = threadFollowerRepository.save(threadFollowerDao);
                 log.info("Executing follow thread success");
                 threadDao.ifPresent(res -> {
-                    res.setThread_followers(threadFollowerRepository.countFollowers());
+                    res.setThread_followers(threadFollowerRepository.countFollowers(threadDao.get().getId()));
                     threadRepository.save(res);
                 });
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadFollowerDao, ThreadFollowerDto.class), HttpStatus.OK);
@@ -73,7 +73,7 @@ public class ThreadFollowerService {
                     threadFollowerRepository.save(threadFollowerDaoOptional.get());
                     log.info("Executing follow thread success");
                     threadDao.ifPresent(res -> {
-                        res.setThread_followers(threadFollowerRepository.countFollowers());
+                        res.setThread_followers(threadFollowerRepository.countFollowers(threadDao.get().getId()));
                         threadRepository.save(res);
                     });
                 } else {
@@ -81,7 +81,7 @@ public class ThreadFollowerService {
                     threadFollowerRepository.save(threadFollowerDaoOptional.get());
                     log.info("Executing unfollow thread success");
                     threadDao.ifPresent(res -> {
-                        res.setThread_followers(threadFollowerRepository.countFollowers());
+                        res.setThread_followers(threadFollowerRepository.countFollowers(threadDao.get().getId()));
                         threadRepository.save(res);
                     });
                 }

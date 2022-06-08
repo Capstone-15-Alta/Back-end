@@ -15,7 +15,7 @@ public interface ThreadFollowerRepository extends JpaRepository<ThreadFollowerDa
     @Query(value = "SELECT tf FROM ThreadFollowerDao tf WHERE tf.user.id = :userid AND tf.thread.id = :threadid ")
     Optional<ThreadFollowerDao> findByUserIdAndThreadId(@Param("userid") Long userid, @Param("threadid") Long threadid);
 
-    @Query(value = "SELECT count(tf) FROM ThreadFollowerDao tf WHERE tf.followers = 1 ")
-    Integer countFollowers();
+    @Query(value = "SELECT count(tf) FROM ThreadFollowerDao tf WHERE tf.followers = 1 AND tf.thread.id = :id ")
+    Integer countFollowers(@Param("id") Long id);
 
 }
