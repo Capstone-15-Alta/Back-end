@@ -59,9 +59,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/v1/auth/**").permitAll()
-                .antMatchers("/v1/customer/**").permitAll()
+                .antMatchers("/v1/user/**").permitAll()
                 .antMatchers(AUTH_WHITELIST).permitAll()
-                .antMatchers(HttpMethod.GET, "/v1/thread").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/thread/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/category/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/comment/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/v1/thread").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
         // remove session
