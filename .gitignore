@@ -1,5 +1,6 @@
 HELP.md
 target/
+Files-Upload/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

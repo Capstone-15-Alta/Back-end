@@ -38,8 +38,14 @@ public class ThreadDao extends BaseResponse {
     @Column(columnDefinition="TEXT", name = "description", nullable = false)
     private String description;
 
-    @Column(name = "image")
+    @Column(name = "image_url")
     private String image;
+
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "size")
+    private long size;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

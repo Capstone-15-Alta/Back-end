@@ -18,8 +18,6 @@ public class CommentDto implements Serializable {
 
     private static final long serialVersionUID = 2199294136539206542L;
 
-    private Long id;
-
     private Long userId;
 
     private Long threadId;
