@@ -14,4 +14,6 @@ public interface ThreadRepository extends JpaRepository<ThreadDao, Long> {
     @Query(value = "SELECT b FROM ThreadDao b WHERE upper(b.title) LIKE UPPER(CONCAT('%', :title, '%') ) ")
     List<ThreadDao> findAllThreadByTitle(@Param("title") String title);
 
+    List<ThreadDao>findThreadDaoByCategoryCategoryName(String categoryName);
+
 }

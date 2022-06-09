@@ -47,6 +47,11 @@ public class ThreadController {
         return threadService.searchThreadByTitle(title);
     }
 
+    @GetMapping(value = "/category/{categoryName}")
+    public ResponseEntity<Object> searchThreadByCategoryName(@PathVariable(value = "categoryName") String categoryName){
+        return threadService.searchThreadByCategoryName(categoryName);
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteThread(@PathVariable(value = "id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
