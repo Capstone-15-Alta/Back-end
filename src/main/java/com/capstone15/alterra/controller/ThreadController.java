@@ -42,6 +42,10 @@ public class ThreadController {
         return threadService.getThreadByIdUser(id);
     }
 
+    @GetMapping(value = "/search")
+    public ResponseEntity<Object> searchThreadByTitle(@RequestParam(value = "title", required = false) String title){
+        return threadService.searchThreadByTitle(title);
+    }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteThread(@PathVariable(value = "id") Long id) {
