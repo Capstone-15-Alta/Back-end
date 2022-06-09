@@ -132,8 +132,6 @@ public class ThreadService {
     public ResponseEntity<Object> searchThreadByCategoryName(String categoryName) {
         try {
             log.info("Executing search thread by category: [{}]", categoryName);
-
-
             List<ThreadDto> threadDtoList = new ArrayList<>();
 
             List<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryName(categoryName);
@@ -147,6 +145,26 @@ public class ThreadService {
         } catch (Exception e) {
             log.error("Happened error when search thread by title. Error: {}", e.getMessage());
             log.trace("Get error when search thread by title. ", e);
+            throw e;
+        }
+    }
+
+    public ResponseEntity<Object> searchPopularThread() {
+        try {
+            log.info("Executing search popular thread");
+            List<ThreadDto> threadDtoList = new ArrayList<>();
+
+            List<ThreadDao> threadDaos = threadRepository.findAllPopularThread();
+            if(threadDaos.isEmpty()){
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            for (ThreadDao threadDao : threadDaos) {
+                threadDtoList.add(mapper.map(threadDao, ThreadDto.class));
+            }
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when search popular thread. Error: {}", e.getMessage());
+            log.trace("Get error when search popular thread. ", e);
             throw e;
         }
     }
