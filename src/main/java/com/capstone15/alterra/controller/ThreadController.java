@@ -11,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -21,10 +24,13 @@ public class ThreadController {
     private ThreadService threadService;
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> addThread(@RequestBody ThreadDto request) {
+    public ResponseEntity<Object> addThread(@RequestParam("title") String title,
+                                            @RequestParam("description") String description,
+                                            @RequestParam("category_id") Long category_id,
+                                            @RequestParam("file") MultipartFile multipartFile ) throws IOException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadService.addThread(request, (UserDao) userDetails);
+        return threadService.addThread(title, description, category_id, multipartFile, (UserDao) userDetails);
     }
 
     @GetMapping(value = "")

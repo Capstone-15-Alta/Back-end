@@ -1,6 +1,7 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
+import com.capstone15.alterra.domain.dao.CategoryDao;
 import com.capstone15.alterra.domain.dao.CommentDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
@@ -10,6 +11,7 @@ import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
+import com.capstone15.alterra.util.FileUploadUtil;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,7 +22,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +44,27 @@ public class ThreadService {
     @Autowired
     private ModelMapper mapper;
 
-    public ResponseEntity<Object> addThread(ThreadDto request, UserDao user) {
-        log.info("Executing add thread with request: {}", request);
+    public ResponseEntity<Object> addThread(String title, String description, Long category_id, MultipartFile multipartFile, UserDao user) throws IOException {
+        log.info("Executing add thread with request: {}");
         try{
-            ThreadDao threadDao = mapper.map(request, ThreadDao.class);
-            threadDao.setCreatedBy(user.getUsername());
-            threadDao.setUser(UserDao.builder().id(user.getId()).build());
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            long size = multipartFile.getSize();
+            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+
+            ThreadDao threadDao = ThreadDao.builder()
+                    .title(title)
+                    .description(description)
+                    .category(CategoryDao.builder().id(category_id).build())
+                    .fileName(fileName)
+                    .size(size)
+                    .image("/images/" + filecode)
+                    .createdBy(user.getUsername())
+                    .user(UserDao.builder().id(user.getId()).build())
+                    .thread_followers(0)
+                    .thread_likes(0)
+                    .build();
+//            threadDao.setCreatedBy(user.getUsername());
+//            threadDao.setUser(UserDao.builder().id(user.getId()).build());
             threadDao = threadRepository.save(threadDao);
             log.info("Executing add thread success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadDao, ThreadDto.class), HttpStatus.OK);
