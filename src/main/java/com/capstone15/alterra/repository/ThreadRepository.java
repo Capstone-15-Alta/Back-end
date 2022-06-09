@@ -16,4 +16,7 @@ public interface ThreadRepository extends JpaRepository<ThreadDao, Long> {
 
     List<ThreadDao>findThreadDaoByCategoryCategoryName(String categoryName);
 
+    @Query(value = "SELECT t FROM ThreadDao t ORDER BY t.thread_likes DESC")
+    List<ThreadDao> findAllPopularThread();
+
 }

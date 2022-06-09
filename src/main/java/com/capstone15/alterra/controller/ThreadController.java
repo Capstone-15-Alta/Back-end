@@ -52,6 +52,11 @@ public class ThreadController {
         return threadService.searchThreadByCategoryName(categoryName);
     }
 
+    @GetMapping(value = "/popular")
+    public ResponseEntity<Object> searchPopularThread(){
+        return threadService.searchPopularThread();
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteThread(@PathVariable(value = "id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
