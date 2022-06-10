@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -26,8 +27,8 @@ public class ThreadController {
     @PostMapping(value = "")
     public ResponseEntity<Object> addThread(@RequestParam("title") String title,
                                             @RequestParam("description") String description,
-                                            @RequestParam("category_id") Long category_id,
-                                            @RequestParam("file") MultipartFile multipartFile ) throws IOException {
+                                            @RequestParam(value = "category_id", required = false) Long category_id,
+                                            @RequestParam(value = "file", required = false) MultipartFile multipartFile ) throws IOException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         return threadService.addThread(title, description, category_id, multipartFile, (UserDao) userDetails);
