@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -45,9 +46,24 @@ public class ThreadService {
     private ModelMapper mapper;
 
     public ResponseEntity<Object> addThread(String title, String description, Long category_id, MultipartFile multipartFile, UserDao user) throws IOException {
-        log.info("Executing add thread with request: {}");
+        log.info("Executing add thread with request: ");
         try{
-            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+            if(multipartFile == null) {
+                ThreadDao threadDao = ThreadDao.builder()
+                        .title(title)
+                        .description(description)
+                        .category(CategoryDao.builder().id(category_id).build())
+                        .createdBy(user.getUsername())
+                        .user(UserDao.builder().id(user.getId()).build())
+                        .thread_followers(0)
+                        .thread_likes(0)
+                        .build();
+                threadDao = threadRepository.save(threadDao);
+                log.info("Executing add thread success");
+                return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadDao, ThreadDto.class), HttpStatus.OK);
+            }
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
             long size = multipartFile.getSize();
             String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
 
