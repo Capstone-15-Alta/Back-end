@@ -4,7 +4,7 @@
 
 ## Swagger 
 
-[Swagger UI](http://34.142.247.158/api/swagger-ui/)
+[Swagger UI](http://34.87.175.218/api/swagger-ui/)
 
 ## Endpoint
 
@@ -13,7 +13,7 @@
 
 ```
 // AUTH LOGIN
-POST 34.142.247.158/api/v1/auth/login
+POST 34.87.175.218/api/v1/auth/login
 
 {
     "username": "admin",
@@ -23,24 +23,24 @@ POST 34.142.247.158/api/v1/auth/login
 // Authorization: Bearer <token>
 ```
 
-[User](http://34.142.247.158/api/v1/user)
+[User](http://34.87.175.218/api/v1/user)
 
-[Thread](http://34.142.247.158/api/v1/thread)
+[Thread](http://34.87.175.218/api/v1/thread)
 
-[Category](http://34.142.247.158/api/v1/category)
+[Category](http://34.87.175.218/api/v1/category)
 
-[Comment by thread](http://34.142.247.158/api/v1/comment/thread/1)
+[Comment by thread](http://34.87.175.218/api/v1/comment/thread/1)
 
-[Comment by user](http://34.142.247.158/api/v1/comment/user/1)
+[Comment by user](http://34.87.175.218/api/v1/comment/user/1)
 
-[Follow by thread](http://34.142.247.158/api/v1/follow/thread/1)
+[Follow by thread](http://34.87.175.218/api/v1/follow/thread/1)
 
-[Like by user](http://34.142.247.158/api/v1/like/thread/1)
+[Like by user](http://34.87.175.218/api/v1/like/thread/1)
 
 ## unit test coverage
 
 
-[Code Coverage](http://34.142.247.158:8000)
+[Code Coverage](http://34.87.175.218:8000)
 
 
 

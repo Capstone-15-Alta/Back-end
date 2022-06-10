@@ -11,6 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -21,10 +25,13 @@ public class ThreadController {
     private ThreadService threadService;
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> addThread(@RequestBody ThreadDto request) {
+    public ResponseEntity<Object> addThread(@RequestParam("title") String title,
+                                            @RequestParam("description") String description,
+                                            @RequestParam(value = "category_id", required = false) Long category_id,
+                                            @RequestParam(value = "file", required = false) MultipartFile multipartFile ) throws IOException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadService.addThread(request, (UserDao) userDetails);
+        return threadService.addThread(title, description, category_id, multipartFile, (UserDao) userDetails);
     }
 
     @GetMapping(value = "")
@@ -42,6 +49,20 @@ public class ThreadController {
         return threadService.getThreadByIdUser(id);
     }
 
+    @GetMapping(value = "/search")
+    public ResponseEntity<Object> searchThreadByTitle(@RequestParam(value = "title", required = false) String title){
+        return threadService.searchThreadByTitle(title);
+    }
+
+    @GetMapping(value = "/category/{categoryName}")
+    public ResponseEntity<Object> searchThreadByCategoryName(@PathVariable(value = "categoryName") String categoryName){
+        return threadService.searchThreadByCategoryName(categoryName);
+    }
+
+    @GetMapping(value = "/popular")
+    public ResponseEntity<Object> searchPopularThread(){
+        return threadService.searchPopularThread();
+    }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteThread(@PathVariable(value = "id") Long id) {

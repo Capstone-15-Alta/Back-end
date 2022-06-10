@@ -1,6 +1,7 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
+import com.capstone15.alterra.domain.dao.CategoryDao;
 import com.capstone15.alterra.domain.dao.CommentDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
@@ -10,6 +11,7 @@ import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
+import com.capstone15.alterra.util.FileUploadUtil;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,10 +22,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -39,12 +45,42 @@ public class ThreadService {
     @Autowired
     private ModelMapper mapper;
 
-    public ResponseEntity<Object> addThread(ThreadDto request, UserDao user) {
-        log.info("Executing add thread with request: {}", request);
+    public ResponseEntity<Object> addThread(String title, String description, Long category_id, MultipartFile multipartFile, UserDao user) throws IOException {
+        log.info("Executing add thread with request: ");
         try{
-            ThreadDao threadDao = mapper.map(request, ThreadDao.class);
-            threadDao.setCreatedBy(user.getUsername());
-            threadDao.setUser(UserDao.builder().id(user.getId()).build());
+
+            if(multipartFile == null) {
+                ThreadDao threadDao = ThreadDao.builder()
+                        .title(title)
+                        .description(description)
+                        .category(CategoryDao.builder().id(category_id).build())
+                        .createdBy(user.getUsername())
+                        .user(UserDao.builder().id(user.getId()).build())
+                        .thread_followers(0)
+                        .thread_likes(0)
+                        .build();
+                threadDao = threadRepository.save(threadDao);
+                log.info("Executing add thread success");
+                return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadDao, ThreadDto.class), HttpStatus.OK);
+            }
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+            long size = multipartFile.getSize();
+            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+
+            ThreadDao threadDao = ThreadDao.builder()
+                    .title(title)
+                    .description(description)
+                    .category(CategoryDao.builder().id(category_id).build())
+                    .fileName(fileName)
+                    .size(size)
+                    .image("/images/" + filecode)
+                    .createdBy(user.getUsername())
+                    .user(UserDao.builder().id(user.getId()).build())
+                    .thread_followers(0)
+                    .thread_likes(0)
+                    .build();
+//            threadDao.setCreatedBy(user.getUsername());
+//            threadDao.setUser(UserDao.builder().id(user.getId()).build());
             threadDao = threadRepository.save(threadDao);
             log.info("Executing add thread success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadDao, ThreadDto.class), HttpStatus.OK);
@@ -107,6 +143,67 @@ public class ThreadService {
             log.trace("Get error when get all thread. ", e);
             throw e;
         }  }
+
+    public ResponseEntity<Object> searchThreadByTitle(String title) {
+        try {
+            log.info("Executing search thread by title: [{}]", title);
+
+            List<ThreadDto> threadDtoList = new ArrayList<>();
+            List<ThreadDao> threadDaos = threadRepository.findAllThreadByTitle(title);
+            if(threadDaos.isEmpty()){
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
+
+            }
+            for (ThreadDao threadDao : threadDaos) {
+                threadDtoList.add(mapper.map(threadDao, ThreadDto.class));
+            }
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when search thread by title. Error: {}", e.getMessage());
+            log.trace("Get error when search thread by title. ", e);
+            throw e;
+        }
+    }
+
+    public ResponseEntity<Object> searchThreadByCategoryName(String categoryName) {
+        try {
+            log.info("Executing search thread by category: [{}]", categoryName);
+            List<ThreadDto> threadDtoList = new ArrayList<>();
+
+            List<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryName(categoryName);
+            if(threadDaos.isEmpty()){
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            for (ThreadDao threadDao : threadDaos) {
+                threadDtoList.add(mapper.map(threadDao, ThreadDto.class));
+            }
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when search thread by title. Error: {}", e.getMessage());
+            log.trace("Get error when search thread by title. ", e);
+            throw e;
+        }
+    }
+
+    public ResponseEntity<Object> searchPopularThread() {
+        try {
+            log.info("Executing search popular thread");
+            List<ThreadDto> threadDtoList = new ArrayList<>();
+
+            List<ThreadDao> threadDaos = threadRepository.findAllPopularThread();
+            if(threadDaos.isEmpty()){
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            for (ThreadDao threadDao : threadDaos) {
+                threadDtoList.add(mapper.map(threadDao, ThreadDto.class));
+            }
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when search popular thread. Error: {}", e.getMessage());
+            log.trace("Get error when search popular thread. ", e);
+            throw e;
+        }
+    }
 
     public ResponseEntity<Object> deleteThread(Long id, UserDao user) {
         log.info("Executing delete thread id: {}", id);

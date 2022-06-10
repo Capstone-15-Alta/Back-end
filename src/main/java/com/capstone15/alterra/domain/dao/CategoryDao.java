@@ -22,7 +22,7 @@ public class CategoryDao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     @Column(name = "category_name", nullable = false)
     private String categoryName;
