@@ -1,8 +1,10 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
+import com.capstone15.alterra.domain.dao.CategoryDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dto.CategoryDto;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.repository.UserRepository;
@@ -70,6 +72,48 @@ public class UserService implements UserDetailsService {
         } catch (Exception e) {
             log.error("Happened error when get user by id. Error: {}", e.getMessage());
             log.trace("Get error when get user by id. ", e);
+            throw e;
+        }
+    }
+
+    public ResponseEntity<Object> changeRoleUser(Long id) {
+        log.info("Executing change role user with id: {}", id);
+        try {
+            Optional<UserDao> userDao = userRepository.findById(id);
+            if(userDao.isEmpty()) {
+                log.info("user {} not found", id);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            userDao.ifPresent(res -> {
+                res.setRoles("USER");
+                userRepository.save(res);
+            });
+            log.info("Executing change role user success");
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userDao, UserDto.class), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when change role user. Error: {}", e.getMessage());
+            log.trace("Get error when change role user. ", e);
+            throw e;
+        }
+    }
+
+    public ResponseEntity<Object> changeRoleModerator(Long id) {
+        log.info("Executing change role moderator with id: {}", id);
+        try {
+            Optional<UserDao> userDao = userRepository.findById(id);
+            if(userDao.isEmpty()) {
+                log.info("user {} not found", id);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            userDao.ifPresent(res -> {
+                res.setRoles("MODERATOR");
+                userRepository.save(res);
+            });
+            log.info("Executing change role moderator success");
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userDao, UserDto.class), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when change role moderator. Error: {}", e.getMessage());
+            log.trace("Get error when change role moderator. ", e);
             throw e;
         }
     }
