@@ -27,7 +27,7 @@ public class ThreadController {
     @PostMapping(value = "")
     public ResponseEntity<Object> addThread(@RequestParam("title") String title,
                                             @RequestParam("description") String description,
-                                            @RequestParam(value = "category_id", required = false) Long category_id,
+                                            @RequestParam(value = "category_id") Long category_id,
                                             @RequestParam(value = "file", required = false) MultipartFile multipartFile ) throws IOException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
