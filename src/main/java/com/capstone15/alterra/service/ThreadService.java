@@ -17,6 +17,7 @@ import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -45,6 +46,9 @@ public class ThreadService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Value("${fgd-api.url}")
+    private String apiUrl;
 
     @Autowired
     private ModelMapper mapper;
@@ -82,7 +86,7 @@ public class ThreadService {
                     .category(CategoryDao.builder().id(category_id).build())
                     .fileName(fileName)
                     .size(size)
-                    .image("/images/" + filecode)
+                    .image(apiUrl + "/images/" + filecode)
                     .createdBy(user.getUsername())
                     .user(UserDao.builder().id(user.getId()).build())
                     .thread_followers(0)
