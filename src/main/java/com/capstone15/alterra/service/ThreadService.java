@@ -9,6 +9,7 @@ import com.capstone15.alterra.domain.dto.CommentDto;
 import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.UserDto;
+import com.capstone15.alterra.repository.CategoryRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.FileUploadUtil;
@@ -43,11 +44,19 @@ public class ThreadService {
     private UserRepository userRepository;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     public ResponseEntity<Object> addThread(String title, String description, Long category_id, MultipartFile multipartFile, UserDao user) throws IOException {
         log.info("Executing add thread with request: ");
         try{
+            Optional<CategoryDao> categoryDao = categoryRepository.findById(category_id);
+            if(categoryDao.isEmpty()) {
+                log.info("category id: {} not found", category_id);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
 
             if(multipartFile == null) {
                 ThreadDao threadDao = ThreadDao.builder()
