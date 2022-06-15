@@ -59,9 +59,9 @@ public class ThreadController {
         return threadService.searchThreadByCategoryName(categoryName);
     }
 
-    @GetMapping(value = "/popular")
-    public ResponseEntity<Object> searchPopularThread(){
-        return threadService.searchPopularThread();
+    @GetMapping(value = "/trending")
+    public ResponseEntity<Object> searchTrendingThread(){
+        return threadService.searchTrendingThread();
     }
 
     @DeleteMapping(value = "/{id}")
