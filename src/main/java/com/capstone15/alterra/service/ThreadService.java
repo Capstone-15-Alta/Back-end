@@ -198,9 +198,9 @@ public class ThreadService {
         }
     }
 
-    public ResponseEntity<Object> searchPopularThread() {
+    public ResponseEntity<Object> searchTrendingThread() {
         try {
-            log.info("Executing search popular thread");
+            log.info("Executing search trending thread");
             List<ThreadDto> threadDtoList = new ArrayList<>();
 
             List<ThreadDao> threadDaos = threadRepository.findAllPopularThread();
@@ -212,8 +212,8 @@ public class ThreadService {
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Happened error when search popular thread. Error: {}", e.getMessage());
-            log.trace("Get error when search popular thread. ", e);
+            log.error("Happened error when search trending thread. Error: {}", e.getMessage());
+            log.trace("Get error when search trending thread. ", e);
             throw e;
         }
     }
