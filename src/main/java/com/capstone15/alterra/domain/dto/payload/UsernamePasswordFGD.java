@@ -1,4 +1,4 @@
-package com.capstone15.alterra.domain.dto;
+package com.capstone15.alterra.domain.dto.payload;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -14,20 +14,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UserDto implements Serializable {
+public class UsernamePasswordFGD implements Serializable {
 
-    private static final long serialVersionUID = 2318082842538632891L;
-
-    private Long id;
+    private static final long serialVersionUID = 2487045866600038881L;
 
     private String username;
-
+    private String password;
     private String phone;
-
     private String email;
-
-    private Integer followers;
-
-    private String roles;
-
 }

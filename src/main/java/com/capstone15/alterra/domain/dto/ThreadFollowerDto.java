@@ -24,6 +24,8 @@ public class ThreadFollowerDto implements Serializable {
 
     private Long threadId;
 
+    private Boolean isFollow;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime followTime;
 

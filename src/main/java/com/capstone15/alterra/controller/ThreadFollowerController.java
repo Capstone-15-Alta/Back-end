@@ -20,7 +20,7 @@ public class ThreadFollowerController {
     @Autowired
     private ThreadFollowerService threadFollowerService;
 
-    @PatchMapping(value = "/thread/{id}")
+    @PutMapping(value = "/thread/{id}")
     public ResponseEntity<Object> followThread( @PathVariable(value = "id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();

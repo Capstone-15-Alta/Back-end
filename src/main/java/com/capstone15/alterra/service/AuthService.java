@@ -2,8 +2,10 @@ package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.config.security.JwtTokenProvider;
 import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.domain.dto.payload.TokenResponse;
 import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
+import com.capstone15.alterra.domain.dto.payload.UsernamePasswordFGD;
 import com.capstone15.alterra.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -26,10 +28,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public UserDao register(UsernamePassword req) {
+    public UserDao register(UsernamePasswordFGD req) {
         UserDao user = new UserDao();
         user.setUsername(req.getUsername());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setPhone(req.getPhone());
+        user.setEmail(req.getEmail());
+
         return userRepository.save(user);
     }
 

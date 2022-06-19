@@ -48,7 +48,7 @@ public class ThreadLikeService {
                 ThreadLikeDao threadLikeDao = ThreadLikeDao.builder()
                         .thread(threadDao.get())
                         .user(UserDao.builder().id(user.getId()).build())
-                        .likes(1)
+                        .isLike(true)
                         .build();
                 threadLikeDao = threadLikeRepository.save(threadLikeDao);
                 log.info("Executing like thread success");
@@ -58,8 +58,8 @@ public class ThreadLikeService {
                 });
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadLikeDao, ThreadLikeDto.class), HttpStatus.OK);
             } else {
-                if (threadLikeDaoOptional.get().getLikes().equals(0)) {
-                    threadLikeDaoOptional.get().setLikes(1);
+                if (threadLikeDaoOptional.get().getIsLike().equals(false)) {
+                    threadLikeDaoOptional.get().setIsLike(true);
                     threadLikeRepository.save(threadLikeDaoOptional.get());
                     log.info("Executing like thread success");
                     threadDao.ifPresent(res -> {
@@ -67,7 +67,7 @@ public class ThreadLikeService {
                         threadRepository.save(res);
                     });
                 } else {
-                    threadLikeDaoOptional.get().setLikes(0);
+                    threadLikeDaoOptional.get().setIsLike(false);
                     threadLikeRepository.save(threadLikeDaoOptional.get());
                     log.info("Executing unlike thread success");
                     threadDao.ifPresent(res -> {

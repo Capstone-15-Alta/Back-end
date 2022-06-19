@@ -2,13 +2,11 @@
 
 # FGD API
 
-## Swagger 
+## Swagger : [http://34.87.175.218/api/swagger-ui/](http://34.87.175.218/api/swagger-ui/)
 
-[Swagger UI](http://34.87.175.218/api/swagger-ui/)
+## SPECK API: [https://possible-carbon-b54.notion.site/Speck-API-FGD-CAPSTONE-654ce8294c3348d9a5c3e80d74360724](https://possible-carbon-b54.notion.site/Speck-API-FGD-CAPSTONE-654ce8294c3348d9a5c3e80d74360724)
 
-## Endpoint
-
-[API DESIGN ENDPOINT](https://docs.google.com/spreadsheets/d/1LEsaywiibang-miTxcecwkLLuw4N2OtVlhA_VJIrbak)
+ [API DESIGN ENDPOINT EXCEL](https://docs.google.com/spreadsheets/d/1LEsaywiibang-miTxcecwkLLuw4N2OtVlhA_VJIrbak)
 
 
 ```
@@ -35,10 +33,9 @@ POST 34.87.175.218/api/v1/auth/login
 
 [Like by user](http://34.87.175.218/api/v1/like/thread/1)
 
-## unit test coverage
+## unit test code coverage:
 
-
-[Code Coverage](http://34.87.175.218:8000)
+[http://34.87.175.218:8000](http://34.87.175.218:8000)
 
 
 
