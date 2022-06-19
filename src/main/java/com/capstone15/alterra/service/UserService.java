@@ -164,7 +164,7 @@ public class UserService implements UserDetailsService {
 
 
 
-    public String forgotPassword(HttpServletRequest req) throws IOException {
+    public ResponseEntity<Object> forgotPassword(HttpServletRequest req) throws IOException {
         // the sender email should be the same as we used to Create a Single Sender Verification
         String token = RandomString.make(30);
         updateResetPasswordToken(token, req.getParameter("email"));
@@ -185,7 +185,7 @@ public class UserService implements UserDetailsService {
             request.setBody(mail.build());
             Response response = sg.api(request);
 
-            return response.getBody();
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, response.getBody(), HttpStatus.OK);
         } catch (IOException ex) {
             throw ex;
         }

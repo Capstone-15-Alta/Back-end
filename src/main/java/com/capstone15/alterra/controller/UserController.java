@@ -2,9 +2,11 @@ package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.service.UserService;
+import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +32,7 @@ public class UserController {
         return userService.getUserById(id);}
 
     @PostMapping("/forgot_password")
-    public String send(HttpServletRequest req) throws IOException {
+    public ResponseEntity<Object> send(HttpServletRequest req) throws IOException {
         return userService.forgotPassword(req);
     }
 
@@ -45,17 +47,17 @@ public class UserController {
     }
 
     @PostMapping("/reset_password")
-    public String processResetPassword(HttpServletRequest request) {
+    public ResponseEntity<Object> processResetPassword(HttpServletRequest request) {
         String token = request.getParameter("token");
         String password = request.getParameter("password");
 
         UserDao customer = userService.getByResetPasswordToken(token);
         if (customer == null) {
-            return "Invalid Token";
+            return ResponseUtil.build("Invalid Token", null, HttpStatus.BAD_REQUEST);
         } else {
             userService.updatePassword(customer, password);
         }
-        return "You have successfully changed your password.";
+        return ResponseUtil.build("You have successfully changed your password.", null, HttpStatus.OK);
     }
 
 }

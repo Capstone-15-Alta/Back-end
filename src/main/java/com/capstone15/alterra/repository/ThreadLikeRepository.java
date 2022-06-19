@@ -15,6 +15,6 @@ public interface ThreadLikeRepository extends JpaRepository<ThreadLikeDao, Long>
     @Query(value = "SELECT tf FROM ThreadLikeDao tf WHERE tf.user.id = :userid AND tf.thread.id = :threadid ")
     Optional<ThreadLikeDao> findByUserIdAndThreadId(@Param("userid") Long userid, @Param("threadid") Long threadid);
 
-    @Query(value = "SELECT count(tf) FROM ThreadLikeDao tf WHERE tf.likes = 1 AND tf.thread.id = :id")
+    @Query(value = "SELECT count(tf) FROM ThreadLikeDao tf WHERE tf.isLike = true AND tf.thread.id = :id")
     Integer countLikes(@Param("id") Long id);
 }

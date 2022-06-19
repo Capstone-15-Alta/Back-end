@@ -18,7 +18,7 @@ import javax.persistence.*;
 @Entity
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Table(name = "M_THREAD_LIKE")
-@Where(clause = "likes = 1")
+@Where(clause = "is_like = true")
 public class ThreadLikeDao extends BaseResponseLike {
 
     private static final long serialVersionUID = -4230216177814002088L;
@@ -35,8 +35,8 @@ public class ThreadLikeDao extends BaseResponseLike {
     @JoinColumn(name = "user_id")
     private UserDao user;
 
-    @Column(name = "likes")
-    private Integer likes = 0;
+    @Column(name = "is_like")
+    private Boolean isLike = false;
 
 
 }

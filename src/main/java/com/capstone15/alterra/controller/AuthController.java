@@ -1,8 +1,11 @@
 package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.constant.AppConstant;
+import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.domain.dto.payload.TokenResponse;
 import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
+import com.capstone15.alterra.domain.dto.payload.UsernamePasswordFGD;
 import com.capstone15.alterra.service.AuthService;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +24,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(value="/register")
-    public ResponseEntity<?> register(@RequestBody UsernamePassword req) {
+    public ResponseEntity<?> register(@RequestBody UsernamePasswordFGD req) {
         authService.register(req);
         return ResponseUtil.build(AppConstant.Message.SUCCESS, req, HttpStatus.OK);
     }

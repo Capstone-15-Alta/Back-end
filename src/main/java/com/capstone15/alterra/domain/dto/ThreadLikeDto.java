@@ -24,6 +24,8 @@ public class ThreadLikeDto implements Serializable {
 
     private Long threadId;
 
+    private Boolean isLike;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime likeTime;
 }

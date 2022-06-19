@@ -18,7 +18,7 @@ public class ThreadLikeController {
     @Autowired
     private ThreadLikeService threadLikeService;
 
-    @PatchMapping(value = "/thread/{id}")
+    @PutMapping(value = "/thread/{id}")
     public ResponseEntity<Object> likeThread(@PathVariable(value = "id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();

@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @Entity
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Table(name = "M_THREAD_FOLLOWER")
-@Where(clause = "followers = 1")
+@Where(clause = "is_follow = true")
 public class ThreadFollowerDao extends BaseResponseFollower {
 
     private static final long serialVersionUID = -8707777249211253146L;
@@ -39,8 +39,8 @@ public class ThreadFollowerDao extends BaseResponseFollower {
     @JoinColumn(name = "user_id")
     private UserDao user;
 
-    @Column(name = "followers")
-    private Integer followers = 0;
+    @Column(name = "is_follow")
+    private Boolean isFollow = false;
 
 
 }
