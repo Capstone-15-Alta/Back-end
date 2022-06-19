@@ -17,7 +17,7 @@ public interface CommentLikeRepository extends JpaRepository<CommentLikeDao, Lon
     Optional<CommentLikeDao> findByUserIdAndCommentId(@Param("userid") Long userid, @Param("commentid") Long commentid);
 
 
-    @Query(value = "SELECT count(tf) FROM CommentLikeDao tf WHERE tf.likes = 1 AND tf.comment.id = :id")
+    @Query(value = "SELECT count(tf) FROM CommentLikeDao tf WHERE tf.isLike = true AND tf.comment.id = :id")
     Integer countLikes(@Param("id") Long id);
 
 

@@ -35,44 +35,44 @@ public class CommentLikeService {
     @Autowired
     private ModelMapper mapper;
 
-    public ResponseEntity<Object> likeComment(CommentLikeDto request) {
-//        log.info("Executing like thread with request: {}", id);
+    public ResponseEntity<Object> likeComment(Long id, UserDao user) {
+            log.info("Executing like comment with request: {}", id);
         try {
-//            log.info("Get thread by id: {}", id);
-            Optional<UserDao> userDao = userRepository.findById(request.getUserId());
-            Optional<CommentDao> commentDao = commentRepository.findById(request.getCommentId());
+            log.info("Get comment by id: {}", id);
+            //Optional<UserDao> userDao = userRepository.findById(request.getUserId());
+            Optional<CommentDao> commentDao = commentRepository.findById(id);
             if (commentDao.isEmpty()) {
-                log.info("comment [{}] not found", request.getCommentId());
+                log.info("comment [{}] not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
 
             }
-            Optional<CommentLikeDao> optionalCommentLikeDao = commentLikeRepository.findByUserIdAndCommentId(request.getUserId(), request.getCommentId());
+            Optional<CommentLikeDao> optionalCommentLikeDao = commentLikeRepository.findByUserIdAndCommentId(user.getId(), id);
             if (optionalCommentLikeDao.isEmpty()) {
                 CommentLikeDao commentLikeDao = CommentLikeDao.builder()
-                        .comment(CommentDao.builder().id(request.getCommentId()).build())
-                        .user(UserDao.builder().id(request.getUserId()).build())
-                        .likes(1)
+                        .comment(commentDao.get())
+                        .user(UserDao.builder().id(user.getId()).build())
+                        .isLike(true)
                         .build();
                 commentLikeDao = commentLikeRepository.save(commentLikeDao);
-                log.info("Executing like thread success");
+                log.info("Executing like comment success");
                 commentDao.ifPresent(res -> {
                     res.setComment_likes(commentLikeRepository.countLikes(commentDao.get().getId()));
                     commentRepository.save(res); //lamda expression
                 });
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentLikeDao, CommentLikeDto.class), HttpStatus.OK);
             } else {
-                if (optionalCommentLikeDao.get().getLikes().equals(0)) {
-                    optionalCommentLikeDao.get().setLikes(1);
+                if (optionalCommentLikeDao.get().getIsLike().equals(false)) {
+                    optionalCommentLikeDao.get().setIsLike(true);
                     commentLikeRepository.save(optionalCommentLikeDao.get());
-                    log.info("Executing like thread success");
+                    log.info("Executing like comment success");
                     commentDao.ifPresent(res -> {
                         res.setComment_likes(commentLikeRepository.countLikes(commentDao.get().getId()));
                         commentRepository.save(res);
                     });
                 } else {
-                    optionalCommentLikeDao.get().setLikes(0);
+                    optionalCommentLikeDao.get().setIsLike(false);
                     commentLikeRepository.save(optionalCommentLikeDao.get());
-                    log.info("Executing unlike thread success");
+                    log.info("Executing unlike comment success");
                     commentDao.ifPresent(res -> {
                         res.setComment_likes(commentLikeRepository.countLikes(commentDao.get().getId()));
                         commentRepository.save(res);
@@ -81,14 +81,14 @@ public class CommentLikeService {
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(optionalCommentLikeDao, CommentLikeDto.class), HttpStatus.OK);
             }
         } catch (Exception e) {
-            log.error("Happened error when like thread. Error: {}", e.getMessage());
-            log.trace("Get error when like thread. ", e);
+            log.error("Happened error when like comment. Error: {}", e.getMessage());
+            log.trace("Get error when like comment. ", e);
             throw e;
         }
     }
 
     public ResponseEntity<Object> getLikeByIdComment(Long id) {
-        log.info("Executing get like by id thread.");
+        log.info("Executing get like by id comment.");
         try {
             Optional<CommentDao> commentDaoOptional = commentRepository.findById(id);
             if (commentDaoOptional.isEmpty()) {
@@ -102,8 +102,8 @@ public class CommentLikeService {
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Happened error when get like by id thread. Error: {}", e.getMessage());
-            log.trace("Get error when get like by id thread. ", e);
+            log.error("Happened error when get like by id comment. Error: {}", e.getMessage());
+            log.trace("Get error when get like by id comment. ", e);
             throw e;
         }
     }
