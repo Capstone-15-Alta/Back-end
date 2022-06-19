@@ -32,6 +32,9 @@ public class UserDao  implements UserDetails {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -43,6 +46,9 @@ public class UserDao  implements UserDetails {
 
     @Column(name = "followers")
     private Integer followers = 0;
+
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
