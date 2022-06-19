@@ -23,6 +23,8 @@ public class CommentLikeDto implements Serializable {
 
     private Long commentId;
 
+    private Boolean isLike;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime likeTime;
 }

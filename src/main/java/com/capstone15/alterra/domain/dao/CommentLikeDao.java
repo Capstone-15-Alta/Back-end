@@ -19,7 +19,7 @@ import java.io.Serializable;
 @Entity
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @Table(name = "M_COMMENT_LIKE")
-@Where(clause = "likes = 1")
+@Where(clause = "is_like = true")
 public class CommentLikeDao extends BaseResponseLike implements Serializable {
 
 
@@ -36,8 +36,8 @@ public class CommentLikeDao extends BaseResponseLike implements Serializable {
     @JoinColumn(name = "user_id")
     private UserDao user;
 
-    @Column(name = "likes")
-    private Integer likes = 0;
+    @Column(name = "is_like")
+    private Boolean isLike = false;
 
 
 }
