@@ -32,7 +32,6 @@ public class AuthService {
         UserDao user = new UserDao();
         user.setUsername(req.getUsername());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
-        user.setPhone(req.getPhone());
         user.setEmail(req.getEmail());
 
         return userRepository.save(user);

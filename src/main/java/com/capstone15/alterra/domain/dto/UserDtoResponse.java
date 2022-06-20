@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -28,6 +30,24 @@ public class UserDtoResponse implements Serializable {
     private String email;
 
     private String roles;
+
+    private String firstName;
+
+    private String lastName;
+
+    private Date birthDate;
+
+    private String education;
+
+    private String gender;
+
+    private String country;
+
+    private String city;
+
+    private String zipCode;
+
+    private String image;
 
     private List<ThreadDto> threads;
 

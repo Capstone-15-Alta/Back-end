@@ -18,6 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -216,6 +220,24 @@ public class ThreadService {
             log.trace("Get error when search trending thread. ", e);
             throw e;
         }
+    }
+
+    public ResponseEntity<Object> getAllThreadWithPaginate(Pageable pageable) {
+        log.info("Executing get thread with paginate: {}", pageable);
+        try{
+            Page<ThreadDao> threadDaos = threadRepository.findAllBy(pageable);
+
+            List<ThreadDtoResponse> list = new ArrayList<>();
+            for(ThreadDao dao : threadDaos){
+                list.add(mapper.map(dao, ThreadDtoResponse.class));
+            }
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when get thread with paginate . Error: {}", e.getMessage());
+            log.trace("Get error when get thread with paginate. ", e);
+            throw e;
+        }
+
     }
 
     public ResponseEntity<Object> deleteThread(Long id, UserDao user) {
