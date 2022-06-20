@@ -44,8 +44,8 @@ public class UserDao  implements UserDetails {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "followers")
-    private Integer followers = 0;
+    @Column(name = "total_user_followers")
+    private Integer totalUserFollowers = 0;
 
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
@@ -60,7 +60,20 @@ public class UserDao  implements UserDetails {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<CommentLikeDao> commentLikes;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<ThreadFollowerDao> threadFollowers;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<ThreadLikeDao> threadLikes;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userFollowed")
+    private List<UserFollowerDao> userFollowers;
+
 
     @Column(columnDefinition = "boolean default true")
     private boolean active = true;

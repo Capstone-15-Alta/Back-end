@@ -8,15 +8,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UserDto implements Serializable {
+public class UserDtoResponse implements Serializable {
 
-    private static final long serialVersionUID = 2318082842538632891L;
+    private static final long serialVersionUID = 4941849631522075637L;
 
     private Long id;
 
@@ -28,6 +29,19 @@ public class UserDto implements Serializable {
 
     private String roles;
 
+    private List<ThreadDto> threads;
+
+    private List<ThreadFollowerDto> threadFollowers;
+
+    private List<ThreadLikeDto> threadLikes;
+
+    private List<CommentDto> comments;
+
+    private List<CommentLikeDto> commentLikes;
+
+    private List<UserFollowerDto> userFollowers;
+
     private Integer totalUserFollowers;
+
 
 }

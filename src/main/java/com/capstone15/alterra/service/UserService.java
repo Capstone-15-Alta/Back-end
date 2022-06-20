@@ -7,6 +7,7 @@ import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.CategoryDto;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.UserDto;
+import com.capstone15.alterra.domain.dto.UserDtoResponse;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.ResponseUtil;
 import com.sendgrid.Method;
@@ -85,7 +86,7 @@ public class UserService implements UserDetailsService {
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
             log.info("Executing get user by id success");
-            UserDto userDto = mapper.map(userDaoOptional, UserDto.class);
+            UserDtoResponse userDto = mapper.map(userDaoOptional, UserDtoResponse.class);
             return ResponseUtil.build(AppConstant.Message.SUCCESS, userDto, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get user by id. Error: {}", e.getMessage());
