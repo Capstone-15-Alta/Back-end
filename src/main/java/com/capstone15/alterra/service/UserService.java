@@ -47,7 +47,7 @@ public class UserService implements UserDetailsService {
     @Autowired
     private ModelMapper mapper;
 
-    @Value("${SENDGRID_API_KEY}")
+    @Value("${sendgrid.apikey:}")
     private String apiKey;
 
     @Value("${fgd-api.url}")
