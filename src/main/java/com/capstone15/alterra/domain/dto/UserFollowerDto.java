@@ -1,5 +1,6 @@
 package com.capstone15.alterra.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -8,28 +9,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ThreadDto implements Serializable {
+public class UserFollowerDto implements Serializable {
 
-    private static final long serialVersionUID = -3641627981085086785L;
-    private Long id;
+    private static final long serialVersionUID = 6225697658746357231L;
 
-    private String title;
+    private Long userFollowerId;
 
-    private String description;
+    private Long userFollowedId;
 
-    private String image;
+    private Boolean isFollow;
 
-    private Long categoryId;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime followTime;
 
-    private Long userId;
-
-    private Integer thread_followers;
-
-    private Integer thread_likes;
 }
