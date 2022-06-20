@@ -178,7 +178,7 @@ public class UserService implements UserDetailsService {
         Content content = new Content("text/plain", "This is a reset password link : " + "\n" + resetPasswordLink);
         Mail mail = new Mail(from, subject, to, content);
 
-        SendGrid sg = new SendGrid(apiKey);
+        SendGrid sg = new SendGrid(System.getenv(apiKey));
         Request request = new Request();
         try {
             request.setMethod(Method.POST);
