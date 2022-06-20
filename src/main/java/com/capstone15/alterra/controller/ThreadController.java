@@ -6,6 +6,9 @@ import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.service.ThreadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +41,12 @@ public class ThreadController {
     public ResponseEntity<Object> getAll() {
         return threadService.getAllThread();
     }
+
+    @GetMapping(value = "/pages")
+    public ResponseEntity<Object> getAllWithPaginate(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
+        return threadService.getAllThreadWithPaginate(pageable);
+    }
+
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Object> getById(@PathVariable(value = "id") Long id){

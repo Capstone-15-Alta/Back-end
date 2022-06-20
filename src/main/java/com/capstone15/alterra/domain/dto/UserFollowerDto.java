@@ -16,16 +16,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CommentLikeDto implements Serializable {
+public class UserFollowerDto implements Serializable {
 
-    private static final long serialVersionUID = 2370805949180947802L;
-    private Long userId;
+    private static final long serialVersionUID = 6225697658746357231L;
 
-    private Long commentId;
+    private Long userFollowerId;
 
-    private Boolean isLike;
+    private Long userFollowedId;
+
+    private Boolean isFollow;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime likeTime;
-}
+    private LocalDateTime followTime;
 
+}

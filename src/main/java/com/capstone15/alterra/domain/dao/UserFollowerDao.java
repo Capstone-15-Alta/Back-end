@@ -1,6 +1,6 @@
 package com.capstone15.alterra.domain.dao;
 
-import com.capstone15.alterra.domain.common.BaseResponseLike;
+import com.capstone15.alterra.domain.common.BaseResponseFollower;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -10,35 +10,31 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Data
-@Builder //bisa lgsg create objek tanpa getter setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@Table(name = "M_COMMENT_LIKE")
-@Where(clause = "is_like = true")
-public class CommentLikeDao extends BaseResponseLike implements Serializable {
+@Table(name = "M_USER_FOLLOWER")
+@Where(clause = "is_follow = true")
+public class UserFollowerDao extends BaseResponseFollower {
 
 
-    private static final long serialVersionUID = -850554511300929273L;
+    private static final long serialVersionUID = -489565817356180556L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "comment_id")
-    private CommentDao comment;
+    @JoinColumn(name = "user_followed_id")
+    private UserDao userFollowed;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserDao user;
+    @JoinColumn(name = "user_follower_id")
+    private UserDao userFollower;
 
-    @Column(name = "is_like")
-    private Boolean isLike = false;
-
-
+    @Column(name = "is_follow")
+    private Boolean isFollow = false;
 }
-

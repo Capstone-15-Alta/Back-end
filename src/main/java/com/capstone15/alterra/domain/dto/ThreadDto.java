@@ -29,7 +29,7 @@ public class ThreadDto implements Serializable {
 
     private Long userId;
 
-    private Long thread_followers;
+    private Integer thread_followers;
 
-    private Long thread_likes;
+    private Integer thread_likes;
 }

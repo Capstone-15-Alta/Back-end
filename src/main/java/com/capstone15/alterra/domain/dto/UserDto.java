@@ -26,8 +26,8 @@ public class UserDto implements Serializable {
 
     private String email;
 
-    private Integer followers;
-
     private String roles;
+
+    private Integer totalUserFollowers;
 
 }

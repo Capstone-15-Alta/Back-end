@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -44,8 +45,41 @@ public class UserDao  implements UserDetails {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "followers")
-    private Integer followers = 0;
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "birth_date")
+    private Date birthDate;
+
+    @Column(name = "image_url")
+    private String image;
+
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "size")
+    private long size;
+
+    @Column(name = "education")
+    private String education;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "zip_code")
+    private String zipCode;
+
+    @Column(name = "total_user_followers")
+    private Integer totalUserFollowers = 0;
 
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
@@ -60,7 +94,20 @@ public class UserDao  implements UserDetails {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<CommentLikeDao> commentLikes;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<ThreadFollowerDao> threadFollowers;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<ThreadLikeDao> threadLikes;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userFollowed")
+    private List<UserFollowerDao> userFollowers;
+
 
     @Column(columnDefinition = "boolean default true")
     private boolean active = true;
