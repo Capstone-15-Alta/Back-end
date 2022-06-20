@@ -84,4 +84,4 @@ jobs:
             docker rmi hendrojun/springboot-capstoneproject:latest hendrojun/springboot-capstoneproject-coverage:latest
             docker pull hendrojun/springboot-capstoneproject:latest
             docker pull hendrojun/springboot-capstoneproject-coverage:latest
-            docker run -d --rm --name springboot-capstoneproject -p 80:8080 -v "/root/Files-Upload":/app/Files-Upload --env-file=.dev.env --network capstone15 hendrojun/springboot-capstoneproject:latest
+            docker run -d --rm --name springboot-capstoneproject -p 80:8080 -v "/root/Files-Upload":/app/Files-Upload --env-file=sendgrid.env --network capstone15 hendrojun/springboot-capstoneproject:latest
