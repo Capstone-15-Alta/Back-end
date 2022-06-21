@@ -191,4 +191,58 @@ public class UserService implements UserDetailsService {
             throw ex;
         }
     }
+
+    public ResponseEntity<Object> deleteUser(Long id) {
+        log.info("Executing delete user id: {}", id);
+        try{
+            Optional<UserDao> userDao = userRepository.findById(id);
+            if(userDao.isEmpty()) {
+                log.info("user {} not found", id);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            userRepository.deleteById(id);
+            log.info("Executing delete user success");
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, null, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when delete user. Error: {}", e.getMessage());
+            log.trace("Get error when delete user. ", e);
+            throw e;
+        }
+
+    }
+
+    public ResponseEntity<Object> updateUser(Long id, UserDtoResponse request, UserDao user) {
+        log.info("Executing update user with request: {}", request);
+        try {
+            Optional<UserDao> userDao = userRepository.findById(id);
+            if(userDao.isEmpty()) {
+                log.info("user {} not found", id);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            if(!userDao.get().getId().equals(user.getId()) && user.getRoles().equals("USER")) {
+                log.info("User {} cant update by user {}", id, user.getUsername());
+                return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            userDao.ifPresent(res -> {
+                res.setPhone(request.getPhone());
+                res.setEmail(request.getEmail());
+                res.setFirstName(request.getFirstName());
+                res.setLastName(request.getLastName());
+                res.setBirthDate(request.getBirthDate());
+                res.setEducation(request.getEducation());
+                res.setGender(request.getGender());
+                res.setCountry(request.getCountry());
+                res.setCity(request.getCity());
+                res.setZipCode(request.getZipCode());
+                userRepository.save(res);
+            });
+            log.info("Executing update user success");
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userDao, UserDtoResponse.class), HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when update user. Error: {}", e.getMessage());
+            log.trace("Get error when update user. ", e);
+            throw e;
+        }
+    }
+
 }

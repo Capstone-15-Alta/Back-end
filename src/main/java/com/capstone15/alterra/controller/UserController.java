@@ -1,6 +1,7 @@
 package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dto.UserDtoResponse;
 import com.capstone15.alterra.service.UserService;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,6 +61,13 @@ public class UserController {
             userService.updatePassword(customer, password);
         }
         return ResponseUtil.build("You have successfully changed your password.", null, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Object> updateCustomer(@PathVariable(value = "id") Long id, @RequestBody UserDtoResponse request) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userService.updateUser(id, request, (UserDao) userDetails);
     }
 
 }
