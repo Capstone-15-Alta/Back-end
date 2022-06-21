@@ -1,9 +1,12 @@
 package com.capstone15.alterra.repository;
 
+import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserDao, Long> {
@@ -14,4 +17,6 @@ public interface UserRepository extends JpaRepository<UserDao, Long> {
 
     public UserDao findByResetPasswordToken(String token);
 
+    @Query(value = "SELECT t FROM UserDao t ORDER BY t.totalUserFollowers DESC")
+    List<UserDao> findAllUserByRanking();
 }

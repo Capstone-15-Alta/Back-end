@@ -70,4 +70,10 @@ public class UserController {
         return userService.updateUser(id, request, (UserDao) userDetails);
     }
 
+    @GetMapping(value = "/rank")
+    public ResponseEntity<Object> getUserByRankingFollower(){
+        return userService.getUserByRanking();
+    }
+
+
 }

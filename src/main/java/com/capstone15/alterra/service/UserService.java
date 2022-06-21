@@ -4,10 +4,7 @@ import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.dao.CategoryDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.CategoryDto;
-import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
-import com.capstone15.alterra.domain.dto.UserDto;
-import com.capstone15.alterra.domain.dto.UserDtoResponse;
+import com.capstone15.alterra.domain.dto.*;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.ResponseUtil;
 import com.sendgrid.Method;
@@ -241,6 +238,26 @@ public class UserService implements UserDetailsService {
         } catch (Exception e) {
             log.error("Happened error when update user. Error: {}", e.getMessage());
             log.trace("Get error when update user. ", e);
+            throw e;
+        }
+    }
+
+    public ResponseEntity<Object> getUserByRanking() {
+        try {
+            log.info("Executing search user by ranking");
+            List<UserDto> userDtos = new ArrayList<>();
+
+            List<UserDao> userDaos = userRepository.findAllUserByRanking();
+            if(userDaos.isEmpty()){
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            for (UserDao userDao : userDaos) {
+                userDtos.add(mapper.map(userDao, UserDto.class));
+            }
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, userDtos, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when search user by ranking. Error: {}", e.getMessage());
+            log.trace("Get error when search user by ranking. ", e);
             throw e;
         }
     }
