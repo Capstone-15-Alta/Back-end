@@ -29,4 +29,9 @@ public class AdminController {
         return userService.changeRoleModerator(id);
     }
 
+    @DeleteMapping(value = "/user/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") Long id) {
+        return userService.deleteUser(id);
+    }
+
 }
