@@ -57,20 +57,29 @@ public class ThreadService {
     @Autowired
     private ModelMapper mapper;
 
-    public ResponseEntity<Object> addThread(String title, String description, Long category_id, MultipartFile multipartFile, UserDao user) throws IOException {
+    public ResponseEntity<Object> addThread(ThreadDto request, MultipartFile multipartFile, UserDao user) throws IOException {
         log.info("Executing add thread with request: ");
         try{
-            Optional<CategoryDao> categoryDao = categoryRepository.findById(category_id);
+            if(request.getTitle() == null) {
+                return ResponseUtil.build("title cant null!", null, HttpStatus.BAD_REQUEST);
+            }
+            if(request.getDescription() == null) {
+                return ResponseUtil.build("description cant null!", null, HttpStatus.BAD_REQUEST);
+            }
+            if(request.getCategoryId() == null) {
+                return ResponseUtil.build("category cant null!", null, HttpStatus.BAD_REQUEST);
+            }
+            Optional<CategoryDao> categoryDao = categoryRepository.findById(request.getCategoryId());
             if(categoryDao.isEmpty()) {
-                log.info("category id: {} not found", category_id);
-                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+                log.info("category id: {} not found", request.getCategoryId());
+                return ResponseUtil.build("Category not found", null, HttpStatus.BAD_REQUEST);
             }
 
             if(multipartFile == null) {
                 ThreadDao threadDao = ThreadDao.builder()
-                        .title(title)
-                        .description(description)
-                        .category(CategoryDao.builder().id(category_id).build())
+                        .title(request.getTitle())
+                        .description(request.getDescription())
+                        .category(CategoryDao.builder().id(request.getCategoryId()).build())
                         .createdBy(user.getUsername())
                         .user(UserDao.builder().id(user.getId()).build())
                         .thread_followers(0)
@@ -85,9 +94,9 @@ public class ThreadService {
             String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
 
             ThreadDao threadDao = ThreadDao.builder()
-                    .title(title)
-                    .description(description)
-                    .category(CategoryDao.builder().id(category_id).build())
+                    .title(request.getTitle())
+                    .description(request.getDescription())
+                    .category(CategoryDao.builder().id(request.getCategoryId()).build())
                     .fileName(fileName)
                     .size(size)
                     .image(apiUrl + "/images/" + filecode)

@@ -22,7 +22,7 @@ public class JwtTokenProvider {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    private Long expiration = 1000L * 60 * 60;
+    private Long expiration = 100000L * 60 * 60;
 
     @Value("${jwt.authorities.key}")
     public String AUTHORITIES_KEY;

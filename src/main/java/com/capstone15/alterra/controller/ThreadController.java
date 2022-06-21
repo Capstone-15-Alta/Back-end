@@ -27,14 +27,22 @@ public class ThreadController {
     @Autowired
     private ThreadService threadService;
 
+//    @PostMapping(value = "")
+//    public ResponseEntity<Object> addThread(@RequestParam("title") String title,
+//                                            @RequestParam("description") String description,
+//                                            @RequestParam(value = "category_id") Long category_id,
+//                                            @RequestParam(value = "file", required = false) MultipartFile multipartFile ) throws IOException {
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                .getPrincipal();
+//        return threadService.addThread(title, description, category_id, multipartFile, (UserDao) userDetails);
+//    }
+
     @PostMapping(value = "")
-    public ResponseEntity<Object> addThread(@RequestParam("title") String title,
-                                            @RequestParam("description") String description,
-                                            @RequestParam(value = "category_id") Long category_id,
-                                            @RequestParam(value = "file", required = false) MultipartFile multipartFile ) throws IOException {
+    public ResponseEntity<Object> addThread(@RequestPart("json") ThreadDto request,
+                                            @RequestPart(value = "file", required = false) MultipartFile multipartFile ) throws IOException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadService.addThread(title, description, category_id, multipartFile, (UserDao) userDetails);
+        return threadService.addThread(request, multipartFile, (UserDao) userDetails);
     }
 
     @GetMapping(value = "")
