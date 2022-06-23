@@ -24,9 +24,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(value="/register")
-    public ResponseEntity<?> register(@RequestBody UsernamePasswordFGD req) {
-        authService.register(req);
-        return ResponseUtil.build(AppConstant.Message.SUCCESS, req, HttpStatus.OK);
+    public ResponseEntity<Object> register(@RequestBody UsernamePasswordFGD req) {
+        return authService.register(req);
+
     }
 
     @PostMapping(value="/login" )

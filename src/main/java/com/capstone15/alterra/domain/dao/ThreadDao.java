@@ -73,5 +73,8 @@ public class ThreadDao extends BaseResponse {
     @Column(name = "likes")
     private Integer thread_likes = 0;
 
+    @Column(name = "views")
+    private Integer views = 0;
+
 
 }
