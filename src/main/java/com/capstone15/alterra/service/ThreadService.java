@@ -61,13 +61,13 @@ public class ThreadService {
         log.info("Executing add thread with request: ");
         try{
             if(request.getTitle() == null) {
-                return ResponseUtil.build("title cant null!", null, HttpStatus.BAD_REQUEST);
+                return ResponseUtil.build("title cant null !", null, HttpStatus.BAD_REQUEST);
             }
             if(request.getDescription() == null) {
-                return ResponseUtil.build("description cant null!", null, HttpStatus.BAD_REQUEST);
+                return ResponseUtil.build("description cant null !", null, HttpStatus.BAD_REQUEST);
             }
             if(request.getCategoryId() == null) {
-                return ResponseUtil.build("category cant null!", null, HttpStatus.BAD_REQUEST);
+                return ResponseUtil.build("category cant null !", null, HttpStatus.BAD_REQUEST);
             }
             Optional<CategoryDao> categoryDao = categoryRepository.findById(request.getCategoryId());
             if(categoryDao.isEmpty()) {
@@ -84,6 +84,7 @@ public class ThreadService {
                         .user(UserDao.builder().id(user.getId()).build())
                         .thread_followers(0)
                         .thread_likes(0)
+                        .views(0)
                         .build();
                 threadDao = threadRepository.save(threadDao);
                 log.info("Executing add thread success");
@@ -104,6 +105,7 @@ public class ThreadService {
                     .user(UserDao.builder().id(user.getId()).build())
                     .thread_followers(0)
                     .thread_likes(0)
+                    .views(0)
                     .build();
 //            threadDao.setCreatedBy(user.getUsername());
 //            threadDao.setUser(UserDao.builder().id(user.getId()).build());

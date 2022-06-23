@@ -24,7 +24,7 @@ public class CategoryDao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "category_name")
+    @Column(name = "category_name",nullable = false,unique = true)
     private String categoryName;
 
     @JsonIgnore

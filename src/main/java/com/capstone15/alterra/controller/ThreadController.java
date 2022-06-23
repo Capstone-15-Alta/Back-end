@@ -4,6 +4,7 @@ import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.service.ThreadService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -37,12 +38,16 @@ public class ThreadController {
 //        return threadService.addThread(title, description, category_id, multipartFile, (UserDao) userDetails);
 //    }
 
-    @PostMapping(value = "")
-    public ResponseEntity<Object> addThread(@RequestPart("json") ThreadDto request,
-                                            @RequestPart(value = "file", required = false) MultipartFile multipartFile ) throws IOException {
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> addThread(@RequestParam("json") String request,
+                                            @RequestParam(value = "file", required = false) MultipartFile multipartFile ) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        ThreadDto threadDto = mapper.readValue(request, ThreadDto.class);
+
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadService.addThread(request, multipartFile, (UserDao) userDetails);
+        return threadService.addThread(threadDto, multipartFile, (UserDao) userDetails);
     }
 
     @GetMapping(value = "")

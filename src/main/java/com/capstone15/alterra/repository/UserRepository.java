@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserDao, Long> {
@@ -14,6 +15,9 @@ public interface UserRepository extends JpaRepository<UserDao, Long> {
 
     @Query("SELECT c FROM UserDao c WHERE c.email = ?1")
     public UserDao findByEmail(String email);
+
+    @Query("SELECT c FROM UserDao c WHERE c.email = ?1")
+    Optional<UserDao> findByEmails(String email);
 
     public UserDao findByResetPasswordToken(String token);
 
