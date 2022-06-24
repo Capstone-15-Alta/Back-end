@@ -273,7 +273,7 @@ public class ThreadService {
         }
     }
 
-    public ResponseEntity<Object> updateThread(Long id, ThreadDto request, UserDao user) {
+    public ResponseEntity<Object> updateThread(Long id, ThreadDto request, MultipartFile multipartFile, UserDao user) throws IOException {
         log.info("Executing update thread with request: {}", request);
         try {
             Optional<ThreadDao> threadDaoOptional = threadRepository.findById(id);
@@ -285,14 +285,33 @@ public class ThreadService {
                 log.info("Thread {} cant update by user {}", id, user.getUsername());
                 return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
+            if(multipartFile == null) {
+                threadDaoOptional.ifPresent(res -> {
+                    res.setTitle(request.getTitle());
+                    res.setDescription(request.getDescription());
+                    res.setCategory(CategoryDao.builder().id(request.getCategoryId()).build());
+
+                    threadRepository.save(res);
+                });
+                log.info("Executing update thread success");
+                return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadDaoOptional, ThreadDtoResponse.class), HttpStatus.OK);
+            }
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+            long size = multipartFile.getSize();
+            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+
             threadDaoOptional.ifPresent(res -> {
                 res.setTitle(request.getTitle());
                 res.setDescription(request.getDescription());
-                res.setImage(request.getImage());
+                res.setCategory(CategoryDao.builder().id(request.getCategoryId()).build());
+                res.setFileName(fileName);
+                res.setSize(size);
+                res.setImage(apiUrl + "/images/" + filecode);
                 threadRepository.save(res);
             });
             log.info("Executing update thread success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadDaoOptional, ThreadDtoResponse.class), HttpStatus.OK);
+
         } catch (Exception e) {
             log.error("Happened error when update thread. Error: {}", e.getMessage());
             log.trace("Get error when update thread. ", e);

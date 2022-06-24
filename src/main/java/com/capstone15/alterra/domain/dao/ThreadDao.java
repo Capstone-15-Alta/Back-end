@@ -67,6 +67,10 @@ public class ThreadDao extends BaseResponse {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "thread")
     private List<ThreadLikeDao> threadLikes;
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "thread")
+    private List<ThreadReportDao> threadReports;
+
     @Column(name = "followers")
     private Integer thread_followers = 0;
 
