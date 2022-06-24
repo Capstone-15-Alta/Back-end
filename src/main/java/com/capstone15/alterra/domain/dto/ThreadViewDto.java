@@ -14,25 +14,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ThreadDto implements Serializable {
+public class ThreadViewDto implements Serializable {
 
-    private static final long serialVersionUID = -3641627981085086785L;
-    private Long id;
 
-    private String title;
+    private static final long serialVersionUID = -6848737671422850007L;
 
-    private String description;
-
-    private String image;
-
-    private Long categoryId;
-
-    private Long userId;
-
-    private Integer thread_followers;
-
-    private Integer thread_likes;
-
-    private ThreadViewDto view;
-
+    private Integer views;
 }

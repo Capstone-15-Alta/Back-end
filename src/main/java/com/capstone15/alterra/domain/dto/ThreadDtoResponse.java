@@ -54,6 +54,8 @@ public class ThreadDtoResponse implements Serializable {
 
     private Integer thread_likes;
 
+    private ThreadViewDto view;
+
 
 
 
