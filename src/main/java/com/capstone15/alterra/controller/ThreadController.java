@@ -4,6 +4,7 @@ import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.service.ThreadService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,10 +94,15 @@ public class ThreadController {
         return threadService.deleteThread(id, (UserDao) userDetails);
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateThread(@PathVariable(value = "id") Long id, @RequestBody ThreadDto request) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> updateThread(@PathVariable(value = "id") Long id, @RequestParam("json") String request,
+                                               @RequestParam(value = "file", required = false) MultipartFile multipartFile) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        ThreadDto threadDto = mapper.readValue(request, ThreadDto.class);
+
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadService.updateThread(id, request, (UserDao) userDetails);
+        return threadService.updateThread(id, threadDto, multipartFile, (UserDao) userDetails);
     }
 }

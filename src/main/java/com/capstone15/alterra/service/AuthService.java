@@ -80,6 +80,12 @@ public class AuthService {
             String jwt = jwtTokenProvider.generateToken(authentication);
             TokenResponse tokenResponse = new TokenResponse();
             tokenResponse.setToken(jwt);
+
+            UserDao userDao = userRepository.getDistinctTopByUsername(req.getUsername());
+            tokenResponse.setEmail(userDao.getEmail());
+            tokenResponse.setUsername(userDao.getUsername());
+            tokenResponse.setId(userDao.getId());
+
             return tokenResponse;
 
         } catch (BadCredentialsException e) {

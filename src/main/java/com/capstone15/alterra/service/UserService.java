@@ -6,6 +6,7 @@ import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.*;
 import com.capstone15.alterra.repository.UserRepository;
+import com.capstone15.alterra.util.FileUploadUtil;
 import com.capstone15.alterra.util.ResponseUtil;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -27,11 +28,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Log4j2
@@ -208,7 +212,7 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public ResponseEntity<Object> updateUser(Long id, UserDtoResponse request, UserDao user) {
+    public ResponseEntity<Object> updateUser(Long id, UserDtoResponse request, MultipartFile multipartFile, UserDao user) throws IOException {
         log.info("Executing update user with request: {}", request);
         try {
             Optional<UserDao> userDao = userRepository.findById(id);
@@ -220,11 +224,35 @@ public class UserService implements UserDetailsService {
                 log.info("User {} cant update by user {}", id, user.getUsername());
                 return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
+            if(multipartFile == null) {
+                userDao.ifPresent(res -> {
+                    res.setPhone(request.getPhone());
+                    res.setEmail(request.getEmail());
+                    res.setFirstName(request.getFirstName());
+                    res.setLastName(request.getLastName());
+                    res.setBirthDate(request.getBirthDate());
+                    res.setEducation(request.getEducation());
+                    res.setGender(request.getGender());
+                    res.setCountry(request.getCountry());
+                    res.setCity(request.getCity());
+                    res.setZipCode(request.getZipCode());
+                    userRepository.save(res);
+                });
+                log.info("Executing update user success");
+                return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userDao, UserDtoResponse.class), HttpStatus.OK);
+            }
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+            long size = multipartFile.getSize();
+            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+
             userDao.ifPresent(res -> {
                 res.setPhone(request.getPhone());
                 res.setEmail(request.getEmail());
                 res.setFirstName(request.getFirstName());
                 res.setLastName(request.getLastName());
+                res.setFileName(fileName);
+                res.setSize(size);
+                res.setImage(apiUrl + "/images/" + filecode);
                 res.setBirthDate(request.getBirthDate());
                 res.setEducation(request.getEducation());
                 res.setGender(request.getGender());
@@ -235,6 +263,7 @@ public class UserService implements UserDetailsService {
             });
             log.info("Executing update user success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userDao, UserDtoResponse.class), HttpStatus.OK);
+
         } catch (Exception e) {
             log.error("Happened error when update user. Error: {}", e.getMessage());
             log.trace("Get error when update user. ", e);
