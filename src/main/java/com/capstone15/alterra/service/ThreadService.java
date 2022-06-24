@@ -1,16 +1,14 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.CategoryDao;
-import com.capstone15.alterra.domain.dao.CommentDao;
-import com.capstone15.alterra.domain.dao.ThreadDao;
-import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dao.*;
 import com.capstone15.alterra.domain.dto.CommentDto;
 import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.repository.CategoryRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
+import com.capstone15.alterra.repository.ThreadViewRepository;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.FileUploadUtil;
 import com.capstone15.alterra.util.ResponseUtil;
@@ -51,6 +49,9 @@ public class ThreadService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ThreadViewRepository threadViewRepository;
+
     @Value("${fgd-api.url}")
     private String apiUrl;
 
@@ -84,7 +85,7 @@ public class ThreadService {
                         .user(UserDao.builder().id(user.getId()).build())
                         .thread_followers(0)
                         .thread_likes(0)
-                        .views(0)
+                        .view(ThreadViewDao.builder().views(0).build())
                         .build();
                 threadDao = threadRepository.save(threadDao);
                 log.info("Executing add thread success");
@@ -105,7 +106,7 @@ public class ThreadService {
                     .user(UserDao.builder().id(user.getId()).build())
                     .thread_followers(0)
                     .thread_likes(0)
-                    .views(0)
+                    .view(ThreadViewDao.builder().views(0).build())
                     .build();
 //            threadDao.setCreatedBy(user.getUsername());
 //            threadDao.setUser(UserDao.builder().id(user.getId()).build());
@@ -142,8 +143,15 @@ public class ThreadService {
                 log.info("thread id: {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
+            Optional<ThreadViewDao> threadViewDaoOptional = threadViewRepository.findById(threadDaoOptional.get().getView().getThreadId());
+            threadViewDaoOptional.ifPresent(res -> {
+                log.info("Executing view + 1");
+                res.setViews(res.getViews()+1);
+                threadViewRepository.save(res);
+            });
             log.info("Executing get thread by id success");
             ThreadDtoResponse threadDtoResponse = mapper.map(threadDaoOptional, ThreadDtoResponse.class);
+
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponse, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get thread by id. Error: {}", e.getMessage());
