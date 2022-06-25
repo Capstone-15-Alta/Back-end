@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class UsernamePasswordFGD implements Serializable {
 
     private static final long serialVersionUID = 2487045866600038881L;
-
+    private Long id;
     private String username;
     private String password;
     private String email;

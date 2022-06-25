@@ -88,6 +88,11 @@ public class ThreadService {
                         .view(ThreadViewDao.builder().views(0).build())
                         .build();
                 threadDao = threadRepository.save(threadDao);
+
+                Optional<UserDao> userDao = userRepository.findById(user.getId());
+                Objects.requireNonNull(userDao.orElse(null)).setTotalThreads(threadRepository.countThreads(user.getId()));
+                userRepository.save(userDao.get());
+
                 log.info("Executing add thread success");
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadDao, ThreadDto.class), HttpStatus.OK);
             }
@@ -111,6 +116,10 @@ public class ThreadService {
 //            threadDao.setCreatedBy(user.getUsername());
 //            threadDao.setUser(UserDao.builder().id(user.getId()).build());
             threadDao = threadRepository.save(threadDao);
+            Optional<UserDao> userDao = userRepository.findById(user.getId());
+            Objects.requireNonNull(userDao.orElse(null)).setTotalThreads(threadRepository.countThreads(user.getId()));
+            userRepository.save(userDao.get());
+
             log.info("Executing add thread success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadDao, ThreadDto.class), HttpStatus.OK);
 
@@ -271,7 +280,13 @@ public class ThreadService {
                 log.info("Thread {} cant delete by user {}", id, user.getUsername());
                 return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
+            threadViewRepository.deleteById(threadDaoOptional.get().getView().getThreadId());
             threadRepository.deleteById(id);
+            
+            Optional<UserDao> userDao = userRepository.findById(user.getId());
+            Objects.requireNonNull(userDao.orElse(null)).setTotalThreads(threadRepository.countThreads(user.getId()));
+            userRepository.save(userDao.get());
+
             log.info("Executing delete thread success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, null, HttpStatus.OK);
         } catch (Exception e) {
