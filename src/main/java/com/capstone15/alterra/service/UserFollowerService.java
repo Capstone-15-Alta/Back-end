@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -56,6 +57,9 @@ public class UserFollowerService {
                     res.setTotalUserFollowers(userFollowerRepository.countFollowers(userDao.get().getId()));
                     userRepository.save(res);
                 });
+                Optional<UserDao> userDaoOptional = userRepository.findById(user.getId());
+                Objects.requireNonNull(userDaoOptional.orElse(null)).setTotalUserFollowing(userFollowerRepository.countFollowing(user.getId()));
+                userRepository.save(userDaoOptional.get());
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userFollowerDao, UserFollowerDto.class), HttpStatus.OK);
             } else {
                 if (userFollowerDaoOptional.get().getIsFollow().equals(false)) {
@@ -66,6 +70,9 @@ public class UserFollowerService {
                         res.setTotalUserFollowers(userFollowerRepository.countFollowers(userDao.get().getId()));
                         userRepository.save(res);
                     });
+                    Optional<UserDao> userDaoOptional = userRepository.findById(user.getId());
+                    Objects.requireNonNull(userDaoOptional.orElse(null)).setTotalUserFollowing(userFollowerRepository.countFollowing(user.getId()));
+                    userRepository.save(userDaoOptional.get());
                 } else {
                     userFollowerDaoOptional.get().setIsFollow(false);
                     userFollowerRepository.save(userFollowerDaoOptional.get());
@@ -74,6 +81,9 @@ public class UserFollowerService {
                         res.setTotalUserFollowers(userFollowerRepository.countFollowers(userDao.get().getId()));
                         userRepository.save(res);
                     });
+                    Optional<UserDao> userDaoOptional = userRepository.findById(user.getId());
+                    Objects.requireNonNull(userDaoOptional.orElse(null)).setTotalUserFollowing(userFollowerRepository.countFollowing(user.getId()));
+                    userRepository.save(userDaoOptional.get());
                 }
 
 

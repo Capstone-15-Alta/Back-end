@@ -17,4 +17,7 @@ public interface UserFollowerRepository extends JpaRepository <UserFollowerDao, 
     @Query(value = "SELECT count(tf) FROM UserFollowerDao tf WHERE tf.isFollow = true AND tf.userFollowed.id = :id ")
     Integer countFollowers(@Param("id") Long id);
 
+    @Query(value = "SELECT count(tf) FROM UserFollowerDao tf WHERE tf.isFollow = true AND tf.userFollower.id = :id ")
+    Integer countFollowing(@Param("id") Long id);
+
 }
