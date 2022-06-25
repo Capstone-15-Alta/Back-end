@@ -65,7 +65,11 @@ public class UserDtoResponse implements Serializable {
 
     private Integer totalUserFollowers;
 
+    private Integer totalUserFollowing;
+
     private Integer totalThreads;
+
+    private Integer totalPostComments;
 
 
 }

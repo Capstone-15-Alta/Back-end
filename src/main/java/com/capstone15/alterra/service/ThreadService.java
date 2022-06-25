@@ -282,7 +282,7 @@ public class ThreadService {
             }
             threadViewRepository.deleteById(threadDaoOptional.get().getView().getThreadId());
             threadRepository.deleteById(id);
-            
+
             Optional<UserDao> userDao = userRepository.findById(user.getId());
             Objects.requireNonNull(userDao.orElse(null)).setTotalThreads(threadRepository.countThreads(user.getId()));
             userRepository.save(userDao.get());

@@ -81,8 +81,14 @@ public class UserDao  implements UserDetails {
     @Column(name = "total_user_followers")
     private Integer totalUserFollowers = 0;
 
+    @Column(name = "total_user_following")
+    private Integer totalUserFollowing = 0;
+
     @Column(name = "total_threads")
     private Integer totalThreads = 0;
+
+    @Column(name = "total_post_comments")
+    private Integer totalPostComments = 0;
 
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
