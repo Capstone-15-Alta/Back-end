@@ -271,6 +271,141 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    public ResponseEntity<Object> updateUserInfo(UserDtoResponse request, MultipartFile photo, MultipartFile cover, UserDao user) throws IOException {
+        log.info("Executing update user with request: {}", request);
+        try {
+            Optional<UserDao> userDao = userRepository.findById(user.getId());
+            if(userDao.isEmpty()) {
+                log.info("user {} not found", user.getId());
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            if(!userDao.get().getId().equals(user.getId()) && user.getRoles().equals("USER")) {
+                log.info("User {} cant update by user {}", user.getId(), user.getUsername());
+                return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            if(photo != null && cover != null) {
+                String fileName = StringUtils.cleanPath(Objects.requireNonNull(photo.getOriginalFilename()));
+                long size = photo.getSize();
+                String filecode = FileUploadUtil.saveFile(fileName, photo);
+
+                String fileNameCover = StringUtils.cleanPath(Objects.requireNonNull(cover.getOriginalFilename()));
+                long sizeCover = cover.getSize();
+                String filecodeCover = FileUploadUtil.saveFile(fileNameCover, cover);
+
+                userDao.get().setFileNameCover(fileNameCover);
+                userDao.get().setSizeCover(sizeCover);
+                userDao.get().setImageCover(apiUrl + "/images/" + filecodeCover);
+                userDao.get().setFileName(fileName);
+                userDao.get().setSize(size);
+                userDao.get().setImage(apiUrl + "/images/" + filecode);
+            }
+
+            if(photo != null) {
+                String fileName = StringUtils.cleanPath(Objects.requireNonNull(photo.getOriginalFilename()));
+                long size = photo.getSize();
+                String filecode = FileUploadUtil.saveFile(fileName, photo);
+
+                userDao.get().setFileName(fileName);
+                userDao.get().setSize(size);
+                userDao.get().setImage(apiUrl + "/images/" + filecode);
+
+            }
+
+            if(cover != null) {
+                String fileNameCover = StringUtils.cleanPath(Objects.requireNonNull(cover.getOriginalFilename()));
+                long sizeCover = cover.getSize();
+                String filecodeCover = FileUploadUtil.saveFile(fileNameCover, cover);
+
+                userDao.get().setFileNameCover(fileNameCover);
+                userDao.get().setSizeCover(sizeCover);
+                userDao.get().setImageCover(apiUrl + "/images/" + filecodeCover);
+            }
+
+            userDao.get().setPhone(request.getPhone());
+            userDao.get().setEmail(request.getEmail());
+            userDao.get().setFirstName(request.getFirstName());
+            userDao.get().setLastName(request.getLastName());
+            userDao.get().setBirthDate(request.getBirthDate());
+            userDao.get().setEducation(request.getEducation());
+            userDao.get().setGender(request.getGender());
+            userDao.get().setCountry(request.getCountry());
+            userDao.get().setCity(request.getCity());
+            userDao.get().setZipCode(request.getZipCode());
+            userRepository.save(userDao.get());
+
+            log.info("Executing update user success");
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userDao, UserDtoResponse.class), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("Happened error when update user. Error: {}", e.getMessage());
+            log.trace("Get error when update user. ", e);
+            throw e;
+        }
+    }
+
+    public ResponseEntity<Object> updateUserPhoto( MultipartFile multipartFile, UserDao user) throws IOException {
+        log.info("Executing update user photo");
+        try {
+            Optional<UserDao> userDao = userRepository.findById(user.getId());
+            if (userDao.isEmpty()) {
+                log.info("user {} not found", user.getId());
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            if (!userDao.get().getId().equals(user.getId()) && user.getRoles().equals("USER")) {
+                log.info("User {} cant update by user {}", user.getId(), user.getUsername());
+                return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+            long size = multipartFile.getSize();
+            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+
+            Objects.requireNonNull(userDao.orElse(null)).setFileName(fileName);
+            Objects.requireNonNull(userDao.orElse(null)).setSize(size);
+            Objects.requireNonNull(userDao.orElse(null)).setImage(apiUrl + "/images/" + filecode);
+            userRepository.save(userDao.get());
+
+            log.info("Executing update user photo success");
+            return ResponseUtil.build(AppConstant.Message.SUCCESS,  mapper.map(userDao, UserDtoResponse.class), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("Happened error when update user photo. Error: {}", e.getMessage());
+            log.trace("Get error when update user photo. ", e);
+            throw e;
+        }
+    }
+
+    public ResponseEntity<Object> updateUserCover( MultipartFile multipartFile, UserDao user) throws IOException {
+        log.info("Executing update user cover");
+        try {
+            Optional<UserDao> userDao = userRepository.findById(user.getId());
+            if (userDao.isEmpty()) {
+                log.info("user {} not found", user.getId());
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            if (!userDao.get().getId().equals(user.getId()) && user.getRoles().equals("USER")) {
+                log.info("User {} cant update by user {}", user.getId(), user.getUsername());
+                return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+            long size = multipartFile.getSize();
+            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
+
+            Objects.requireNonNull(userDao.orElse(null)).setFileNameCover(fileName);
+            Objects.requireNonNull(userDao.orElse(null)).setSizeCover(size);
+            Objects.requireNonNull(userDao.orElse(null)).setImageCover(apiUrl + "/images/" + filecode);
+            userRepository.save(userDao.get());
+
+            log.info("Executing update user cover success");
+            return ResponseUtil.build(AppConstant.Message.SUCCESS,  mapper.map(userDao, UserDtoResponse.class), HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("Happened error when update user cover. Error: {}", e.getMessage());
+            log.trace("Get error when update user cover. ", e);
+            throw e;
+        }
+    }
+
     public ResponseEntity<Object> getUserByRanking() {
         try {
             log.info("Executing search user by ranking");

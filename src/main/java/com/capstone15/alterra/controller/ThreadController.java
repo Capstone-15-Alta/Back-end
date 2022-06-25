@@ -77,8 +77,8 @@ public class ThreadController {
         return threadService.searchThreadByTitle(title);
     }
 
-    @GetMapping(value = "/category/{categoryName}")
-    public ResponseEntity<Object> searchThreadByCategoryName(@PathVariable(value = "categoryName") String categoryName){
+    @GetMapping(value = "/")
+    public ResponseEntity<Object> searchThreadByCategoryName(@RequestParam(value = "category", required = false) String categoryName){
         return threadService.searchThreadByCategoryName(categoryName);
     }
 

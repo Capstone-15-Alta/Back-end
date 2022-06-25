@@ -51,6 +51,8 @@ public class UserDtoResponse implements Serializable {
 
     private String image;
 
+    private String imageCover;
+
     private List<ThreadDto> threads;
 
     private List<ThreadFollowerDto> threadFollowers;
@@ -62,6 +64,8 @@ public class UserDtoResponse implements Serializable {
     private List<CommentLikeDto> commentLikes;
 
     private List<UserFollowerDto> userFollowers;
+
+    private List<UserFollowerDto> userFollowing;
 
     private Integer totalUserFollowers;
 

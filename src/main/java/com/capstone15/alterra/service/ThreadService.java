@@ -178,9 +178,9 @@ public class ThreadService {
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
             List<ThreadDao> daoList = userDaoOptional.get().getThreads();
-            List<ThreadDto> list = new ArrayList<>();
+            List<ThreadDtoResponse> list = new ArrayList<>();
             for(ThreadDao dao : daoList){
-                list.add(mapper.map(dao, ThreadDto.class));
+                list.add(mapper.map(dao, ThreadDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
@@ -193,14 +193,14 @@ public class ThreadService {
         try {
             log.info("Executing search thread by title: [{}]", title);
 
-            List<ThreadDto> threadDtoList = new ArrayList<>();
+            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
             List<ThreadDao> threadDaos = threadRepository.findAllThreadByTitle(title);
             if(threadDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             }
             for (ThreadDao threadDao : threadDaos) {
-                threadDtoList.add(mapper.map(threadDao, ThreadDto.class));
+                threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
         } catch (Exception e) {
@@ -213,14 +213,19 @@ public class ThreadService {
     public ResponseEntity<Object> searchThreadByCategoryName(String categoryName) {
         try {
             log.info("Executing search thread by category: [{}]", categoryName);
-            List<ThreadDto> threadDtoList = new ArrayList<>();
+            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
 
             List<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryName(categoryName);
             if(threadDaos.isEmpty()){
-                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
+                List<ThreadDao> daoList = threadRepository.findAll();
+                List<ThreadDtoResponse> list = new ArrayList<>();
+                for(ThreadDao dao : daoList){
+                    list.add(mapper.map(dao, ThreadDtoResponse.class));
+                }
+                return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
             }
             for (ThreadDao threadDao : threadDaos) {
-                threadDtoList.add(mapper.map(threadDao, ThreadDto.class));
+                threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
         } catch (Exception e) {
@@ -233,14 +238,14 @@ public class ThreadService {
     public ResponseEntity<Object> searchTrendingThread() {
         try {
             log.info("Executing search trending thread");
-            List<ThreadDto> threadDtoList = new ArrayList<>();
+            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
 
             List<ThreadDao> threadDaos = threadRepository.findAllPopularThread();
             if(threadDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
             for (ThreadDao threadDao : threadDaos) {
-                threadDtoList.add(mapper.map(threadDao, ThreadDto.class));
+                threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
         } catch (Exception e) {

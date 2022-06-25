@@ -63,6 +63,15 @@ public class UserDao  implements UserDetails {
     @Column(name = "size")
     private long size;
 
+    @Column(name = "image_cover_url")
+    private String imageCover;
+
+    @Column(name = "file_name_cover")
+    private String fileNameCover;
+
+    @Column(name = "sizeCover")
+    private long sizeCover;
+
     @Column(name = "education")
     private String education;
 
@@ -116,6 +125,10 @@ public class UserDao  implements UserDetails {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userFollowed")
     private List<UserFollowerDao> userFollowers;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userFollower")
+    private List<UserFollowerDao> userFollowing;
 
 
     @Column(columnDefinition = "boolean default true")
