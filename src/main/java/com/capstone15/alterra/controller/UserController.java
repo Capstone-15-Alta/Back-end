@@ -79,6 +79,33 @@ public class UserController {
         return userService.updateUser(id, userDtoResponse, multipartFile, (UserDao) userDetails);
     }
 
+    @PutMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> updateUserInfo(@RequestParam("json") String request,
+                                             @RequestParam(value = "photo", required = false) MultipartFile photo,
+                                                 @RequestParam(value = "cover", required = false) MultipartFile cover) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        UserDtoResponse userDtoResponse = mapper.readValue(request, UserDtoResponse.class);
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userService.updateUserInfo(userDtoResponse, photo, cover, (UserDao) userDetails);
+    }
+
+    @PutMapping(value = "/photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> updateUserPhoto(@RequestParam(value = "file", required = false) MultipartFile multipartFile) throws IOException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userService.updateUserPhoto( multipartFile, (UserDao) userDetails);
+    }
+
+    @PutMapping(value = "/cover", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> updateUserCover(@RequestParam(value = "file", required = false) MultipartFile multipartFile) throws IOException {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        return userService.updateUserCover( multipartFile, (UserDao) userDetails);
+    }
+
     @GetMapping(value = "/rank")
     public ResponseEntity<Object> getUserByRankingFollower(){
         return userService.getUserByRanking();

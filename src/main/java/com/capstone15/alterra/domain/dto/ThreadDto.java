@@ -32,4 +32,7 @@ public class ThreadDto implements Serializable {
     private Integer thread_followers;
 
     private Integer thread_likes;
+
+    private ThreadViewDto view;
+
 }

@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -53,6 +54,11 @@ public class CommentService {
             commentDao.setUser(UserDao.builder().id(user.getId()).build());
             commentDao.setThread(threadDao.get());
             commentDao = commentRepository.save(commentDao);
+
+            Optional<UserDao> userDao = userRepository.findById(user.getId());
+            Objects.requireNonNull(userDao.orElse(null)).setTotalPostComments(commentRepository.countComments(user.getId()));
+            userRepository.save(userDao.get());
+
             log.info("Executing add comment success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentDao, CommentDto.class), HttpStatus.OK);
 
@@ -115,6 +121,11 @@ public class CommentService {
                 return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
             commentRepository.deleteById(id);
+
+            Optional<UserDao> userDao = userRepository.findById(user.getId());
+            Objects.requireNonNull(userDao.orElse(null)).setTotalPostComments(commentRepository.countComments(user.getId()));
+            userRepository.save(userDao.get());
+
             log.info("Executing delete comment success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, null, HttpStatus.OK);
         } catch (Exception e) {

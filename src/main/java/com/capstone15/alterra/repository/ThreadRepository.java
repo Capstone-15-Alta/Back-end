@@ -23,4 +23,7 @@ public interface ThreadRepository extends JpaRepository<ThreadDao, Long> {
 
     Page<ThreadDao> findAllBy(Pageable pageable);
 
+    @Query(value = "SELECT count(tf) FROM ThreadDao tf WHERE tf.isDeleted = false AND tf.user.id = :id ")
+    Integer countThreads(@Param("id") Long id);
+
 }
