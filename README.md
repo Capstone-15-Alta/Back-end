@@ -2,7 +2,7 @@
 
 # FGD API
 
-## Swagger : [http://34.87.175.218/api/swagger-ui/](http://34.87.175.218/api/swagger-ui/)
+## Swagger : [http://34.87.190.0/api/swagger-ui/](http://34.87.190.0/api/swagger-ui/)
 
 ## SPECK API: [https://possible-carbon-b54.notion.site/Speck-API-FGD-CAPSTONE-654ce8294c3348d9a5c3e80d74360724](https://possible-carbon-b54.notion.site/Speck-API-FGD-CAPSTONE-654ce8294c3348d9a5c3e80d74360724)
 
@@ -11,7 +11,7 @@
 
 ```
 // AUTH LOGIN
-POST 34.87.175.218/api/v1/auth/login
+POST 34.87.190.0/api/v1/auth/login
 
 {
     "username": "admin",
@@ -21,21 +21,18 @@ POST 34.87.175.218/api/v1/auth/login
 // Authorization: Bearer <token>
 ```
 
-[User](http://34.87.175.218/api/v1/user)
+[User](http://34.87.190.0/api/v1/user)
 
-[Thread](http://34.87.175.218/api/v1/thread)
+[Thread](http://34.87.190.0/api/v1/thread)
 
-[Category](http://34.87.175.218/api/v1/category)
+[Category](http://34.87.190.0/api/v1/category)
 
-[Comment by thread](http://34.87.175.218/api/v1/comment/thread/1)
+[Comment by thread](http://34.87.190.0/api/v1/comment/thread/1)
 
-[Follow by thread](http://34.87.175.218/api/v1/follow/thread/1)
-
-[Like by user](http://34.87.175.218/api/v1/like/thread/1)
 
 ## unit test code coverage:
 
-[http://34.87.175.218:8000](http://34.87.175.218:8000)
+[http://34.87.190.0:8000](http://34.87.190.0:8000)
 
 
 
