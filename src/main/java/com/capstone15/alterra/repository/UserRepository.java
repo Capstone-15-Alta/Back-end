@@ -23,4 +23,12 @@ public interface UserRepository extends JpaRepository<UserDao, Long> {
 
     @Query(value = "SELECT t FROM UserDao t ORDER BY t.totalUserFollowers DESC")
     List<UserDao> findAllUserByRanking();
+
+   // List<UserDao> findByOrderByThreads_SizeDescThreads_Thread_likesDesc();
+
+
+
+
+
+
 }

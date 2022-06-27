@@ -21,4 +21,6 @@ public interface CommentLikeRepository extends JpaRepository<CommentLikeDao, Lon
     Integer countLikes(@Param("id") Long id);
 
 
+
+
 }

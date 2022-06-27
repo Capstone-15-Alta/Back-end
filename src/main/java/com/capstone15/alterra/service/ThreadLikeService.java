@@ -5,6 +5,7 @@ import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.ThreadFollowerDao;
 import com.capstone15.alterra.domain.dao.ThreadLikeDao;
 import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.ThreadFollowerDto;
 import com.capstone15.alterra.domain.dto.ThreadLikeDto;
 import com.capstone15.alterra.repository.ThreadLikeRepository;
@@ -13,6 +14,8 @@ import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -83,6 +86,7 @@ public class ThreadLikeService {
             throw e;   }
     }
 
+
     public ResponseEntity<Object> getLikeByIdThread(Long id) {
         log.info("Executing get like by id thread.");
         try{
@@ -103,4 +107,22 @@ public class ThreadLikeService {
             throw e;
         }  }
 
+
+//    public ResponseEntity<Object> getAllThreadWithPaginate(Pageable pageable) {
+//        log.info("Executing get thread with paginate: {}", pageable);
+//        try{
+//            Page<ThreadLikeDao> threadLikeDaoPage = threadLikeRepository.findAllthreadlike(pageable);
+//
+//            List<ThreadLikeDto> list = new ArrayList<>();
+//            for(ThreadLikeDao dao : threadLikeDaoPage){
+//                list.add(mapper.map(dao, ThreadLikeDto.class));
+//            }
+//            return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
+//        } catch (Exception e) {
+//            log.error("Happened error when get thread with paginate . Error: {}", e.getMessage());
+//            log.trace("Get error when get thread with paginate. ", e);
+//            throw e;
+//        }
+//
+//    }
 }
