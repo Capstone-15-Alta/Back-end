@@ -31,10 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -178,6 +175,8 @@ public class ThreadService {
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
             List<ThreadDao> daoList = userDaoOptional.get().getThreads();
+            Collections.reverse(daoList);
+
             List<ThreadDtoResponse> list = new ArrayList<>();
             for(ThreadDao dao : daoList){
                 list.add(mapper.map(dao, ThreadDtoResponse.class));

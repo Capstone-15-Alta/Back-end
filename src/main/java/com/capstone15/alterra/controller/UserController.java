@@ -67,17 +67,17 @@ public class UserController {
         return ResponseUtil.build("You have successfully changed your password.", null, HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> updateUser(@PathVariable(value = "id") Long id, @RequestParam("json") String request,
-                                             @RequestParam(value = "file", required = false) MultipartFile multipartFile) throws IOException {
-
-        ObjectMapper mapper = new ObjectMapper();
-        UserDtoResponse userDtoResponse = mapper.readValue(request, UserDtoResponse.class);
-
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        return userService.updateUser(id, userDtoResponse, multipartFile, (UserDao) userDetails);
-    }
+//    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<Object> updateUser(@PathVariable(value = "id") Long id, @RequestParam("json") String request,
+//                                             @RequestParam(value = "file", required = false) MultipartFile multipartFile) throws IOException {
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        UserDtoResponse userDtoResponse = mapper.readValue(request, UserDtoResponse.class);
+//
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+//                .getPrincipal();
+//        return userService.updateUser(id, userDtoResponse, multipartFile, (UserDao) userDetails);
+//    }
 
     @PutMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Object> updateUserInfo(@RequestParam("json") String request,
