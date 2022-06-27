@@ -108,21 +108,21 @@ public class ThreadLikeService {
         }  }
 
 
-    public ResponseEntity<Object> getAllThreadWithPaginate(Pageable pageable) {
-        log.info("Executing get thread with paginate: {}", pageable);
-        try{
-            Page<ThreadLikeDao> threadLikeDaoPage = threadLikeRepository.findAllthreadlike(pageable);
-
-            List<ThreadLikeDto> list = new ArrayList<>();
-            for(ThreadLikeDao dao : threadLikeDaoPage){
-                list.add(mapper.map(dao, ThreadDtoResponse.class));
-            }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
-        } catch (Exception e) {
-            log.error("Happened error when get thread with paginate . Error: {}", e.getMessage());
-            log.trace("Get error when get thread with paginate. ", e);
-            throw e;
-        }
-
-    }
+//    public ResponseEntity<Object> getAllThreadWithPaginate(Pageable pageable) {
+//        log.info("Executing get thread with paginate: {}", pageable);
+//        try{
+//            Page<ThreadLikeDao> threadLikeDaoPage = threadLikeRepository.findAllthreadlike(pageable);
+//
+//            List<ThreadLikeDto> list = new ArrayList<>();
+//            for(ThreadLikeDao dao : threadLikeDaoPage){
+//                list.add(mapper.map(dao, ThreadLikeDto.class));
+//            }
+//            return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
+//        } catch (Exception e) {
+//            log.error("Happened error when get thread with paginate . Error: {}", e.getMessage());
+//            log.trace("Get error when get thread with paginate. ", e);
+//            throw e;
+//        }
+//
+//    }
 }
