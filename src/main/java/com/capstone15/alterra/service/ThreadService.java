@@ -129,7 +129,7 @@ public class ThreadService {
     public ResponseEntity<Object> getAllThread() {
         log.info("Executing get all thread.");
         try{
-            List<ThreadDao> daoList = threadRepository.findAll();
+            List<ThreadDao> daoList = threadRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
             List<ThreadDtoResponse> list = new ArrayList<>();
             for(ThreadDao dao : daoList){
                 list.add(mapper.map(dao, ThreadDtoResponse.class));
