@@ -216,13 +216,14 @@ public class ThreadService {
 
             List<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryName(categoryName);
             if(threadDaos.isEmpty()){
-                List<ThreadDao> daoList = threadRepository.findAll();
+                List<ThreadDao> daoList = threadRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
                 List<ThreadDtoResponse> list = new ArrayList<>();
                 for(ThreadDao dao : daoList){
                     list.add(mapper.map(dao, ThreadDtoResponse.class));
                 }
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
             }
+            Collections.reverse(threadDaos);
             for (ThreadDao threadDao : threadDaos) {
                 threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
             }
