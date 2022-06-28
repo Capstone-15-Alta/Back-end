@@ -130,6 +130,10 @@ public class UserDao  implements UserDetails {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "userFollower")
     private List<UserFollowerDao> userFollowing;
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<NotificationDao> notifications;
+
 
     @Column(columnDefinition = "boolean default true")
     private boolean active = true;

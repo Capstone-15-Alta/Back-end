@@ -1,4 +1,4 @@
-package com.capstone15.alterra.controller;
+package com.capstone15.alterra.exception;
 
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.util.ResponseUtil;
