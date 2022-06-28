@@ -1,12 +1,10 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.ThreadDao;
-import com.capstone15.alterra.domain.dao.ThreadFollowerDao;
-import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dao.UserFollowerDao;
+import com.capstone15.alterra.domain.dao.*;
 import com.capstone15.alterra.domain.dto.ThreadFollowerDto;
 import com.capstone15.alterra.domain.dto.UserFollowerDto;
+import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.UserFollowerRepository;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.ResponseUtil;
@@ -31,6 +29,9 @@ public class UserFollowerService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private ModelMapper mapper;
@@ -60,6 +61,16 @@ public class UserFollowerService {
                 Optional<UserDao> userDaoOptional = userRepository.findById(user.getId());
                 Objects.requireNonNull(userDaoOptional.orElse(null)).setTotalUserFollowing(userFollowerRepository.countFollowing(user.getId()));
                 userRepository.save(userDaoOptional.get());
+
+                // fitur notification
+                NotificationDao notificationDao = NotificationDao.builder()
+                        .user(UserDao.builder().id(id).build())
+                        .title(user.getUsername() + " mulai mengikuti anda.")
+                        .followerId(user.getId())
+                        .isRead(false)
+                        .build();
+                notificationDao = notificationRepository.save(notificationDao);
+
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userFollowerDao, UserFollowerDto.class), HttpStatus.OK);
             } else {
                 if (userFollowerDaoOptional.get().getIsFollow().equals(false)) {
@@ -73,6 +84,10 @@ public class UserFollowerService {
                     Optional<UserDao> userDaoOptional = userRepository.findById(user.getId());
                     Objects.requireNonNull(userDaoOptional.orElse(null)).setTotalUserFollowing(userFollowerRepository.countFollowing(user.getId()));
                     userRepository.save(userDaoOptional.get());
+
+                    Optional<NotificationDao> notification = notificationRepository.findByUserIdAndFollowerId(id, user.getId());
+                    Objects.requireNonNull(notification.orElse(null)).setIsRead(false);
+                    notificationRepository.save(notification.get());
                 } else {
                     userFollowerDaoOptional.get().setIsFollow(false);
                     userFollowerRepository.save(userFollowerDaoOptional.get());
@@ -84,6 +99,13 @@ public class UserFollowerService {
                     Optional<UserDao> userDaoOptional = userRepository.findById(user.getId());
                     Objects.requireNonNull(userDaoOptional.orElse(null)).setTotalUserFollowing(userFollowerRepository.countFollowing(user.getId()));
                     userRepository.save(userDaoOptional.get());
+
+                    Optional<NotificationDao> notification = notificationRepository.findByUserIdAndFollowerId(id, user.getId());
+                    if(notification.isPresent()) {
+                        Objects.requireNonNull(notification.orElse(null)).setIsRead(true);
+                        notificationRepository.save(notification.get());
+                    }
+
                 }
 
 
@@ -106,7 +128,11 @@ public class UserFollowerService {
             List<UserFollowerDao> daoList = userDaoOptional.get().getUserFollowers();
             List<UserFollowerDto> list = new ArrayList<>();
             for(UserFollowerDao dao : daoList){
-                list.add(mapper.map(dao, UserFollowerDto.class));
+                if(dao.getIsFollow().equals(true))
+                {
+                    list.add(mapper.map(dao, UserFollowerDto.class));
+                }
+
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {

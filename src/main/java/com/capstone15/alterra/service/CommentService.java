@@ -2,12 +2,14 @@ package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.dao.CommentDao;
+import com.capstone15.alterra.domain.dao.NotificationDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.CommentDto;
 import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.repository.CommentRepository;
+import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.ResponseUtil;
@@ -37,6 +39,9 @@ public class CommentService {
     private ThreadRepository threadRepository;
 
     @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     public ResponseEntity<Object> addComment(CommentDto request, UserDao user) {
@@ -55,9 +60,19 @@ public class CommentService {
             commentDao.setThread(threadDao.get());
             commentDao = commentRepository.save(commentDao);
 
+            // fitur total komentar
             Optional<UserDao> userDao = userRepository.findById(user.getId());
             Objects.requireNonNull(userDao.orElse(null)).setTotalPostComments(commentRepository.countComments(user.getId()));
             userRepository.save(userDao.get());
+
+            // fitur notification
+            NotificationDao notificationDao = NotificationDao.builder()
+                    .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                    .title(user.getUsername() + " berkomentar pada thread " + threadDao.get().getTitle())
+                    .message(request.getComment())
+                    .isRead(false)
+                    .build();
+            notificationDao = notificationRepository.save(notificationDao);
 
             log.info("Executing add comment success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentDao, CommentDto.class), HttpStatus.OK);

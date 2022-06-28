@@ -24,14 +24,14 @@ public abstract class BaseResponse implements Serializable {
 
     private static final long serialVersionUID = 2565100284468414513L;
     @Column(name = "created_at", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Jakarta")
     private LocalDateTime createdAt;
 
     @Column(name = "created_by", nullable = false)
     private String createdBy;
 
     @Column(name = "updated_at")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Jakarta")
     private LocalDateTime updatedAt;
 
     @Column(name = "is_deleted")

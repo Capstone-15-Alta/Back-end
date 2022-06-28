@@ -1,14 +1,12 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.CommentDao;
-import com.capstone15.alterra.domain.dao.ThreadDao;
-import com.capstone15.alterra.domain.dao.ThreadFollowerDao;
-import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dao.*;
 import com.capstone15.alterra.domain.dto.CommentDto;
 import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.ThreadFollowerDto;
+import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadFollowerRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
@@ -22,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -36,6 +35,9 @@ public class ThreadFollowerService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private ModelMapper mapper;
@@ -66,6 +68,15 @@ public class ThreadFollowerService {
                     res.setThread_followers(threadFollowerRepository.countFollowers(threadDao.get().getId()));
                     threadRepository.save(res);
                 });
+                // fitur notification
+                NotificationDao notificationDao = NotificationDao.builder()
+                        .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                        .title(user.getUsername() + " mengikuti thread anda: " + threadDao.get().getTitle())
+                        .threadId(threadDao.get().getId())
+                        .info("followthread")
+                        .isRead(false)
+                        .build();
+                notificationDao = notificationRepository.save(notificationDao);
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadFollowerDao, ThreadFollowerDto.class), HttpStatus.OK);
             } else {
                 if (threadFollowerDaoOptional.get().getIsFollow().equals(false)) {
@@ -76,6 +87,9 @@ public class ThreadFollowerService {
                         res.setThread_followers(threadFollowerRepository.countFollowers(threadDao.get().getId()));
                         threadRepository.save(res);
                     });
+                    Optional<NotificationDao> notification = notificationRepository.findByUserIdAndThreadIdAndInfo(threadDao.get().getUser().getId(), threadDao.get().getId(), "followthread");
+                    Objects.requireNonNull(notification.orElse(null)).setIsRead(false);
+                    notificationRepository.save(notification.get());
                 } else {
                     threadFollowerDaoOptional.get().setIsFollow(false);
                     threadFollowerRepository.save(threadFollowerDaoOptional.get());
@@ -84,6 +98,12 @@ public class ThreadFollowerService {
                         res.setThread_followers(threadFollowerRepository.countFollowers(threadDao.get().getId()));
                         threadRepository.save(res);
                     });
+                    Optional<NotificationDao> notification = notificationRepository.findByUserIdAndThreadIdAndInfo(threadDao.get().getUser().getId(), threadDao.get().getId(), "followthread");
+                    if(notification.isPresent()) {
+                        Objects.requireNonNull(notification.orElse(null)).setIsRead(true);
+                        notificationRepository.save(notification.get());
+                    }
+
                 }
 
 
@@ -106,7 +126,10 @@ public class ThreadFollowerService {
             List<ThreadFollowerDao> daoList = threadDaoOptional.get().getThreadFollowers();
             List<ThreadFollowerDto> list = new ArrayList<>();
             for(ThreadFollowerDao dao : daoList){
-                list.add(mapper.map(dao, ThreadFollowerDto.class));
+                if(dao.getIsFollow().equals(true)){
+                    list.add(mapper.map(dao, ThreadFollowerDto.class));
+                }
+
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {

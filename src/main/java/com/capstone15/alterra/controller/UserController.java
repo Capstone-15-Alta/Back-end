@@ -111,5 +111,10 @@ public class UserController {
         return userService.getUserByRanking();
     }
 
+    @GetMapping(value = "/ranking")
+    public ResponseEntity<Object> getUserRankingByTotalThreadAndLike(){
+        return userService.getUserRankingByTotalThreadAndLike();
+    }
+
 
 }

@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<UserDao, Long> {
 
    // List<UserDao> findByOrderByThreads_SizeDescThreads_Thread_likesDesc();
 
-
+    List<UserDao> findByOrderByTotalThreadsDesc();
 
 
 

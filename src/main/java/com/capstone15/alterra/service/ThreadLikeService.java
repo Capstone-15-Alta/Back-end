@@ -1,17 +1,16 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.ThreadDao;
-import com.capstone15.alterra.domain.dao.ThreadFollowerDao;
-import com.capstone15.alterra.domain.dao.ThreadLikeDao;
-import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dao.*;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.ThreadFollowerDto;
 import com.capstone15.alterra.domain.dto.ThreadLikeDto;
+import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadLikeRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Where;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -33,6 +33,9 @@ public class ThreadLikeService {
 
     @Autowired
     private ThreadRepository threadRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private ModelMapper mapper;
@@ -54,21 +57,34 @@ public class ThreadLikeService {
                         .isLike(true)
                         .build();
                 threadLikeDao = threadLikeRepository.save(threadLikeDao);
-                log.info("Executing like thread success");
+                log.info("Executing new like thread success");
                 threadDao.ifPresent(res -> {
                     res.setThread_likes(threadLikeRepository.countLikes(threadDao.get().getId()));
                     threadRepository.save(res);
                 });
+                // fitur notification
+                NotificationDao notificationDao = NotificationDao.builder()
+                        .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                        .title(user.getUsername() + " menyukai thread anda: " + threadDao.get().getTitle())
+                        .threadId(threadDao.get().getId())
+                        .info("likethread")
+                        .isRead(false)
+                        .build();
+                notificationDao = notificationRepository.save(notificationDao);
+
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadLikeDao, ThreadLikeDto.class), HttpStatus.OK);
             } else {
                 if (threadLikeDaoOptional.get().getIsLike().equals(false)) {
                     threadLikeDaoOptional.get().setIsLike(true);
                     threadLikeRepository.save(threadLikeDaoOptional.get());
-                    log.info("Executing like thread success");
+                    log.info("Executing if like thread success");
                     threadDao.ifPresent(res -> {
                         res.setThread_likes(threadLikeRepository.countLikes(threadDao.get().getId()));
                         threadRepository.save(res);
                     });
+                    Optional<NotificationDao> notification = notificationRepository.findByUserIdAndThreadIdAndInfo(threadDao.get().getUser().getId(), threadDao.get().getId(), "likethread");
+                   Objects.requireNonNull(notification.orElse(null)).setIsRead(false);
+                    notificationRepository.save(notification.get());
                 } else {
                     threadLikeDaoOptional.get().setIsLike(false);
                     threadLikeRepository.save(threadLikeDaoOptional.get());
@@ -77,6 +93,13 @@ public class ThreadLikeService {
                         res.setThread_likes(threadLikeRepository.countLikes(threadDao.get().getId()));
                         threadRepository.save(res);
                     });
+
+                    Optional<NotificationDao> notification = notificationRepository.findByUserIdAndThreadIdAndInfo(threadDao.get().getUser().getId(), threadDao.get().getId(), "likethread");
+                    if(notification.isPresent()) {
+                        Objects.requireNonNull(notification.orElse(null)).setIsRead(true);
+                        notificationRepository.save(notification.get());
+                    }
+
                 }
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadLikeDaoOptional, ThreadLikeDto.class), HttpStatus.OK);
             }
@@ -98,7 +121,9 @@ public class ThreadLikeService {
             List<ThreadLikeDao> daoList = threadDaoOptional.get().getThreadLikes();
             List<ThreadLikeDto> list = new ArrayList<>();
             for(ThreadLikeDao dao : daoList){
-                list.add(mapper.map(dao, ThreadLikeDto.class));
+                if(dao.getIsLike().equals(true)){
+                    list.add(mapper.map(dao, ThreadLikeDto.class));
+                }
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -31,6 +32,9 @@ public class CommentLikeService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private ModelMapper mapper;
@@ -59,6 +63,15 @@ public class CommentLikeService {
                     res.setComment_likes(commentLikeRepository.countLikes(commentDao.get().getId()));
                     commentRepository.save(res); //lamda expression
                 });
+                // fitur notification
+                NotificationDao notificationDao = NotificationDao.builder()
+                        .user(UserDao.builder().id(commentDao.get().getUser().getId()).build())
+                        .title(user.getUsername() + " menyukai komentar anda: " + commentDao.get().getComment())
+                        .commentId(commentDao.get().getId())
+                        .info("likecomment")
+                        .isRead(false)
+                        .build();
+                notificationDao = notificationRepository.save(notificationDao);
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentLikeDao, CommentLikeDto.class), HttpStatus.OK);
             } else {
                 if (optionalCommentLikeDao.get().getIsLike().equals(false)) {
@@ -69,6 +82,9 @@ public class CommentLikeService {
                         res.setComment_likes(commentLikeRepository.countLikes(commentDao.get().getId()));
                         commentRepository.save(res);
                     });
+                    Optional<NotificationDao> notification = notificationRepository.findByUserIdAndCommentIdAndInfo(commentDao.get().getUser().getId(), commentDao.get().getId(), "likecomment");
+                    Objects.requireNonNull(notification.orElse(null)).setIsRead(false);
+                    notificationRepository.save(notification.get());
                 } else {
                     optionalCommentLikeDao.get().setIsLike(false);
                     commentLikeRepository.save(optionalCommentLikeDao.get());
@@ -77,6 +93,12 @@ public class CommentLikeService {
                         res.setComment_likes(commentLikeRepository.countLikes(commentDao.get().getId()));
                         commentRepository.save(res);
                     });
+                    Optional<NotificationDao> notification = notificationRepository.findByUserIdAndCommentIdAndInfo(commentDao.get().getUser().getId(), commentDao.get().getId(), "likecomment");
+                    if(notification.isPresent()) {
+                        Objects.requireNonNull(notification.orElse(null)).setIsRead(true);
+                        notificationRepository.save(notification.get());
+                    }
+
                 }
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(optionalCommentLikeDao, CommentLikeDto.class), HttpStatus.OK);
             }
@@ -98,7 +120,10 @@ public class CommentLikeService {
             List<CommentLikeDao> daoList = commentDaoOptional.get().getCommentLikeDaoList();
             List<CommentLikeDto> list = new ArrayList<>();
             for (CommentLikeDao dao : daoList) {
-                list.add(mapper.map(dao, CommentLikeDto.class));
+                if(dao.getIsLike().equals(true)){
+                    list.add(mapper.map(dao, CommentLikeDto.class));
+                }
+
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
