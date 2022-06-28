@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ApiResponse<T> implements Serializable {
 
     private static final long serialVersionUID = 6364413173915098569L;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Jakarta")
     private LocalDateTime timestamp;
 
     private String message;

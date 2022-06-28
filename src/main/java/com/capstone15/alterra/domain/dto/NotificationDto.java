@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -17,16 +16,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ThreadLikeDto implements Serializable {
+public class NotificationDto implements Serializable {
 
-    private static final long serialVersionUID = -5121509102591694205L;
+    private static final long serialVersionUID = -841934041447250707L;
+
+    private Long id;
 
     private Long userId;
 
-    private Long threadId;
+    private String title;
 
-    private Boolean isLike;
+    private String message;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime likeTime;
+    private LocalDateTime createdAt;
+
+    private Boolean isRead;
 }

@@ -1,12 +1,10 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.CommentDao;
-import com.capstone15.alterra.domain.dao.ThreadDao;
-import com.capstone15.alterra.domain.dao.ThreadReportDao;
-import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dao.*;
 import com.capstone15.alterra.domain.dto.CommentDto;
 import com.capstone15.alterra.domain.dto.ThreadReportDto;
+import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadReportRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
@@ -36,6 +34,9 @@ public class ThreadReportService {
     private UserRepository userRepository;
 
     @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     public ResponseEntity<Object> addReport(ThreadReportDto request, UserDao user) {
@@ -52,6 +53,16 @@ public class ThreadReportService {
             threadReportDao.setUser(UserDao.builder().id(user.getId()).build());
             threadReportDao.setThread(threadDao.get());
             threadReportDao = threadReportRepository.save(threadReportDao);
+
+            // fitur notification
+            NotificationDao notificationDao = NotificationDao.builder()
+                    .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                    .title("Moderator mereport thread anda: " + threadDao.get().getTitle())
+                    .message(request.getReport())
+                    .isRead(false)
+                    .build();
+            notificationDao = notificationRepository.save(notificationDao);
+
             log.info("Executing add report success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadReportDao, ThreadReportDto.class), HttpStatus.OK);
 

@@ -2,10 +2,7 @@ package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.dao.*;
-import com.capstone15.alterra.domain.dto.CommentDto;
-import com.capstone15.alterra.domain.dto.ThreadDto;
-import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
-import com.capstone15.alterra.domain.dto.UserDto;
+import com.capstone15.alterra.domain.dto.*;
 import com.capstone15.alterra.repository.CategoryRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.ThreadViewRepository;
@@ -129,7 +126,7 @@ public class ThreadService {
     public ResponseEntity<Object> getAllThread() {
         log.info("Executing get all thread.");
         try{
-            List<ThreadDao> daoList = threadRepository.findAll();
+            List<ThreadDao> daoList = threadRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
             List<ThreadDtoResponse> list = new ArrayList<>();
             for(ThreadDao dao : daoList){
                 list.add(mapper.map(dao, ThreadDtoResponse.class));
@@ -221,6 +218,7 @@ public class ThreadService {
                 for(ThreadDao dao : daoList){
                     list.add(mapper.map(dao, ThreadDtoResponse.class));
                 }
+
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
             }
             Collections.reverse(threadDaos);

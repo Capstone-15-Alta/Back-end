@@ -425,5 +425,24 @@ public class UserService implements UserDetailsService {
             throw e;
         }
     }
+    public ResponseEntity<Object> getUserRankingByTotalThreadAndLike() {
+        try {
+            log.info("Executing search user by ranking");
+            List<UserDtoResponse> userDtos = new ArrayList<>();
+
+            List<UserDao> userDaos = userRepository.findByOrderByTotalThreadsDesc();
+            if(userDaos.isEmpty()){
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
+            for (UserDao userDao : userDaos) {
+                userDtos.add(mapper.map(userDao, UserDtoResponse.class));
+            }
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, userDtos, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when search user by ranking. Error: {}", e.getMessage());
+            log.trace("Get error when search user by ranking. ", e);
+            throw e;
+        }
+    }
 
 }

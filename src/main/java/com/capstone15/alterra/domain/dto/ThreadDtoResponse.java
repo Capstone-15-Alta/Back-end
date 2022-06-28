@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import java.io.Serializable;
@@ -22,6 +23,8 @@ import java.util.List;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ThreadDtoResponse implements Serializable {
 
+
+    private static final long serialVersionUID = -6648996209848744895L;
     private Long id;
 
     private String title;
