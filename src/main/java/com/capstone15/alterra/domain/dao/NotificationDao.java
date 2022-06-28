@@ -38,6 +38,18 @@ public class NotificationDao extends BaseResponse {
     @Column(name = "message")
     private String message;
 
+    @Column(name = "thread_id")
+    private Long threadId;
+
+    @Column(name = "comment_id")
+    private Long commentId;
+
+    @Column(name = "follower_id")
+    private Long followerId;
+
+    @Column(name = "info")
+    private String info;
+
     @Column(name = "is_read")
     private Boolean isRead = false;
 

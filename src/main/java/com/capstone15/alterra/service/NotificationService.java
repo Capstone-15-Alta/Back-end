@@ -42,7 +42,9 @@ public class NotificationService {
             List<NotificationDao> daoList = notificationRepository.getNotification(user.getId());
             List<NotificationDto> list = new ArrayList<>();
             for(NotificationDao dao : daoList){
-                list.add(mapper.map(dao, NotificationDto.class));
+                if(dao.getIsRead().equals(false)){
+                    list.add(mapper.map(dao, NotificationDto.class));
+                }
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
