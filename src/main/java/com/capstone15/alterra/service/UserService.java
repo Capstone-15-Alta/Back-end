@@ -66,9 +66,9 @@ public class UserService implements UserDetailsService {
         log.info("Executing get all user.");
         try{
             List<UserDao> daoList = userRepository.findAll();
-            List<UserDto> list = new ArrayList<>();
+            List<UserDtoResponse> list = new ArrayList<>();
             for(UserDao dao : daoList){
-                list.add(mapper.map(dao, UserDto.class));
+                list.add(mapper.map(dao, UserDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
