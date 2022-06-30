@@ -5,6 +5,7 @@ import com.capstone15.alterra.domain.dao.CategoryDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.*;
+import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.FileUploadUtil;
 import com.capstone15.alterra.util.ResponseUtil;
@@ -21,6 +22,8 @@ import net.bytebuddy.utility.RandomString;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,6 +49,9 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Autowired
+    private ThreadRepository threadRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     @Value("${SENDGRID_API_KEY}")
@@ -62,10 +68,10 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public ResponseEntity<Object> getAllUser() {
+    public ResponseEntity<Object> getAllUser(Pageable pageable) {
         log.info("Executing get all user.");
         try{
-            List<UserDao> daoList = userRepository.findAll();
+            Page<UserDao> daoList = userRepository.findAll(pageable);
             List<UserDtoResponse> list = new ArrayList<>();
             for(UserDao dao : daoList){
                 list.add(mapper.map(dao, UserDtoResponse.class));
@@ -431,6 +437,7 @@ public class UserService implements UserDetailsService {
             List<UserDtoResponse> userDtos = new ArrayList<>();
 
             List<UserDao> userDaos = userRepository.findByOrderByTotalThreadsDesc();
+            List<ThreadDao> threadDaos = threadRepository.findAllPopularThread();
             if(userDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
