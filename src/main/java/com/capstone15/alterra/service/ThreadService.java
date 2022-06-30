@@ -13,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -123,10 +120,10 @@ public class ThreadService {
             throw e;   }
     }
 
-    public ResponseEntity<Object> getAllThread() {
+    public ResponseEntity<Object> getAllThread(Pageable pageable) {
         log.info("Executing get all thread.");
         try{
-            List<ThreadDao> daoList = threadRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+            Page<ThreadDao> daoList = threadRepository.findAllBy(pageable);
             List<ThreadDtoResponse> list = new ArrayList<>();
             for(ThreadDao dao : daoList){
                 list.add(mapper.map(dao, ThreadDtoResponse.class));
@@ -206,14 +203,14 @@ public class ThreadService {
         }
     }
 
-    public ResponseEntity<Object> searchThreadByCategoryName(String categoryName) {
+    public ResponseEntity<Object> searchThreadByCategoryName(String categoryName, Pageable pageable) {
         try {
             log.info("Executing search thread by category: [{}]", categoryName);
             List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
 
             List<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryName(categoryName);
             if(threadDaos.isEmpty()){
-                List<ThreadDao> daoList = threadRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
+                Page<ThreadDao> daoList = threadRepository.findAllBy(pageable);
                 List<ThreadDtoResponse> list = new ArrayList<>();
                 for(ThreadDao dao : daoList){
                     list.add(mapper.map(dao, ThreadDtoResponse.class));
@@ -233,16 +230,26 @@ public class ThreadService {
         }
     }
 
-    public ResponseEntity<Object> searchTrendingThread() {
+    public ResponseEntity<Object> searchTrendingThread(Pageable pageable) {
         try {
             log.info("Executing search trending thread");
-            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
 
             List<ThreadDao> threadDaos = threadRepository.findAllPopularThread();
+            List<ThreadDao> threadDaos1 = new ArrayList<>();
+
+            final int start = (int)pageable.getOffset();
+            final int end = Math.min((start + pageable.getPageSize()), threadDaos.size());
+
+            if (start <= end) {
+                threadDaos1 = threadDaos.subList(start, end);
+            }
+
+            Page<ThreadDao> threadDaoPage = new PageImpl<>(threadDaos1, pageable, threadDaos.size());
             if(threadDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
-            for (ThreadDao threadDao : threadDaos) {
+            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
+            for (ThreadDao threadDao : threadDaoPage) {
                 threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);

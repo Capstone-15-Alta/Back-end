@@ -24,12 +24,22 @@ public class UserDto implements Serializable {
 
     private String password;
 
+    private String email;
+
     private String phone;
 
-    private String email;
+    private String image;
+
+    private String imageCover;
 
     private String roles;
 
     private Integer totalUserFollowers;
+
+    private Integer totalUserFollowing;
+
+    private Integer totalThreads;
+
+    private Integer totalPostComments;
 
 }
