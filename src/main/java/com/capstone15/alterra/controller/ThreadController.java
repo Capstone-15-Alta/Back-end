@@ -52,14 +52,14 @@ public class ThreadController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity<Object> getAll() {
-        return threadService.getAllThread();
+    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
+        return threadService.getAllThread(pageable);
     }
 
-    @GetMapping(value = "/pages")
-    public ResponseEntity<Object> getAllWithPaginate(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
-        return threadService.getAllThreadWithPaginate(pageable);
-    }
+//    @GetMapping(value = "/pages")
+//    public ResponseEntity<Object> getAllWithPaginate(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
+//        return threadService.getAllThreadWithPaginate(pageable);
+//    }
 
 
     @GetMapping(value = "/{id}")
@@ -78,13 +78,14 @@ public class ThreadController {
     }
 
     @GetMapping(value = "/")
-    public ResponseEntity<Object> searchThreadByCategoryName(@RequestParam(value = "category", required = false) String categoryName){
-        return threadService.searchThreadByCategoryName(categoryName);
+    public ResponseEntity<Object> searchThreadByCategoryName(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable,
+                                                             @RequestParam(value = "category", required = false) String categoryName){
+        return threadService.searchThreadByCategoryName(categoryName, pageable);
     }
 
     @GetMapping(value = "/trending")
-    public ResponseEntity<Object> searchTrendingThread(){
-        return threadService.searchTrendingThread();
+    public ResponseEntity<Object> searchTrendingThread(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable){
+        return threadService.searchTrendingThread(pageable);
     }
 
     @DeleteMapping(value = "/{id}")
