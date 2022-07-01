@@ -1,5 +1,8 @@
 package com.capstone15.alterra.config;
 
+import com.capstone15.alterra.domain.dao.ThreadDao;
+import com.capstone15.alterra.repository.ThreadRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -18,6 +21,9 @@ import java.util.Optional;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CORSFilter implements Filter {
 
+    @Autowired
+    private ThreadRepository threadRepository;
+
     @Value("${app.origin:*}")
     private String origin;
 
@@ -33,6 +39,9 @@ public class CORSFilter implements Filter {
             ServletException {
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpServletRequest req = (HttpServletRequest) request;
+
+        List<ThreadDao> threadDaos = threadRepository.findAll();
+        final int total = threadDaos.size();
 
         if (production) {
             List<String> origins = new ArrayList<>(Arrays.asList(origin.split(",")));
@@ -52,6 +61,8 @@ public class CORSFilter implements Filter {
         resp.setHeader("Access-Control-Allow-Headers", headers);
         resp.setHeader("Access-Control-Max-Age", maxAge);
         resp.setHeader("Access-Control-Allow-Credentials", "true");
+        resp.setHeader("Total-Thread", String.valueOf(total));
+
 
         if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
             resp.setStatus(HttpServletResponse.SC_OK);
