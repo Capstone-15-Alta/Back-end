@@ -128,7 +128,7 @@ public class ThreadService {
             for(ThreadDao dao : daoList){
                 list.add(mapper.map(dao, ThreadDtoResponse.class));
             }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, String.valueOf(threadRepository.findAll().size()), list, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all thread. Error: {}", e.getMessage());
             log.trace("Get error when get all thread. ", e);
@@ -175,7 +175,7 @@ public class ThreadService {
             for(ThreadDao dao : daoList){
                 list.add(mapper.map(dao, ThreadDtoResponse.class));
             }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
+            return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(daoList.size()), list, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all thread. Error: {}", e.getMessage());
             log.trace("Get error when get all thread. ", e);
@@ -195,7 +195,7 @@ public class ThreadService {
             for (ThreadDao threadDao : threadDaos) {
                 threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
             }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
+            return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(threadDaos.size()), threadDtoList, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when search thread by title. Error: {}", e.getMessage());
             log.trace("Get error when search thread by title. ", e);
@@ -216,13 +216,13 @@ public class ThreadService {
                     list.add(mapper.map(dao, ThreadDtoResponse.class));
                 }
 
-                return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
+                return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(threadRepository.findAll().size()), list, HttpStatus.OK);
             }
             Collections.reverse(threadDaos);
             for (ThreadDao threadDao : threadDaos) {
                 threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
             }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
+            return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(threadDaos.size()), threadDtoList, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when search thread by title. Error: {}", e.getMessage());
             log.trace("Get error when search thread by title. ", e);
@@ -252,7 +252,7 @@ public class ThreadService {
             for (ThreadDao threadDao : threadDaoPage) {
                 threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
             }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoList, HttpStatus.OK);
+            return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(threadRepository.findAll().size()), threadDtoList, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when search trending thread. Error: {}", e.getMessage());
             log.trace("Get error when search trending thread. ", e);
