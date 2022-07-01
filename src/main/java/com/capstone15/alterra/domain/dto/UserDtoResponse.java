@@ -63,13 +63,13 @@ public class UserDtoResponse implements Serializable {
 
     private List<CommentLikeDto> commentLikes;
 
-    private List<UserFollowerDto> userFollowers;
-
-    private List<UserFollowerDto> userFollowing;
-
-//    private List<UserFollowerDtoResponse> userFollowers;
+//    private List<UserFollowerDto> userFollowers;
 //
-//    private List<UserFollowerDtoResponse> userFollowing;
+//    private List<UserFollowerDto> userFollowing;
+
+    private List<UserFollowerDtoResponse> userFollowers;
+
+    private List<UserFollowerDtoResponse> userFollowing;
 
     private List<NotificationDto> notifications;
 

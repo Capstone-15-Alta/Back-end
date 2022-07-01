@@ -16,13 +16,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class ApiResponse<T> implements Serializable {
+public class ApiResponse2<T> implements Serializable {
 
-    private static final long serialVersionUID = 6364413173915098569L;
+
+    private static final long serialVersionUID = 4270452484204944378L;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Jakarta")
     private LocalDateTime timestamp;
 
     private String message;
+
+    private String totalThread;
 
     private T data;
 
