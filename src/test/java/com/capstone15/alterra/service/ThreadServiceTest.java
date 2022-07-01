@@ -2,6 +2,7 @@ package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.common.ApiResponse;
+import com.capstone15.alterra.domain.common.ApiResponse2;
 import com.capstone15.alterra.domain.dao.CategoryDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.ThreadViewDao;
@@ -269,7 +270,7 @@ class ThreadServiceTest {
 
         ResponseEntity<Object> response = threadService.getAllThread(any());
 
-        ApiResponse apiResponse = (ApiResponse) response.getBody();
+        ApiResponse2 apiResponse = (ApiResponse2) response.getBody();
 
         List<ThreadDto> list = (List<ThreadDto>) apiResponse.getData();
 
@@ -374,7 +375,7 @@ class ThreadServiceTest {
 
         ResponseEntity<Object> response = threadService.searchThreadByTitle("title");
 
-        ApiResponse apiResponse = (ApiResponse) response.getBody();
+        ApiResponse2 apiResponse = (ApiResponse2) response.getBody();
 
         assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
         assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
