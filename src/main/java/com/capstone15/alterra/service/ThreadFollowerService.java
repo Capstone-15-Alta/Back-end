@@ -68,15 +68,19 @@ public class ThreadFollowerService {
                     res.setThread_followers(threadFollowerRepository.countFollowers(threadDao.get().getId()));
                     threadRepository.save(res);
                 });
+
                 // fitur notification
-                NotificationDao notificationDao = NotificationDao.builder()
-                        .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
-                        .title(user.getUsername() + " mengikuti thread anda: " + threadDao.get().getTitle())
-                        .threadId(threadDao.get().getId())
-                        .info("followthread")
-                        .isRead(false)
-                        .build();
-                notificationDao = notificationRepository.save(notificationDao);
+                if(!user.getId().equals(threadDao.get().getUser().getId())){
+                    NotificationDao notificationDao = NotificationDao.builder()
+                            .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                            .title(user.getUsername() + " mengikuti thread anda: " + threadDao.get().getTitle())
+                            .threadId(threadDao.get().getId())
+                            .info("followthread")
+                            .isRead(false)
+                            .build();
+                    notificationDao = notificationRepository.save(notificationDao);
+                }
+
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadFollowerDao, ThreadFollowerDto.class), HttpStatus.OK);
             } else {
                 if (threadFollowerDaoOptional.get().getIsFollow().equals(false)) {

@@ -193,22 +193,12 @@ public class ThreadService {
         try {
             log.info("Executing search thread by title: [{}]", title);
 
-            List<ThreadDao> threadDaos = threadRepository.findAllThreadByTitle(title);
+            Page<ThreadDao> threadDaos = threadRepository.findAllThreadByTitle(title, pageable);
             if(threadDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             }
-            List<ThreadDao> threadDaos1 = new ArrayList<>();
-
-            final int start = (int)pageable.getOffset();
-            final int end = Math.min((start + pageable.getPageSize()), threadDaos.size());
-
-            if (start <= end) {
-                threadDaos1 = threadDaos.subList(start, end);
-            }
-
-            Page<ThreadDao> threadDaoPage = new PageImpl<>(threadDaos1, pageable, threadDaos.size());
-            Page<ThreadDtoResponse> threadDtoResponses = threadDaoPage.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
+            Page<ThreadDtoResponse> threadDtoResponses = threadDaos.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
 
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
         } catch (Exception e) {
@@ -222,26 +212,15 @@ public class ThreadService {
         try {
             log.info("Executing search thread by category: [{}]", categoryName);
 
-            List<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryName(categoryName);
+            Page<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryNameOrderByIdDesc(categoryName, pageable);
             if(threadDaos.isEmpty()){
                 Page<ThreadDao> daoList = threadRepository.findAllBy(pageable);
                 Page<ThreadDtoResponse> threadDtoResponses = daoList.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
 
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
             }
-            Collections.reverse(threadDaos);
 
-            List<ThreadDao> threadDaos1 = new ArrayList<>();
-
-            final int start = (int)pageable.getOffset();
-            final int end = Math.min((start + pageable.getPageSize()), threadDaos.size());
-
-            if (start <= end) {
-                threadDaos1 = threadDaos.subList(start, end);
-            }
-
-            Page<ThreadDao> threadDaoPage = new PageImpl<>(threadDaos1, pageable, threadDaos.size());
-            Page<ThreadDtoResponse> threadDtoResponses = threadDaoPage.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
+            Page<ThreadDtoResponse> threadDtoResponses = threadDaos.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
 
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
         } catch (Exception e) {
@@ -255,26 +234,15 @@ public class ThreadService {
         try {
             log.info("Executing search trending thread");
 
-            List<ThreadDao> threadDaos = threadRepository.findAllPopularThread();
+            Page<ThreadDao> threadDaos = threadRepository.findAllPopularThread(pageable);
             if(threadDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
-            List<ThreadDao> threadDaos1 = new ArrayList<>();
-
-            final int start = (int)pageable.getOffset();
-            final int end = Math.min((start + pageable.getPageSize()), threadDaos.size());
-
-            if (start <= end) {
-                threadDaos1 = threadDaos.subList(start, end);
-            }
-
-            Page<ThreadDao> threadDaoPage = new PageImpl<>(threadDaos1, pageable, threadDaos.size());
-
 //            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
 //            for (ThreadDao threadDao : threadDaoPage) {
 //                threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
 //            }
-            Page<ThreadDtoResponse> threadDtoResponses = threadDaoPage.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
+            Page<ThreadDtoResponse> threadDtoResponses = threadDaos.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
 
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
         } catch (Exception e) {

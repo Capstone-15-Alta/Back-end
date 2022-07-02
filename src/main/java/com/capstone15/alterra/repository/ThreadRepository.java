@@ -17,12 +17,12 @@ import java.util.List;
 public interface ThreadRepository extends JpaRepository<ThreadDao, Long> {
 
     @Query(value = "SELECT b FROM ThreadDao b WHERE upper(b.title) LIKE UPPER(CONCAT('%', :title, '%') ) ")
-    List<ThreadDao> findAllThreadByTitle(@Param("title") String title);
+    Page<ThreadDao> findAllThreadByTitle(@Param("title") String title, Pageable pageable);
 
-    List<ThreadDao>findThreadDaoByCategoryCategoryName(String categoryName);
+    Page<ThreadDao>findThreadDaoByCategoryCategoryNameOrderByIdDesc(String categoryName, Pageable pageable);
 
     @Query(value = "SELECT t FROM ThreadDao t ORDER BY t.thread_likes DESC")
-    List<ThreadDao> findAllPopularThread();
+    Page<ThreadDao> findAllPopularThread(Pageable pageable);
 
     Page<ThreadDao> findAllBy(Pageable pageable);
 

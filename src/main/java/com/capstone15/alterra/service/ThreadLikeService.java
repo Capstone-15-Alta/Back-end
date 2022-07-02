@@ -63,14 +63,18 @@ public class ThreadLikeService {
                     threadRepository.save(res);
                 });
                 // fitur notification
-                NotificationDao notificationDao = NotificationDao.builder()
-                        .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
-                        .title(user.getUsername() + " menyukai thread anda: " + threadDao.get().getTitle())
-                        .threadId(threadDao.get().getId())
-                        .info("likethread")
-                        .isRead(false)
-                        .build();
-                notificationDao = notificationRepository.save(notificationDao);
+                if(!user.getId().equals(threadDao.get().getUser().getId())){
+                    NotificationDao notificationDao = NotificationDao.builder()
+                            .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                            .title(user.getUsername() + " menyukai thread anda: " + threadDao.get().getTitle())
+                            .threadId(threadDao.get().getId())
+                            .info("likethread")
+                            .isRead(false)
+                            .build();
+                    notificationDao = notificationRepository.save(notificationDao);
+                }
+
+
 
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadLikeDao, ThreadLikeDto.class), HttpStatus.OK);
             } else {
