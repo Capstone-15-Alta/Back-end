@@ -53,9 +53,6 @@ public class UserService implements UserDetailsService {
     private ThreadRepository threadRepository;
 
     @Autowired
-    private ThreadViewRepository threadViewRepository;
-
-    @Autowired
     private ModelMapper mapper;
 
     @Value("${SENDGRID_API_KEY}")
