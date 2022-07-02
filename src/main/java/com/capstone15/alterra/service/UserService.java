@@ -413,18 +413,15 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public ResponseEntity<Object> getUserByRanking() {
+    public ResponseEntity<Object> getUserRankingByFollowers(Pageable pageable) {
         try {
             log.info("Executing search user by ranking");
-            List<UserDto> userDtos = new ArrayList<>();
-
-            List<UserDao> userDaos = userRepository.findAllUserByRanking();
+            Page<UserDao> userDaos = userRepository.findAllUserByRanking(pageable);
             if(userDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
-            for (UserDao userDao : userDaos) {
-                userDtos.add(mapper.map(userDao, UserDto.class));
-            }
+            Page<UserDto> userDtos = userDaos.map(userDao -> mapper.map(userDao, UserDto.class));
+
             return ResponseUtil.build(AppConstant.Message.SUCCESS, userDtos, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when search user by ranking. Error: {}", e.getMessage());
@@ -432,19 +429,16 @@ public class UserService implements UserDetailsService {
             throw e;
         }
     }
-    public ResponseEntity<Object> getUserRankingByTotalThreadAndLike() {
+    public ResponseEntity<Object> getUserRankingByTotalThreadAndLike(Pageable pageable) {
         try {
             log.info("Executing search user by ranking");
-            List<UserDtoResponse> userDtos = new ArrayList<>();
+            Page<UserDao> userDaos = userRepository.findByOrderByTotalThreadsDesc(pageable);
 
-            List<UserDao> userDaos = userRepository.findByOrderByTotalThreadsDesc();
-            List<ThreadDao> threadDaos = threadRepository.findAllPopularThread();
             if(userDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
             }
-            for (UserDao userDao : userDaos) {
-                userDtos.add(mapper.map(userDao, UserDtoResponse.class));
-            }
+            Page<UserDto> userDtos = userDaos.map(userDao -> mapper.map(userDao, UserDto.class));
+
             return ResponseUtil.build(AppConstant.Message.SUCCESS, userDtos, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when search user by ranking. Error: {}", e.getMessage());

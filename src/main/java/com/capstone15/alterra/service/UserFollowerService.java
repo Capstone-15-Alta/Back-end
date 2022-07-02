@@ -46,6 +46,11 @@ public class UserFollowerService {
                 log.info("user [{}] not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
+            if(user.getId().equals(id)){
+                log.info("user [{}] cant follow yourself ", id);
+                return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
             Optional<UserFollowerDao> userFollowerDaoOptional = userFollowerRepository.findByUserFollowerIdAndUserFollowedId(user.getId(), id);
             if (userFollowerDaoOptional.isEmpty()) {
                 UserFollowerDao userFollowerDao = UserFollowerDao.builder()

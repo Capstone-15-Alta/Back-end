@@ -63,15 +63,19 @@ public class CommentLikeService {
                     res.setComment_likes(commentLikeRepository.countLikes(commentDao.get().getId()));
                     commentRepository.save(res); //lamda expression
                 });
+
                 // fitur notification
-                NotificationDao notificationDao = NotificationDao.builder()
-                        .user(UserDao.builder().id(commentDao.get().getUser().getId()).build())
-                        .title(user.getUsername() + " menyukai komentar anda: " + commentDao.get().getComment())
-                        .commentId(commentDao.get().getId())
-                        .info("likecomment")
-                        .isRead(false)
-                        .build();
-                notificationDao = notificationRepository.save(notificationDao);
+                if(!user.getId().equals(commentDao.get().getUser().getId())){
+                    NotificationDao notificationDao = NotificationDao.builder()
+                            .user(UserDao.builder().id(commentDao.get().getUser().getId()).build())
+                            .title(user.getUsername() + " menyukai komentar anda: " + commentDao.get().getComment())
+                            .commentId(commentDao.get().getId())
+                            .info("likecomment")
+                            .isRead(false)
+                            .build();
+                    notificationDao = notificationRepository.save(notificationDao);
+                }
+
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentLikeDao, CommentLikeDto.class), HttpStatus.OK);
             } else {
                 if (optionalCommentLikeDao.get().getIsLike().equals(false)) {

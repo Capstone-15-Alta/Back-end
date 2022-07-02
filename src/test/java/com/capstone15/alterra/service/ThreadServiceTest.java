@@ -362,33 +362,34 @@ class ThreadServiceTest {
 
     }
 
-//    @Test
-//    void getThreadByTitleSuccess_Test() {
-//        ThreadDao threadDao = ThreadDao.builder()
-//                .id(1L)
-//                .build();
-//
-//        Page<ThreadDao> threadDaos = new PageImpl<>(List.of(threadDao));
-//
-//        when(threadRepository.findAllThreadByTitle(any())).thenReturn(List.of(threadDao));
-//        when(mapper.map(any(), eq(ThreadDto.class))).thenReturn(ThreadDto.builder()
-//                .id(1L)
-//                .title("title")
-//                .build());
-//
-//        ResponseEntity<Object> response = threadService.searchThreadByTitle("title", any());
-//
-//        ApiResponse apiResponse = (ApiResponse) response.getBody();
-//
-//        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-//        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
-//
-//    }
+    @Test
+    void getThreadByTitleSuccess_Test() {
+        ThreadDao threadDao = ThreadDao.builder()
+                .id(1L)
+                .build();
+
+        Page<ThreadDao> threadDaos = new PageImpl<>(List.of(threadDao));
+
+        when(threadRepository.findAllThreadByTitle(any(), any())).thenReturn(threadDaos);
+        when(mapper.map(any(), eq(ThreadDto.class))).thenReturn(ThreadDto.builder()
+                .id(1L)
+                .title("title")
+                .build());
+
+        ResponseEntity<Object> response = threadService.searchThreadByTitle(any(), any());
+
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
+
+    }
 
     @Test
     void getThreadByTitleNotFound_Test() {
-        when(threadRepository.findAllThreadByTitle(any())).thenReturn(List.of());
-        ResponseEntity<Object> response = threadService.searchThreadByTitle(any(), null);
+        Page<ThreadDao> threadDaos = new PageImpl<>(List.of());
+        when(threadRepository.findAllThreadByTitle(any(), any())).thenReturn(threadDaos);
+        ResponseEntity<Object> response = threadService.searchThreadByTitle(any(), any());
 
         ApiResponse apiResponse = (ApiResponse) response.getBody();
 
@@ -399,36 +400,37 @@ class ThreadServiceTest {
 
     @Test
     void getThreadByTitleException_Test() {
-        when(threadRepository.findAllThreadByTitle(any())).thenThrow(NullPointerException.class);
+        when(threadRepository.findAllThreadByTitle(any(), any())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> threadService.searchThreadByTitle(any(), any()));
 
     }
 
-//    @Test
-//    void getThreadByCategorySuccess_Test() {
-//        ThreadDao threadDao = ThreadDao.builder()
-//                .id(1L)
-//                .build();
-//
-//        CategoryDao categoryDao = CategoryDao.builder()
-//                .id(1L)
-//                .build();
-//
-//        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(categoryDao));
-//        when(threadRepository.findThreadDaoByCategoryCategoryName(any())).thenReturn(List.of(threadDao));
-//        when(mapper.map(any(), eq(ThreadDtoResponse.class))).thenReturn(ThreadDtoResponse.builder()
-//                .id(1L)
-//                .title("title")
-//                .build());
-//
-//        ResponseEntity<Object> response = threadService.searchThreadByCategoryName(any(), any());
-//
-//        ApiResponse apiResponse = (ApiResponse) response.getBody();
-//
-//        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-//        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
-//
-//    }
+    @Test
+    void getThreadByCategorySuccess_Test() {
+        ThreadDao threadDao = ThreadDao.builder()
+                .id(1L)
+                .build();
+
+        CategoryDao categoryDao = CategoryDao.builder()
+                .id(1L)
+                .build();
+
+        Page<ThreadDao> threadDaos = new PageImpl<>(List.of(threadDao));
+        when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(categoryDao));
+        when(threadRepository.findThreadDaoByCategoryCategoryNameOrderByIdDesc(any(), any())).thenReturn(threadDaos);
+        when(mapper.map(any(), eq(ThreadDtoResponse.class))).thenReturn(ThreadDtoResponse.builder()
+                .id(1L)
+                .title("title")
+                .build());
+
+        ResponseEntity<Object> response = threadService.searchThreadByCategoryName(any(), any());
+
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
+
+    }
 
     @Test
     void getThreadByCategoryIsEmpty_Test() {
@@ -437,10 +439,10 @@ class ThreadServiceTest {
                 .build();
 
         Page<ThreadDao> threadDaos = new PageImpl<>(List.of(threadDao));
-        when(threadRepository.findThreadDaoByCategoryCategoryName(any())).thenReturn(List.of());
+        when(threadRepository.findThreadDaoByCategoryCategoryNameOrderByIdDesc(any(), any())).thenReturn(threadDaos);
         when(threadRepository.findAllBy(any())).thenReturn(threadDaos);
 
-        ResponseEntity<Object> response = threadService.searchThreadByCategoryName(any(),null);
+        ResponseEntity<Object> response = threadService.searchThreadByCategoryName(any(),any());
 
         ApiResponse apiResponse = (ApiResponse) response.getBody();
 
@@ -451,35 +453,32 @@ class ThreadServiceTest {
 
     @Test
     void getThreadByCategoryException_Test() {
-        when(threadRepository.findThreadDaoByCategoryCategoryName(any())).thenThrow(NullPointerException.class);
+        when(threadRepository.findThreadDaoByCategoryCategoryNameOrderByIdDesc(any(), any())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> threadService.searchThreadByCategoryName(any(), any()));
 
     }
 
-//    @Test
-//    void getTrendingThreadSuccess_Test() {
-//        ThreadDao threadDao = ThreadDao.builder()
-//                .id(1L)
-//                .build();
-//
-//        when(threadRepository.findAllPopularThread()).thenReturn(List.of(threadDao));
-//
-//        ResponseEntity<Object> response = threadService.searchTrendingThread(any());
-//
-//        ApiResponse apiResponse = (ApiResponse) response.getBody();
-//
-//        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-//        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
-//
-//    }
-
     @Test
-    void getTrendingThreadNotFound_Test() {
+    void getTrendingThreadSuccess_Test() {
         ThreadDao threadDao = ThreadDao.builder()
                 .id(1L)
                 .build();
+        Page<ThreadDao> threadDaos = new PageImpl<>(List.of(threadDao));
+        when(threadRepository.findAllPopularThread(any())).thenReturn(threadDaos);
 
-        when(threadRepository.findAllPopularThread()).thenReturn(List.of());
+        ResponseEntity<Object> response = threadService.searchTrendingThread(any());
+
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
+
+    }
+
+    @Test
+    void getTrendingThreadNotFound_Test() {
+        Page<ThreadDao> threadDaos = new PageImpl<>(List.of());
+        when(threadRepository.findAllPopularThread(any())).thenReturn(threadDaos);
 
         ResponseEntity<Object> response = threadService.searchTrendingThread(null);
 
@@ -492,7 +491,7 @@ class ThreadServiceTest {
 
     @Test
     void getTrendingThreadException_Test() {
-        when(threadRepository.findAllPopularThread()).thenThrow(NullPointerException.class);
+        when(threadRepository.findAllPopularThread(any())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> threadService.searchTrendingThread(any()));
 
     }

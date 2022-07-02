@@ -66,13 +66,16 @@ public class CommentService {
             userRepository.save(userDao.get());
 
             // fitur notification
-            NotificationDao notificationDao = NotificationDao.builder()
-                    .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
-                    .title(user.getUsername() + " berkomentar pada thread " + threadDao.get().getTitle())
-                    .message(request.getComment())
-                    .isRead(false)
-                    .build();
-            notificationDao = notificationRepository.save(notificationDao);
+            if(!user.getId().equals(threadDao.get().getUser().getId())){
+                NotificationDao notificationDao = NotificationDao.builder()
+                        .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                        .title(user.getUsername() + " berkomentar pada thread anda: " + threadDao.get().getTitle())
+                        .message(request.getComment())
+                        .isRead(false)
+                        .build();
+                notificationDao = notificationRepository.save(notificationDao);
+            }
+
 
             log.info("Executing add comment success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentDao, CommentDto.class), HttpStatus.OK);

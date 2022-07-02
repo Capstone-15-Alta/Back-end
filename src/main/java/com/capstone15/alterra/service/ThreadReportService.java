@@ -55,13 +55,15 @@ public class ThreadReportService {
             threadReportDao = threadReportRepository.save(threadReportDao);
 
             // fitur notification
-            NotificationDao notificationDao = NotificationDao.builder()
-                    .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
-                    .title("Moderator mereport thread anda: " + threadDao.get().getTitle())
-                    .message(request.getReport())
-                    .isRead(false)
-                    .build();
-            notificationDao = notificationRepository.save(notificationDao);
+            if(!user.getId().equals(threadDao.get().getUser().getId())){
+                NotificationDao notificationDao = NotificationDao.builder()
+                        .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                        .title("Moderator mereport thread anda: " + threadDao.get().getTitle())
+                        .message(request.getReport())
+                        .isRead(false)
+                        .build();
+                notificationDao = notificationRepository.save(notificationDao);
+            }
 
             log.info("Executing add report success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadReportDao, ThreadReportDto.class), HttpStatus.OK);

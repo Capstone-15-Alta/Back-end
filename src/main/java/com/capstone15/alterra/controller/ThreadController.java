@@ -56,10 +56,6 @@ public class ThreadController {
         return threadService.getAllThread(pageable);
     }
 
-//    @GetMapping(value = "/pages")
-//    public ResponseEntity<Object> getAllWithPaginate(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
-//        return threadService.getAllThreadWithPaginate(pageable);
-//    }
 
 
     @GetMapping(value = "/{id}")

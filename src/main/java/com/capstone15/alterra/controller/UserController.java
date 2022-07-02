@@ -33,7 +33,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(value = "")
-    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5) Pageable pageable
+    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable
     ) {
         return userService.getAllUser(pageable);
     }
@@ -111,13 +111,13 @@ public class UserController {
     }
 
     @GetMapping(value = "/rank")
-    public ResponseEntity<Object> getUserByRankingFollower(){
-        return userService.getUserByRanking();
+    public ResponseEntity<Object> getUserByRankingFollower(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable){
+        return userService.getUserRankingByFollowers(pageable);
     }
 
     @GetMapping(value = "/ranking")
-    public ResponseEntity<Object> getUserRankingByTotalThreadAndLike(){
-        return userService.getUserRankingByTotalThreadAndLike();
+    public ResponseEntity<Object> getUserRankingByTotalThreadAndLike(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable){
+        return userService.getUserRankingByTotalThreadAndLike(pageable);
     }
 
 
