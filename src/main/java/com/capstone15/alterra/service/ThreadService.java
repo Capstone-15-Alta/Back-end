@@ -317,9 +317,18 @@ public class ThreadService {
             threadViewRepository.deleteById(threadDaoOptional.get().getView().getThreadId());
             threadRepository.deleteById(id);
 
+
+            Optional<UserDao> userDao2 = userRepository.findById(threadDaoOptional.get().getUser().getId());
+            if(userDao2.isPresent()) {
+                Objects.requireNonNull(userDao2.orElse(null)).setTotalThreads(threadRepository.countThreads(threadDaoOptional.get().getUser().getId()));
+                userRepository.save(userDao2.get());
+            }
             Optional<UserDao> userDao = userRepository.findById(user.getId());
-            Objects.requireNonNull(userDao.orElse(null)).setTotalThreads(threadRepository.countThreads(user.getId()));
-            userRepository.save(userDao.get());
+            if(userDao.isPresent()) {
+                Objects.requireNonNull(userDao.orElse(null)).setTotalThreads(threadRepository.countThreads(user.getId()));
+                userRepository.save(userDao.get());
+            }
+
 
             log.info("Executing delete thread success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, null, HttpStatus.OK);
