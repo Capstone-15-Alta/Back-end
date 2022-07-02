@@ -68,13 +68,15 @@ public class ThreadController {
     }
 
     @GetMapping(value = "/user/{id}")
-    public ResponseEntity<Object> getByIdUser(@PathVariable(value = "id") Long id){
-        return threadService.getThreadByIdUser(id);
+    public ResponseEntity<Object> getByIdUser(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable,
+                                              @PathVariable(value = "id") Long id){
+        return threadService.getThreadByIdUser(id, pageable);
     }
 
     @GetMapping(value = "/search")
-    public ResponseEntity<Object> searchThreadByTitle(@RequestParam(value = "title", required = false) String title){
-        return threadService.searchThreadByTitle(title);
+    public ResponseEntity<Object> searchThreadByTitle(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable,
+                                                      @RequestParam(value = "title", required = false) String title){
+        return threadService.searchThreadByTitle(title, pageable);
     }
 
     @GetMapping(value = "/")

@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
+import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -124,11 +125,9 @@ public class ThreadService {
         log.info("Executing get all thread.");
         try{
             Page<ThreadDao> daoList = threadRepository.findAllBy(pageable);
-            List<ThreadDtoResponse> list = new ArrayList<>();
-            for(ThreadDao dao : daoList){
-                list.add(mapper.map(dao, ThreadDtoResponse.class));
-            }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, String.valueOf(threadRepository.findAll().size()), list, HttpStatus.OK);
+            Page<ThreadDtoResponse> threadDtoResponses = daoList.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
+
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all thread. Error: {}", e.getMessage());
             log.trace("Get error when get all thread. ", e);
@@ -160,7 +159,7 @@ public class ThreadService {
         }
     }
 
-    public ResponseEntity<Object> getThreadByIdUser(Long id) {
+    public ResponseEntity<Object> getThreadByIdUser(Long id, Pageable pageable) {
         log.info("Executing get all thread.");
         try{
             Optional<UserDao> userDaoOptional = userRepository.findById(id);
@@ -168,34 +167,50 @@ public class ThreadService {
                 log.info("user id: {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            List<ThreadDao> daoList = userDaoOptional.get().getThreads();
-            Collections.reverse(daoList);
+            List<ThreadDao> threadDaos = userDaoOptional.get().getThreads();
+            Collections.reverse(threadDaos);
 
-            List<ThreadDtoResponse> list = new ArrayList<>();
-            for(ThreadDao dao : daoList){
-                list.add(mapper.map(dao, ThreadDtoResponse.class));
+            List<ThreadDao> threadDaos1 = new ArrayList<>();
+
+            final int start = (int)pageable.getOffset();
+            final int end = Math.min((start + pageable.getPageSize()), threadDaos.size());
+
+            if (start <= end) {
+                threadDaos1 = threadDaos.subList(start, end);
             }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(daoList.size()), list, HttpStatus.OK);
+
+            Page<ThreadDao> threadDaoPage = new PageImpl<>(threadDaos1, pageable, threadDaos.size());
+            Page<ThreadDtoResponse> threadDtoResponses = threadDaoPage.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
+
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all thread. Error: {}", e.getMessage());
             log.trace("Get error when get all thread. ", e);
             throw e;
         }  }
 
-    public ResponseEntity<Object> searchThreadByTitle(String title) {
+    public ResponseEntity<Object> searchThreadByTitle(String title, Pageable pageable) {
         try {
             log.info("Executing search thread by title: [{}]", title);
 
-            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
             List<ThreadDao> threadDaos = threadRepository.findAllThreadByTitle(title);
             if(threadDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
 
             }
-            for (ThreadDao threadDao : threadDaos) {
-                threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
+            List<ThreadDao> threadDaos1 = new ArrayList<>();
+
+            final int start = (int)pageable.getOffset();
+            final int end = Math.min((start + pageable.getPageSize()), threadDaos.size());
+
+            if (start <= end) {
+                threadDaos1 = threadDaos.subList(start, end);
             }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(threadDaos.size()), threadDtoList, HttpStatus.OK);
+
+            Page<ThreadDao> threadDaoPage = new PageImpl<>(threadDaos1, pageable, threadDaos.size());
+            Page<ThreadDtoResponse> threadDtoResponses = threadDaoPage.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
+
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when search thread by title. Error: {}", e.getMessage());
             log.trace("Get error when search thread by title. ", e);
@@ -206,23 +221,29 @@ public class ThreadService {
     public ResponseEntity<Object> searchThreadByCategoryName(String categoryName, Pageable pageable) {
         try {
             log.info("Executing search thread by category: [{}]", categoryName);
-            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
 
             List<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryName(categoryName);
             if(threadDaos.isEmpty()){
                 Page<ThreadDao> daoList = threadRepository.findAllBy(pageable);
-                List<ThreadDtoResponse> list = new ArrayList<>();
-                for(ThreadDao dao : daoList){
-                    list.add(mapper.map(dao, ThreadDtoResponse.class));
-                }
+                Page<ThreadDtoResponse> threadDtoResponses = daoList.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
 
-                return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(threadRepository.findAll().size()), list, HttpStatus.OK);
+                return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
             }
             Collections.reverse(threadDaos);
-            for (ThreadDao threadDao : threadDaos) {
-                threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
+
+            List<ThreadDao> threadDaos1 = new ArrayList<>();
+
+            final int start = (int)pageable.getOffset();
+            final int end = Math.min((start + pageable.getPageSize()), threadDaos.size());
+
+            if (start <= end) {
+                threadDaos1 = threadDaos.subList(start, end);
             }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(threadDaos.size()), threadDtoList, HttpStatus.OK);
+
+            Page<ThreadDao> threadDaoPage = new PageImpl<>(threadDaos1, pageable, threadDaos.size());
+            Page<ThreadDtoResponse> threadDtoResponses = threadDaoPage.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
+
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when search thread by title. Error: {}", e.getMessage());
             log.trace("Get error when search thread by title. ", e);
@@ -235,6 +256,9 @@ public class ThreadService {
             log.info("Executing search trending thread");
 
             List<ThreadDao> threadDaos = threadRepository.findAllPopularThread();
+            if(threadDaos.isEmpty()){
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
+            }
             List<ThreadDao> threadDaos1 = new ArrayList<>();
 
             final int start = (int)pageable.getOffset();
@@ -245,14 +269,14 @@ public class ThreadService {
             }
 
             Page<ThreadDao> threadDaoPage = new PageImpl<>(threadDaos1, pageable, threadDaos.size());
-            if(threadDaos.isEmpty()){
-                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);
-            }
-            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
-            for (ThreadDao threadDao : threadDaoPage) {
-                threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
-            }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS,String.valueOf(threadRepository.findAll().size()), threadDtoList, HttpStatus.OK);
+
+//            List<ThreadDtoResponse> threadDtoList = new ArrayList<>();
+//            for (ThreadDao threadDao : threadDaoPage) {
+//                threadDtoList.add(mapper.map(threadDao, ThreadDtoResponse.class));
+//            }
+            Page<ThreadDtoResponse> threadDtoResponses = threadDaoPage.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
+
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when search trending thread. Error: {}", e.getMessage());
             log.trace("Get error when search trending thread. ", e);
