@@ -6,6 +6,7 @@ import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.*;
 import com.capstone15.alterra.repository.ThreadRepository;
+import com.capstone15.alterra.repository.ThreadViewRepository;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.FileUploadUtil;
 import com.capstone15.alterra.util.ResponseUtil;
@@ -52,6 +53,9 @@ public class UserService implements UserDetailsService {
     private ThreadRepository threadRepository;
 
     @Autowired
+    private ThreadViewRepository threadViewRepository;
+
+    @Autowired
     private ModelMapper mapper;
 
     @Value("${SENDGRID_API_KEY}")
@@ -72,11 +76,9 @@ public class UserService implements UserDetailsService {
         log.info("Executing get all user.");
         try{
             Page<UserDao> daoList = userRepository.findAll(pageable);
-            List<UserDtoResponse> list = new ArrayList<>();
-            for(UserDao dao : daoList){
-                list.add(mapper.map(dao, UserDtoResponse.class));
-            }
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
+            Page<UserDtoResponse> userDtoResponses = daoList.map(userDao -> mapper.map(userDao, UserDtoResponse.class));
+
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, userDtoResponses, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all user. Error: {}", e.getMessage());
             log.trace("Get error when get all user. ", e);
@@ -207,6 +209,8 @@ public class UserService implements UserDetailsService {
                 log.info("user {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
+
+            threadRepository.deleteCustom(id);
             userRepository.deleteById(id);
             log.info("Executing delete user success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, null, HttpStatus.OK);
