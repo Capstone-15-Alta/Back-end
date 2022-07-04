@@ -212,7 +212,7 @@ public class ThreadService {
         try {
             log.info("Executing search thread by category: [{}]", categoryName);
 
-            Page<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryNameOrderByIdDesc(categoryName, pageable);
+            Page<ThreadDao> threadDaos = threadRepository.findThreadDaoByCategoryCategoryNameContainingIgnoreCase(categoryName, pageable);
             if(threadDaos.isEmpty()){
                 Page<ThreadDao> daoList = threadRepository.findAllBy(pageable);
                 Page<ThreadDtoResponse> threadDtoResponses = daoList.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));

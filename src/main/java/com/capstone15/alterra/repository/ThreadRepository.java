@@ -19,7 +19,7 @@ public interface ThreadRepository extends JpaRepository<ThreadDao, Long> {
     @Query(value = "SELECT b FROM ThreadDao b WHERE upper(b.title) LIKE UPPER(CONCAT('%', :title, '%') ) ")
     Page<ThreadDao> findAllThreadByTitle(@Param("title") String title, Pageable pageable);
 
-    Page<ThreadDao>findThreadDaoByCategoryCategoryNameOrderByIdDesc(String categoryName, Pageable pageable);
+    Page<ThreadDao>findThreadDaoByCategoryCategoryNameContainingIgnoreCase(String categoryName, Pageable pageable);
 
     @Query(value = "SELECT t FROM ThreadDao t ORDER BY t.thread_likes DESC")
     Page<ThreadDao> findAllPopularThread(Pageable pageable);

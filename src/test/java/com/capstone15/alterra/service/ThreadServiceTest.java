@@ -417,7 +417,7 @@ class ThreadServiceTest {
 
         Page<ThreadDao> threadDaos = new PageImpl<>(List.of(threadDao));
         when(categoryRepository.findById(anyLong())).thenReturn(Optional.of(categoryDao));
-        when(threadRepository.findThreadDaoByCategoryCategoryNameOrderByIdDesc(any(), any())).thenReturn(threadDaos);
+        when(threadRepository.findThreadDaoByCategoryCategoryNameContainingIgnoreCase(any(), any())).thenReturn(threadDaos);
         when(mapper.map(any(), eq(ThreadDtoResponse.class))).thenReturn(ThreadDtoResponse.builder()
                 .id(1L)
                 .title("title")
@@ -439,7 +439,7 @@ class ThreadServiceTest {
                 .build();
 
         Page<ThreadDao> threadDaos = new PageImpl<>(List.of(threadDao));
-        when(threadRepository.findThreadDaoByCategoryCategoryNameOrderByIdDesc(any(), any())).thenReturn(threadDaos);
+        when(threadRepository.findThreadDaoByCategoryCategoryNameContainingIgnoreCase(any(), any())).thenReturn(threadDaos);
         when(threadRepository.findAllBy(any())).thenReturn(threadDaos);
 
         ResponseEntity<Object> response = threadService.searchThreadByCategoryName(any(),any());
@@ -453,7 +453,7 @@ class ThreadServiceTest {
 
     @Test
     void getThreadByCategoryException_Test() {
-        when(threadRepository.findThreadDaoByCategoryCategoryNameOrderByIdDesc(any(), any())).thenThrow(NullPointerException.class);
+        when(threadRepository.findThreadDaoByCategoryCategoryNameContainingIgnoreCase(any(), any())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> threadService.searchThreadByCategoryName(any(), any()));
 
     }

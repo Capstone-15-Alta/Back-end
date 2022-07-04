@@ -51,10 +51,10 @@ public class ThreadController {
         return threadService.addThread(threadDto, multipartFile, (UserDao) userDetails);
     }
 
-    @GetMapping(value = "")
-    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
-        return threadService.getAllThread(pageable);
-    }
+//    @GetMapping(value = "")
+//    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
+//        return threadService.getAllThread(pageable);
+//    }
 
 
 
@@ -75,7 +75,7 @@ public class ThreadController {
         return threadService.searchThreadByTitle(title, pageable);
     }
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "")
     public ResponseEntity<Object> searchThreadByCategoryName(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable,
                                                              @RequestParam(value = "category", required = false) String categoryName){
         return threadService.searchThreadByCategoryName(categoryName, pageable);
