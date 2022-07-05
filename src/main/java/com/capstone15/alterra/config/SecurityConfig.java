@@ -76,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, "/v1/category").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/v1/admin/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/v1/admin/**").hasAuthority("ADMIN")
+                .antMatchers(HttpMethod.GET, "/v1/admin/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
         // remove session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

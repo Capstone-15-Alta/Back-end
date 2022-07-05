@@ -3,6 +3,7 @@ package com.capstone15.alterra.service;
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.dao.*;
 import com.capstone15.alterra.domain.dto.CommentDto;
+import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.ThreadReportDto;
 import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadReportRepository;
@@ -12,6 +13,8 @@ import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -59,11 +62,23 @@ public class ThreadReportService {
                 NotificationDao notificationDao = NotificationDao.builder()
                         .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
                         .title("Moderator mereport thread anda: " + threadDao.get().getTitle())
+                        .threadId(threadDao.get().getId())
                         .message(request.getReport())
                         .isRead(false)
                         .build();
                 notificationDao = notificationRepository.save(notificationDao);
             }
+
+            NotificationDao notificationDao = NotificationDao.builder()
+                    .user(UserDao.builder().id(2L).build())
+                    .title("Terdapat laporan pada thread: " + threadDao.get().getTitle())
+                    .threadId(threadDao.get().getId())
+                    .message(request.getReport())
+                    .isRead(false)
+                    .build();
+            notificationDao = notificationRepository.save(notificationDao);
+
+
 
             log.info("Executing add report success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadReportDao, ThreadReportDto.class), HttpStatus.OK);
@@ -140,5 +155,21 @@ public class ThreadReportService {
             throw e;
         }
     }
+
+    public ResponseEntity<Object> getAllReport(Pageable pageable) {
+        log.info("Executing get all report.");
+        try{
+            Page<ThreadReportDao> daoList = threadReportRepository.findAll(pageable);
+            if(daoList.isEmpty()) {
+                log.info("report not found");
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            Page<ThreadReportDto> threadReportDtos = daoList.map(threadReportDao -> mapper.map(threadReportDao, ThreadReportDto.class));
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadReportDtos, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when get all report. Error: {}", e.getMessage());
+            log.trace("Get error when get all report. ", e);
+            throw e;
+        }  }
 
 }

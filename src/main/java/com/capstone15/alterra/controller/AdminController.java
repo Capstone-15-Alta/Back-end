@@ -2,9 +2,13 @@ package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.ThreadDto;
+import com.capstone15.alterra.service.ThreadReportService;
 import com.capstone15.alterra.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +23,9 @@ public class AdminController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ThreadReportService threadReportService;
+
     @PutMapping(value = "/role/user/{id}")
     public ResponseEntity<Object> changeRoleUser(@PathVariable(value = "id") Long id) {
         return userService.changeRoleUser(id);
@@ -32,6 +39,11 @@ public class AdminController {
     @DeleteMapping(value = "/user/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable(value = "id") Long id) {
         return userService.deleteUser(id);
+    }
+
+    @GetMapping(value = "/report")
+    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10)  Pageable pageable) {
+        return threadReportService.getAllReport(pageable);
     }
 
 }

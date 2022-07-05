@@ -28,6 +28,12 @@ public class NotificationDto implements Serializable {
 
     private String message;
 
+    private Long threadId;
+
+    private Long commentId;
+
+    private Long followerId;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
 
