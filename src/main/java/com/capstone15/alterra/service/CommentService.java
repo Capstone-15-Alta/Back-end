@@ -70,6 +70,7 @@ public class CommentService {
                 NotificationDao notificationDao = NotificationDao.builder()
                         .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
                         .title(user.getUsername() + " berkomentar pada thread anda: " + threadDao.get().getTitle())
+                        .threadId(threadDao.get().getId())
                         .message(request.getComment())
                         .isRead(false)
                         .build();
