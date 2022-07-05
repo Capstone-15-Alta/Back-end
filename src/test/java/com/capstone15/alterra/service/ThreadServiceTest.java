@@ -357,24 +357,54 @@ class ThreadServiceTest {
     void getThreadByIdUserSuccess_Test() {
         ThreadDao threadDao = ThreadDao.builder()
                 .id(1L)
+                .title("title")
                 .build();
 
         UserDao userDao = UserDao.builder()
                 .id(1L)
+                .threads(List.of(threadDao))
                 .build();
 
-        ThreadDto threadDto = ThreadDto.builder()
+        ThreadDtoResponse threadDtoResponse = ThreadDtoResponse.builder()
                 .id(1L)
                 .title("title")
-                .description("description")
-                .categoryId(1L)
                 .build();
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
         when(mapper.map(any(), eq(ThreadDao.class))).thenReturn(threadDao);
-        when(mapper.map(any(), eq(ThreadDto.class))).thenReturn(threadDto);
+        when(mapper.map(any(), eq(ThreadDtoResponse.class))).thenReturn(threadDtoResponse);
+
+        ResponseEntity<Object> response = threadService.getThreadByIdUser(1L,PageRequest.of(0, 2));
+
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
+
+
 
     }
+
+    @Test
+    void getThreadByIdUserNotFound_Test() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        ResponseEntity<Object> response = threadService.getThreadByIdUser(1L, any());
+
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.NOT_FOUND, Objects.requireNonNull(apiResponse).getMessage());
+
+    }
+
+    @Test
+    void getThreadByIdUserException_Test() {
+        when(userRepository.findById(any())).thenThrow(NullPointerException.class);
+        assertThrows(Exception.class, () -> threadService.getThreadByIdUser(any(), any()));
+
+    }
+
+
 
     @Test
     void getThreadByTitleSuccess_Test() {
