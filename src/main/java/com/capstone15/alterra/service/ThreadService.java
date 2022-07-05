@@ -125,6 +125,10 @@ public class ThreadService {
         log.info("Executing get all thread.");
         try{
             Page<ThreadDao> daoList = threadRepository.findAllBy(pageable);
+            if(daoList.isEmpty()) {
+                log.info("thread not found");
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
             Page<ThreadDtoResponse> threadDtoResponses = daoList.map(threadDao -> mapper.map(threadDao, ThreadDtoResponse.class));
 
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadDtoResponses, HttpStatus.OK);

@@ -281,8 +281,22 @@ class ThreadServiceTest {
     }
 
     @Test
+    void getAllThreadNotFound_Test() {
+        Page<ThreadDao> threadDaos = new PageImpl<>(List.of());
+        when(threadRepository.findAllBy( any())).thenReturn(threadDaos);
+
+        ResponseEntity<Object> response = threadService.getAllThread(any());
+
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.NOT_FOUND, Objects.requireNonNull(apiResponse).getMessage());
+
+    }
+
+    @Test
     void getAllThreadException_Test() {
-        when(threadRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))).thenThrow(NullPointerException.class);
+        when(threadRepository.findAllBy(any())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> threadService.getAllThread(any()));
     }
 
@@ -434,11 +448,7 @@ class ThreadServiceTest {
 
     @Test
     void getThreadByCategoryIsEmpty_Test() {
-        ThreadDao threadDao = ThreadDao.builder()
-                .id(1L)
-                .build();
-
-        Page<ThreadDao> threadDaos = new PageImpl<>(List.of(threadDao));
+        Page<ThreadDao> threadDaos = new PageImpl<>(List.of());
         when(threadRepository.findThreadDaoByCategoryCategoryNameContainingIgnoreCase(any(), any())).thenReturn(threadDaos);
         when(threadRepository.findAllBy(any())).thenReturn(threadDaos);
 
