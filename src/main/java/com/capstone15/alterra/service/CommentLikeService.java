@@ -76,6 +76,11 @@ public class CommentLikeService {
                     notificationDao = notificationRepository.save(notificationDao);
                 }
 
+                // total like comment
+                Optional<UserDao> userDao = userRepository.findById(user.getId());
+                Objects.requireNonNull(userDao.orElse(null)).setTotalLikeComment(commentLikeRepository.countLikeComment(user.getId()));
+                userRepository.save(userDao.get());
+
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentLikeDao, CommentLikeDto.class), HttpStatus.OK);
             } else {
                 if (optionalCommentLikeDao.get().getIsLike().equals(false)) {
@@ -89,6 +94,11 @@ public class CommentLikeService {
                     Optional<NotificationDao> notification = notificationRepository.findByUserIdAndCommentIdAndInfo(commentDao.get().getUser().getId(), commentDao.get().getId(), "likecomment");
                     Objects.requireNonNull(notification.orElse(null)).setIsRead(false);
                     notificationRepository.save(notification.get());
+
+                    Optional<UserDao> userDao = userRepository.findById(user.getId());
+                    Objects.requireNonNull(userDao.orElse(null)).setTotalLikeComment(commentLikeRepository.countLikeComment(user.getId()));
+                    userRepository.save(userDao.get());
+
                 } else {
                     optionalCommentLikeDao.get().setIsLike(false);
                     commentLikeRepository.save(optionalCommentLikeDao.get());
@@ -102,6 +112,10 @@ public class CommentLikeService {
                         Objects.requireNonNull(notification.orElse(null)).setIsRead(true);
                         notificationRepository.save(notification.get());
                     }
+
+                    Optional<UserDao> userDao = userRepository.findById(user.getId());
+                    Objects.requireNonNull(userDao.orElse(null)).setTotalLikeComment(commentLikeRepository.countLikeComment(user.getId()));
+                    userRepository.save(userDao.get());
 
                 }
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(optionalCommentLikeDao, CommentLikeDto.class), HttpStatus.OK);

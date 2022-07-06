@@ -99,6 +99,12 @@ public class UserDao  implements UserDetails {
     @Column(name = "total_post_comments")
     private Integer totalPostComments = 0;
 
+    @Column(name = "total_like_thread")
+    private Integer totalLikeThread = 0;
+
+    @Column(name = "total_like_comment")
+    private Integer totalLikeComment = 0;
+
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
 
