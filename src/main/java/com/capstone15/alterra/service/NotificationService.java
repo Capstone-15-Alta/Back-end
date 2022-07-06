@@ -30,9 +30,6 @@ import java.util.Optional;
 public class NotificationService {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private NotificationRepository notificationRepository;
 
     @Autowired
