@@ -8,6 +8,7 @@ import com.capstone15.alterra.domain.dto.ThreadLikeDto;
 import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadLikeRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
+import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
@@ -33,6 +34,9 @@ public class ThreadLikeService {
 
     @Autowired
     private ThreadRepository threadRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -74,6 +78,11 @@ public class ThreadLikeService {
                     notificationDao = notificationRepository.save(notificationDao);
                 }
 
+                // total like thread
+                Optional<UserDao> userDao = userRepository.findById(user.getId());
+                Objects.requireNonNull(userDao.orElse(null)).setTotalLikeThread(threadLikeRepository.countLikeThread(user.getId()));
+                userRepository.save(userDao.get());
+
 
 
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadLikeDao, ThreadLikeDto.class), HttpStatus.OK);
@@ -89,6 +98,11 @@ public class ThreadLikeService {
                     Optional<NotificationDao> notification = notificationRepository.findByUserIdAndThreadIdAndInfo(threadDao.get().getUser().getId(), threadDao.get().getId(), "likethread");
                    Objects.requireNonNull(notification.orElse(null)).setIsRead(false);
                     notificationRepository.save(notification.get());
+
+                    Optional<UserDao> userDao = userRepository.findById(user.getId());
+                    Objects.requireNonNull(userDao.orElse(null)).setTotalLikeThread(threadLikeRepository.countLikeThread(user.getId()));
+                    userRepository.save(userDao.get());
+
                 } else {
                     threadLikeDaoOptional.get().setIsLike(false);
                     threadLikeRepository.save(threadLikeDaoOptional.get());
@@ -103,6 +117,10 @@ public class ThreadLikeService {
                         Objects.requireNonNull(notification.orElse(null)).setIsRead(true);
                         notificationRepository.save(notification.get());
                     }
+
+                    Optional<UserDao> userDao = userRepository.findById(user.getId());
+                    Objects.requireNonNull(userDao.orElse(null)).setTotalLikeThread(threadLikeRepository.countLikeThread(user.getId()));
+                    userRepository.save(userDao.get());
 
                 }
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadLikeDaoOptional, ThreadLikeDto.class), HttpStatus.OK);

@@ -81,5 +81,8 @@ public class UserDtoResponse implements Serializable {
 
     private Integer totalPostComments;
 
+    private Integer totalLikeThread;
+
+    private Integer totalLikeComment;
 
 }

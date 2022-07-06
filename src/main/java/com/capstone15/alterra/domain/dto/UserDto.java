@@ -42,4 +42,8 @@ public class UserDto implements Serializable {
 
     private Integer totalPostComments;
 
+    private Integer totalLikeThread;
+
+    private Integer totalLikeComment;
+
 }
