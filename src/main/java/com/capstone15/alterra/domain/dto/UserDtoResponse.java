@@ -73,6 +73,8 @@ public class UserDtoResponse implements Serializable {
 
     private List<NotificationDto> notifications;
 
+    private List<SaveThreadDto> saveThread;
+
     private Integer totalUserFollowers;
 
     private Integer totalUserFollowing;
