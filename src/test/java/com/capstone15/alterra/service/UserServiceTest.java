@@ -643,7 +643,7 @@ class UserServiceTest {
                 .build();
 
         Page<UserDao> userDaos = new PageImpl<>(List.of(userDao));
-        when(userRepository.findByOrderByTotalThreadsDesc(any())).thenReturn(userDaos);
+        when(userRepository.findUserRanking(any())).thenReturn(userDaos);
 
         ResponseEntity<Object> response = userService.getUserRankingByTotalThreadAndLike(any());
 
@@ -657,7 +657,7 @@ class UserServiceTest {
     @Test
     void getUserRankingByTotalThreadAndLikeNotFound_Test() {
         Page<UserDao> userDaos = new PageImpl<>(List.of());
-        when(userRepository.findByOrderByTotalThreadsDesc(any())).thenReturn(userDaos);
+        when(userRepository.findUserRanking(any())).thenReturn(userDaos);
 
         ResponseEntity<Object> response = userService.getUserRankingByTotalThreadAndLike(null);
 
@@ -670,7 +670,7 @@ class UserServiceTest {
 
     @Test
     void getUserRankingByTotalThreadAndLikeException_Test() {
-        when(userRepository.findByOrderByTotalThreadsDesc(any())).thenThrow(NullPointerException.class);
+        when(userRepository.findUserRanking(any())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> userService.getUserRankingByTotalThreadAndLike(any()));
 
     }
