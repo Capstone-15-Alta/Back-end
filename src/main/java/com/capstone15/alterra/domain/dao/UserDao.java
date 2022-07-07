@@ -140,6 +140,10 @@ public class UserDao  implements UserDetails {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<NotificationDao> notifications;
 
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<SaveThreadDao> saveThread;
+
 
     @Column(columnDefinition = "boolean default true")
     private boolean active = true;
