@@ -2,14 +2,12 @@ package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.dao.*;
-import com.capstone15.alterra.domain.dto.CommentDto;
+import com.capstone15.alterra.domain.dto.CommentDtoResponse;
 import com.capstone15.alterra.domain.dto.CommentReportDto;
-import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.domain.dto.ThreadReportDto;
+import com.capstone15.alterra.repository.CommentReportRepository;
+import com.capstone15.alterra.repository.CommentRepository;
 import com.capstone15.alterra.repository.NotificationRepository;
-import com.capstone15.alterra.repository.ThreadReportRepository;
-import com.capstone15.alterra.repository.ThreadRepository;
-import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -26,16 +24,13 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class ThreadReportService {
+public class CommentReportService {
 
     @Autowired
-    private ThreadReportRepository threadReportRepository;
+    private CommentReportRepository commentReportRepository;
 
     @Autowired
-    private ThreadRepository threadRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private CommentRepository commentRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -43,27 +38,27 @@ public class ThreadReportService {
     @Autowired
     private ModelMapper mapper;
 
-    public ResponseEntity<Object> addReport(ThreadReportDto request, UserDao user) {
+    public ResponseEntity<Object> addReport(CommentReportDto request, UserDao user) {
         log.info("Executing add report with request: {}", request);
         try{
-            log.info("Get thread by id: {}", request.getThreadId());
-            Optional<ThreadDao> threadDao = threadRepository.findById(request.getThreadId());
-            if (threadDao.isEmpty()) {
-                log.info("thread [{}] not found", request.getThreadId());
+            log.info("Get comment by id: {}", request.getCommentId());
+            Optional<CommentDao> commentDao = commentRepository.findById(request.getCommentId());
+            if (commentDao.isEmpty()) {
+                log.info("comment [{}] not found", request.getCommentId());
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
 
-            ThreadReportDao threadReportDao = mapper.map(request, ThreadReportDao.class);
-            threadReportDao.setUser(UserDao.builder().id(user.getId()).build());
-            threadReportDao.setThread(threadDao.get());
-            threadReportDao = threadReportRepository.save(threadReportDao);
+            CommentReportDao commentReportDao = mapper.map(request, CommentReportDao.class);
+            commentReportDao.setUser(UserDao.builder().id(user.getId()).build());
+            commentReportDao.setComment(commentDao.get());
+            commentReportDao = commentReportRepository.save(commentReportDao);
 
-            // fitur notification
-            if(!user.getId().equals(threadDao.get().getUser().getId())){
+            // notification
+            if(!user.getId().equals(commentDao.get().getUser().getId())){
                 NotificationDao notificationDao = NotificationDao.builder()
-                        .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
-                        .title("Moderator mereport thread anda: " + threadDao.get().getTitle())
-                        .threadId(threadDao.get().getId())
+                        .user(UserDao.builder().id(commentDao.get().getUser().getId()).build())
+                        .title("Moderator mereport comment anda: " + commentDao.get().getComment())
+                        .commentId(commentDao.get().getId())
                         .message(request.getReport())
                         .isRead(false)
                         .build();
@@ -72,17 +67,15 @@ public class ThreadReportService {
 
             NotificationDao notificationDao = NotificationDao.builder()
                     .user(UserDao.builder().id(2L).build())
-                    .title("Terdapat laporan pada thread: " + threadDao.get().getTitle())
-                    .threadId(threadDao.get().getId())
+                    .title("Terdapat laporan pada comment: " + commentDao.get().getComment())
+                    .commentId(commentDao.get().getId())
                     .message(request.getReport())
                     .isRead(false)
                     .build();
             notificationDao = notificationRepository.save(notificationDao);
 
-
-
             log.info("Executing add report success");
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadReportDao, ThreadReportDto.class), HttpStatus.OK);
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentReportDao, CommentReportDto.class), HttpStatus.OK);
 
         } catch (Exception e) {
             log.error("Happened error when add report. Error: {}", e.getMessage());
@@ -90,19 +83,20 @@ public class ThreadReportService {
             throw e;   }
     }
 
-    public ResponseEntity<Object> getReportByIdThread(Long id) {
+    public ResponseEntity<Object> getReportByIdComment(Long id) {
         log.info("Executing get all report.");
         try{
-            Optional<ThreadDao> threadDaoOptional = threadRepository.findById(id);
-            if(threadDaoOptional.isEmpty()) {
-                log.info("thread id: {} not found", id);
+            Optional<CommentDao> commentDaoOptional = commentRepository.findById(id);
+            if(commentDaoOptional.isEmpty()) {
+                log.info("comment id: {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            List<ThreadReportDao> daoList = threadDaoOptional.get().getThreadReports();
-            List<ThreadReportDto> list = new ArrayList<>();
-            for(ThreadReportDao dao : daoList){
-                list.add(mapper.map(dao, ThreadReportDto.class));
+            List<CommentReportDao> daoList = commentDaoOptional.get().getCommentReports();
+            List<CommentReportDto> list = new ArrayList<>();
+            for(CommentReportDao dao : daoList){
+                list.add(mapper.map(dao, CommentReportDto.class));
             }
+
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all report. Error: {}", e.getMessage());
@@ -111,18 +105,18 @@ public class ThreadReportService {
         }
     }
 
-    public ResponseEntity<Object> getReportThreadById(Long id) {
+    public ResponseEntity<Object> getReportCommentById(Long id) {
         log.info("Executing get report by id: {} ", id);
         try {
-            Optional<ThreadReportDao> threadReportDao = threadReportRepository.findById(id);
-            if(threadReportDao.isEmpty()) {
+            Optional<CommentReportDao> commentReportDao = commentReportRepository.findById(id);
+            if(commentReportDao.isEmpty()) {
                 log.info("report id: {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
             log.info("Executing get report by id success");
-            ThreadReportDto threadReportDto = mapper.map(threadReportDao, ThreadReportDto.class);
+            CommentReportDto commentDtoResponse = mapper.map(commentReportDao, CommentReportDto.class);
 
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadReportDto, HttpStatus.OK);
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, commentDtoResponse, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get report by id. Error: {}", e.getMessage());
             log.trace("Get error when get report by id. ", e);
@@ -133,16 +127,16 @@ public class ThreadReportService {
     public ResponseEntity<Object> deleteReport(Long id, UserDao user) {
         log.info("Executing delete report id: {}", id);
         try{
-            Optional<ThreadReportDao> threadReportDao = threadReportRepository.findById(id);
-            if(threadReportDao.isEmpty()) {
+            Optional<CommentReportDao> commentReportDao = commentReportRepository.findById(id);
+            if(commentReportDao.isEmpty()) {
                 log.info("report {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            if(!threadReportDao.get().getUser().getId().equals(user.getId()) && user.getRoles().equals("MODERATOR")) {
+            if(!commentReportDao.get().getUser().getId().equals(user.getId()) && user.getRoles().equals("MODERATOR")) {
                 log.info("report {} cant delete by user {}", id, user.getUsername());
                 return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            threadReportRepository.deleteById(id);
+            commentReportRepository.deleteById(id);
             log.info("Executing delete report success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, null, HttpStatus.OK);
         } catch (Exception e) {
@@ -152,24 +146,24 @@ public class ThreadReportService {
         }
     }
 
-    public ResponseEntity<Object> updateReport(Long id, ThreadReportDto request, UserDao user) {
+    public ResponseEntity<Object> updateReport(Long id, CommentReportDto request, UserDao user) {
         log.info("Executing update report with request: {}", request);
         try {
-            Optional<ThreadReportDao> threadReportDao = threadReportRepository.findById(id);
-            if(threadReportDao.isEmpty()) {
+            Optional<CommentReportDao> commentReportDao = commentReportRepository.findById(id);
+            if(commentReportDao.isEmpty()) {
                 log.info("report {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            if(!threadReportDao.get().getUser().getId().equals(user.getId()) && user.getRoles().equals("MODERATOR")) {
+            if(!commentReportDao.get().getUser().getId().equals(user.getId()) && user.getRoles().equals("MODERATOR")) {
                 log.info("report {} cant update by user {}", id, user.getUsername());
                 return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            threadReportDao.ifPresent(res -> {
+            commentReportDao.ifPresent(res -> {
                 res.setReport(request.getReport());
-                threadReportRepository.save(res);
+                commentReportRepository.save(res);
             });
             log.info("Executing update report success");
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadReportDao, ThreadReportDto.class), HttpStatus.OK);
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentReportDao, CommentReportDto.class), HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when update report. Error: {}", e.getMessage());
             log.trace("Get error when update report. ", e);
@@ -180,17 +174,18 @@ public class ThreadReportService {
     public ResponseEntity<Object> getAllReport(Pageable pageable) {
         log.info("Executing get all report.");
         try{
-            Page<ThreadReportDao> daoList = threadReportRepository.findAll(pageable);
+            Page<CommentReportDao> daoList = commentReportRepository.findAll(pageable);
             if(daoList.isEmpty()) {
                 log.info("report not found");
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            Page<ThreadReportDto> threadReportDtos = daoList.map(threadReportDao -> mapper.map(threadReportDao, ThreadReportDto.class));
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, threadReportDtos, HttpStatus.OK);
+            Page<CommentReportDto> commentReportDtos = daoList.map(commentReportDao -> mapper.map(commentReportDao, CommentReportDto.class));
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, commentReportDtos, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all report. Error: {}", e.getMessage());
             log.trace("Get error when get all report. ", e);
             throw e;
-        }  }
+        }
+    }
 
 }

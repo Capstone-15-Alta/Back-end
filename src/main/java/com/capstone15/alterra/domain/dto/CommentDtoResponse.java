@@ -17,20 +17,24 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CommentDto implements Serializable {
+public class CommentDtoResponse implements Serializable {
 
-    private static final long serialVersionUID = 2199294136539206542L;
-
+    private static final long serialVersionUID = 4999877947085235468L;
     private Long id;
-
-    private Long userId;
 
     private Long threadId;
 
     private String comment;
 
+    private UserDto user;
+
+    private List<CommentLikeDto> likes;
+
+    private List<CommentReportDto> reports;
+
     private Integer comment_likes;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime createdAt;
+
 }
