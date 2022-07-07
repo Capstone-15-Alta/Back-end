@@ -378,7 +378,7 @@ public class UserService implements UserDetailsService {
     public ResponseEntity<Object> getUserRankingByTotalThreadAndLike(Pageable pageable) {
         try {
             log.info("Executing search user by ranking");
-            Page<UserDao> userDaos = userRepository.findByOrderByTotalThreadsDesc(pageable);
+            Page<UserDao> userDaos = userRepository.findUserRanking(pageable);
 
             if(userDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);

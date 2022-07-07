@@ -110,10 +110,10 @@ public class UserController {
         return userService.updateUserCover( multipartFile, (UserDao) userDetails);
     }
 
-    @GetMapping(value = "/rank")
-    public ResponseEntity<Object> getUserByRankingFollower(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable){
-        return userService.getUserRankingByFollowers(pageable);
-    }
+//    @GetMapping(value = "/rank")
+//    public ResponseEntity<Object> getUserByRankingFollower(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable){
+//        return userService.getUserRankingByFollowers(pageable);
+//    }
 
     @GetMapping(value = "/ranking")
     public ResponseEntity<Object> getUserRankingByTotalThreadAndLike(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable){
