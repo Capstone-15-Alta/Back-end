@@ -64,6 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/v1/thread/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/category/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/comment/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/sub_comment/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/follow/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/like/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/save/**").permitAll()

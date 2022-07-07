@@ -56,6 +56,7 @@ public class CommentService {
             commentDao.setCreatedBy(user.getUsername());
             commentDao.setUser(UserDao.builder().id(user.getId()).build());
             commentDao.setThread(threadDao.get());
+            commentDao.setComment_likes(0);
             commentDao = commentRepository.save(commentDao);
 
             // fitur total komentar
