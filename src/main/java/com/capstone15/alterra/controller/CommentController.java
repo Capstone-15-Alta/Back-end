@@ -37,6 +37,11 @@ public class CommentController {
         return commentService.getCommentByIdUser(id);
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> getById(@PathVariable(value = "id") Long id){
+        return commentService.getCommentById(id);
+    }
+
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteComment(@PathVariable(value = "id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()

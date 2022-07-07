@@ -135,7 +135,7 @@ public class CommentLikeService {
                 log.info("comment id: {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            List<CommentLikeDao> daoList = commentDaoOptional.get().getCommentLikeDaoList();
+            List<CommentLikeDao> daoList = commentDaoOptional.get().getCommentLikes();
             List<CommentLikeDto> list = new ArrayList<>();
             for (CommentLikeDao dao : daoList) {
                 if(dao.getIsLike().equals(true)){

@@ -1,9 +1,9 @@
 package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.CommentDto;
+import com.capstone15.alterra.domain.dto.CommentReportDto;
 import com.capstone15.alterra.domain.dto.ThreadReportDto;
-import com.capstone15.alterra.service.ThreadReportService;
+import com.capstone15.alterra.service.CommentReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,40 +14,40 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/report_thread", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ThreadReportController {
+@RequestMapping(value = "/v1/report_comment", produces = MediaType.APPLICATION_JSON_VALUE)
+public class CommentReportController {
 
     @Autowired
-    private ThreadReportService threadReportService;
+    private CommentReportService commentReportService;
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> addReport(@RequestBody ThreadReportDto request) {
+    public ResponseEntity<Object> addReport(@RequestBody CommentReportDto request) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadReportService.addReport(request, (UserDao) userDetails);
+        return commentReportService.addReport(request, (UserDao) userDetails);
     }
 
-    @GetMapping(value = "/thread/{id}")
-    public ResponseEntity<Object> getByIdThread(@PathVariable(value = "id") Long id) {
-        return threadReportService.getReportByIdThread(id);
+    @GetMapping(value = "/comment/{id}")
+    public ResponseEntity<Object> getByIdComment(@PathVariable(value = "id") Long id) {
+        return commentReportService.getReportByIdComment(id);
     }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Object> getById(@PathVariable(value = "id") Long id){
-        return threadReportService.getReportThreadById(id);
+        return commentReportService.getReportCommentById(id);
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Object> deleteReport(@PathVariable(value = "id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadReportService.deleteReport(id, (UserDao) userDetails);
+        return commentReportService.deleteReport(id, (UserDao) userDetails);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Object> updateReport(@PathVariable(value = "id") Long id, @RequestBody ThreadReportDto request) {
+    public ResponseEntity<Object> updateReport(@PathVariable(value = "id") Long id, @RequestBody CommentReportDto request) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
-        return threadReportService.updateReport(id, request, (UserDao) userDetails);
+        return commentReportService.updateReport(id, request, (UserDao) userDetails);
     }
 }
