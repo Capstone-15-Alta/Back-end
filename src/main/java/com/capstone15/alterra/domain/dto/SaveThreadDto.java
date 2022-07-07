@@ -10,27 +10,23 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CommentDto implements Serializable {
+public class SaveThreadDto implements Serializable {
 
-    private static final long serialVersionUID = 2199294136539206542L;
-
-    private Long id;
+    private static final long serialVersionUID = -6412985880572720783L;
 
     private Long userId;
 
     private Long threadId;
 
-    private String comment;
-
-    private Integer comment_likes;
+    private Boolean isSave;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime createdAt;
+    private LocalDateTime saveTime;
+
 }

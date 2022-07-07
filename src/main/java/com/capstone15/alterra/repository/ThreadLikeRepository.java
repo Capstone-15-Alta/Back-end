@@ -22,4 +22,8 @@ public interface ThreadLikeRepository extends JpaRepository<ThreadLikeDao, Long>
     Integer countLikes(@Param("id") Long id);
 
    // Page<ThreadLikeDao> findAllthreadlike (Pageable pageable);
+
+    @Query(value = "SELECT count(tf) FROM ThreadLikeDao tf WHERE tf.isLike = true AND tf.user.id = :id ")
+    Integer countLikeThread(@Param("id") Long id);
+
 }

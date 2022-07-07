@@ -1,11 +1,9 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.CommentDao;
-import com.capstone15.alterra.domain.dao.NotificationDao;
-import com.capstone15.alterra.domain.dao.ThreadDao;
-import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dao.*;
 import com.capstone15.alterra.domain.dto.CommentDto;
+import com.capstone15.alterra.domain.dto.CommentDtoResponse;
 import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.repository.CommentRepository;
@@ -58,6 +56,7 @@ public class CommentService {
             commentDao.setCreatedBy(user.getUsername());
             commentDao.setUser(UserDao.builder().id(user.getId()).build());
             commentDao.setThread(threadDao.get());
+            commentDao.setComment_likes(0);
             commentDao = commentRepository.save(commentDao);
 
             // fitur total komentar
@@ -96,9 +95,9 @@ public class CommentService {
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
             List<CommentDao> daoList = threadDaoOptional.get().getComments();
-            List<CommentDto> list = new ArrayList<>();
+            List<CommentDtoResponse> list = new ArrayList<>();
             for(CommentDao dao : daoList){
-                list.add(mapper.map(dao, CommentDto.class));
+                list.add(mapper.map(dao, CommentDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
@@ -116,16 +115,36 @@ public class CommentService {
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
             List<CommentDao> daoList = userDaoOptional.get().getComments();
-            List<CommentDto> list = new ArrayList<>();
+            List<CommentDtoResponse> list = new ArrayList<>();
             for(CommentDao dao : daoList){
-                list.add(mapper.map(dao, CommentDto.class));
+                list.add(mapper.map(dao, CommentDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all comment. Error: {}", e.getMessage());
             log.trace("Get error when get all comment. ", e);
             throw e;
-        }  }
+        }
+    }
+
+    public ResponseEntity<Object> getCommentById(Long id) {
+        log.info("Executing get comment by id: {} ", id);
+        try {
+            Optional<CommentDao> commentDaoOptional = commentRepository.findById(id);
+            if(commentDaoOptional.isEmpty()) {
+                log.info("comment id: {} not found", id);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            log.info("Executing get comment by id success");
+            CommentDtoResponse commentDtoResponse = mapper.map(commentDaoOptional, CommentDtoResponse.class);
+
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, commentDtoResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when get comment by id. Error: {}", e.getMessage());
+            log.trace("Get error when get comment by id. ", e);
+            throw e;
+        }
+    }
 
     public ResponseEntity<Object> deleteComment(Long id, UserDao user) {
         log.info("Executing delete comment id: {}", id);

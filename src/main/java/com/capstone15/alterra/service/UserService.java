@@ -73,6 +73,10 @@ public class UserService implements UserDetailsService {
         log.info("Executing get all user.");
         try{
             Page<UserDao> daoList = userRepository.findAll(pageable);
+            if(daoList.isEmpty()) {
+                log.info("user not found");
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
             Page<UserDtoResponse> userDtoResponses = daoList.map(userDao -> mapper.map(userDao, UserDtoResponse.class));
 
             return ResponseUtil.build(AppConstant.Message.SUCCESS, userDtoResponses, HttpStatus.OK);
@@ -218,65 +222,7 @@ public class UserService implements UserDetailsService {
         }
 
     }
-
-    public ResponseEntity<Object> updateUser(Long id, UserDtoResponse request, MultipartFile multipartFile, UserDao user) throws IOException {
-        log.info("Executing update user with request: {}", request);
-        try {
-            Optional<UserDao> userDao = userRepository.findById(id);
-            if(userDao.isEmpty()) {
-                log.info("user {} not found", id);
-                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
-            }
-            if(!userDao.get().getId().equals(user.getId()) && user.getRoles().equals("USER")) {
-                log.info("User {} cant update by user {}", id, user.getUsername());
-                return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            if(multipartFile == null) {
-                userDao.ifPresent(res -> {
-                    res.setPhone(request.getPhone());
-                    res.setEmail(request.getEmail());
-                    res.setFirstName(request.getFirstName());
-                    res.setLastName(request.getLastName());
-                    res.setBirthDate(request.getBirthDate());
-                    res.setEducation(request.getEducation());
-                    res.setGender(request.getGender());
-                    res.setCountry(request.getCountry());
-                    res.setCity(request.getCity());
-                    res.setZipCode(request.getZipCode());
-                    userRepository.save(res);
-                });
-                log.info("Executing update user success");
-                return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userDao, UserDtoResponse.class), HttpStatus.OK);
-            }
-            String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-            long size = multipartFile.getSize();
-            String filecode = FileUploadUtil.saveFile(fileName, multipartFile);
-
-            userDao.ifPresent(res -> {
-                res.setPhone(request.getPhone());
-                res.setEmail(request.getEmail());
-                res.setFirstName(request.getFirstName());
-                res.setLastName(request.getLastName());
-                res.setFileName(fileName);
-                res.setSize(size);
-                res.setImage(apiUrl + "/images/" + filecode);
-                res.setBirthDate(request.getBirthDate());
-                res.setEducation(request.getEducation());
-                res.setGender(request.getGender());
-                res.setCountry(request.getCountry());
-                res.setCity(request.getCity());
-                res.setZipCode(request.getZipCode());
-                userRepository.save(res);
-            });
-            log.info("Executing update user success");
-            return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(userDao, UserDtoResponse.class), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error("Happened error when update user. Error: {}", e.getMessage());
-            log.trace("Get error when update user. ", e);
-            throw e;
-        }
-    }
+    
 
     public ResponseEntity<Object> updateUserInfo(UserDtoResponse request, MultipartFile photo, MultipartFile cover, UserDao user) throws IOException {
         log.info("Executing update user with request: {}", request);
@@ -432,7 +378,7 @@ public class UserService implements UserDetailsService {
     public ResponseEntity<Object> getUserRankingByTotalThreadAndLike(Pageable pageable) {
         try {
             log.info("Executing search user by ranking");
-            Page<UserDao> userDaos = userRepository.findByOrderByTotalThreadsDesc(pageable);
+            Page<UserDao> userDaos = userRepository.findUserRanking(pageable);
 
             if(userDaos.isEmpty()){
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.NOT_FOUND);

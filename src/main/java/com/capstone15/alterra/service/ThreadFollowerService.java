@@ -34,9 +34,6 @@ public class ThreadFollowerService {
     private ThreadRepository threadRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private NotificationRepository notificationRepository;
 
     @Autowired

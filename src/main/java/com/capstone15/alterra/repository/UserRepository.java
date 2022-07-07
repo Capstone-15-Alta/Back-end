@@ -5,8 +5,10 @@ import com.capstone15.alterra.domain.dao.UserDao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +31,9 @@ public interface UserRepository extends JpaRepository<UserDao, Long> {
    // List<UserDao> findByOrderByThreads_SizeDescThreads_Thread_likesDesc();
 
     Page<UserDao> findByOrderByTotalThreadsDesc(Pageable pageable);
+
+    @Query(value = "SELECT u FROM UserDao u ORDER BY u.totalThreads DESC, u.totalLikeThread DESC ")
+    Page<UserDao> findUserRanking(Pageable pageable);
 
 
 
