@@ -51,6 +51,8 @@ public class ThreadDtoResponse implements Serializable {
 
     private List<ThreadLikeDto> likes;
 
+    private List<SaveThreadDto> save;
+
     private List<ThreadReportDto> reports;
 
     private Integer thread_followers;
