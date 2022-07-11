@@ -18,10 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -95,6 +92,7 @@ public class CommentService {
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
             List<CommentDao> daoList = threadDaoOptional.get().getComments();
+            Collections.reverse(daoList);
             List<CommentDtoResponse> list = new ArrayList<>();
             for(CommentDao dao : daoList){
                 list.add(mapper.map(dao, CommentDtoResponse.class));
