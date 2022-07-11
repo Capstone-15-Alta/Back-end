@@ -40,8 +40,8 @@ public class CORSFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpServletRequest req = (HttpServletRequest) request;
 
-        List<ThreadDao> threadDaos = threadRepository.findAll();
-        final int total = threadDaos.size();
+//        List<ThreadDao> threadDaos = threadRepository.findAll();
+//        final int total = threadDaos.size();
 
         if (production) {
             List<String> origins = new ArrayList<>(Arrays.asList(origin.split(",")));
@@ -61,7 +61,7 @@ public class CORSFilter implements Filter {
         resp.setHeader("Access-Control-Allow-Headers", headers);
         resp.setHeader("Access-Control-Max-Age", maxAge);
         resp.setHeader("Access-Control-Allow-Credentials", "true");
-        resp.setHeader("Total-Thread", String.valueOf(total));
+//        resp.setHeader("Total-Thread", String.valueOf(total));
 
 
         if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
