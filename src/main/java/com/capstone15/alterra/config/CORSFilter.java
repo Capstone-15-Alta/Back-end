@@ -2,6 +2,7 @@ package com.capstone15.alterra.config;
 
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.repository.ThreadRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CORSFilter implements Filter {
@@ -40,6 +42,7 @@ public class CORSFilter implements Filter {
         HttpServletResponse resp = (HttpServletResponse) response;
         HttpServletRequest req = (HttpServletRequest) request;
 
+        log.info("remote url {}", req.getRemoteAddr());
 //        List<ThreadDao> threadDaos = threadRepository.findAll();
 //        final int total = threadDaos.size();
 
