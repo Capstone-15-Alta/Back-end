@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/sub_comment", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v1/sub_comment", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class SubCommentController {
 
     @Autowired
