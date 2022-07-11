@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/report_thread", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v1/report_thread", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class ThreadReportController {
 
     @Autowired

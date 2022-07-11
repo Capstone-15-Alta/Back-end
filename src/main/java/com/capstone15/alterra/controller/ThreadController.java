@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/thread", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v1/thread", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 public class ThreadController {
 
     @Autowired
