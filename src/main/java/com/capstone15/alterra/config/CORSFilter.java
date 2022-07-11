@@ -23,8 +23,8 @@ import java.util.Optional;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CORSFilter implements Filter {
 
-    @Autowired
-    private ThreadRepository threadRepository;
+//    @Autowired
+//    private ThreadRepository threadRepository;
 
     @Value("${app.origin:*}")
     private String origin;
@@ -54,7 +54,7 @@ public class CORSFilter implements Filter {
                     .findFirst();
             result.ifPresent(s -> resp.setHeader("Access-Control-Allow-Origin", s));
         } else {
-            resp.setHeader("Access-Control-Allow-Origin", req.getHeader("Origin"));
+            resp.setHeader("Access-Control-Allow-Origin", "*");
         }
 
         String methods = "GET, POST, PATCH, PUT, DELETE, OPTIONS";
