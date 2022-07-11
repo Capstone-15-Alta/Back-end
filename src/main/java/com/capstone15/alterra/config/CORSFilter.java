@@ -54,7 +54,7 @@ public class CORSFilter implements Filter {
                     .findFirst();
             result.ifPresent(s -> resp.setHeader("Access-Control-Allow-Origin", s));
         } else {
-            resp.setHeader("Access-Control-Allow-Origin", "*");
+            resp.setHeader("Access-Control-Allow-Origin", req.getHeader("Origin"));
         }
 
         String methods = "GET, POST, PATCH, PUT, DELETE, OPTIONS";
