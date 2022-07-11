@@ -26,7 +26,7 @@ import java.io.IOException;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/user", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v1/user", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
     @Autowired
