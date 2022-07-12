@@ -1,10 +1,10 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.*;
+import com.capstone15.alterra.domain.dao.SaveThreadDao;
+import com.capstone15.alterra.domain.dao.ThreadDao;
+import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.SaveThreadDto;
-import com.capstone15.alterra.domain.dto.ThreadFollowerDto;
-import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.SaveThreadRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
@@ -16,7 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service

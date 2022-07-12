@@ -2,44 +2,41 @@ package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.common.ApiResponse;
-import com.capstone15.alterra.domain.common.ApiResponse2;
 import com.capstone15.alterra.domain.dao.CategoryDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.ThreadViewDao;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
-import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.repository.CategoryRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.ThreadViewRepository;
 import com.capstone15.alterra.repository.UserRepository;
-import com.capstone15.alterra.util.ResponseUtil;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = ThreadService.class)

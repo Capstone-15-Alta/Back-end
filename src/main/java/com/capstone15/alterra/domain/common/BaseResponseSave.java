@@ -10,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

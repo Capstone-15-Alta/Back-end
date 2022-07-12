@@ -6,12 +6,10 @@ import com.capstone15.alterra.domain.dao.NotificationDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.ThreadFollowerDao;
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.ThreadFollowerDto;
 import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadFollowerRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
-import com.capstone15.alterra.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
@@ -26,7 +24,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 

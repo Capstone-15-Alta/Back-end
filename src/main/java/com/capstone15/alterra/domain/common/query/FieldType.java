@@ -2,7 +2,6 @@ package com.capstone15.alterra.domain.common.query;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 public enum FieldType {
 
