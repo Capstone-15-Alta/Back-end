@@ -100,9 +100,9 @@ public class SecurityConfig extends WebSecurityConfiguration {
 
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                log.debug("Allowed origin list: {}", allowedOrigins);
+                log.info("Allowed origin list: {}", allowedOrigins);
                 registry.addMapping("/**")
-                        .allowedOrigins("https://ruangdiskusi.netlify.app")
+                        .allowedOrigins(allowedOrigins.toArray(new String[0]))
                         .allowedHeaders("X-Requested-With", "Origin", "Content-Type", "Accept", "Credential", "Authorization", "X-XSRF-TOKEN")
                         .allowedMethods("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH")
                         .maxAge(3600L)
