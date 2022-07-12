@@ -32,7 +32,7 @@ public class BeanConfiguration {
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Origin", "Content-Type", "Accept", "Credential", "Authorization", "X-XSRF-TOKEN"));
         configuration.setMaxAge(3600L);
         configuration.setAllowCredentials(true);
-
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
