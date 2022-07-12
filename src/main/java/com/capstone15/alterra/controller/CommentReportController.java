@@ -2,7 +2,6 @@ package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.CommentReportDto;
-import com.capstone15.alterra.domain.dto.ThreadReportDto;
 import com.capstone15.alterra.service.CommentReportService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

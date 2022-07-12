@@ -1,6 +1,6 @@
 package com.capstone15.alterra.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
@@ -9,18 +9,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CategoryDto implements Serializable {
+public class ThreadReportDtoResponse implements Serializable {
 
-    private static final long serialVersionUID = -5502534722673069161L;
-
+    private static final long serialVersionUID = 689343098374585552L;
     private Long id;
 
-    private String categoryName;
+    private UserDto user;
+
+    private ThreadDto thread;
+
+    private String report;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
+    private LocalDateTime reportTime;
 }

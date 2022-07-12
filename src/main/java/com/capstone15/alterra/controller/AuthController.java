@@ -1,8 +1,6 @@
 package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.domain.dto.payload.TokenResponse;
 import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
 import com.capstone15.alterra.domain.dto.payload.UsernamePasswordFGD;

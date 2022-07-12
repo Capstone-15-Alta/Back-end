@@ -1,9 +1,10 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.*;
-import com.capstone15.alterra.domain.dto.CommentDto;
-import com.capstone15.alterra.domain.dto.CommentDtoResponse;
+import com.capstone15.alterra.domain.dao.CommentDao;
+import com.capstone15.alterra.domain.dao.NotificationDao;
+import com.capstone15.alterra.domain.dao.SubCommentDao;
+import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.SubCommentDto;
 import com.capstone15.alterra.repository.CommentRepository;
 import com.capstone15.alterra.repository.NotificationRepository;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j

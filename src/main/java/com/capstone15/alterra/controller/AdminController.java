@@ -1,7 +1,5 @@
 package com.capstone15.alterra.controller;
 
-import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.service.CommentReportService;
 import com.capstone15.alterra.service.ThreadReportService;
 import com.capstone15.alterra.service.UserService;
@@ -12,8 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j

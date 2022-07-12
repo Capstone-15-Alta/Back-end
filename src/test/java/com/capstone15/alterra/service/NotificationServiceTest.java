@@ -3,8 +3,6 @@ package com.capstone15.alterra.service;
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.common.ApiResponse;
 import com.capstone15.alterra.domain.dao.NotificationDao;
-import com.capstone15.alterra.domain.dao.ThreadDao;
-import com.capstone15.alterra.domain.dao.ThreadFollowerDao;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.NotificationDto;
 import com.capstone15.alterra.repository.NotificationRepository;
@@ -24,7 +22,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 

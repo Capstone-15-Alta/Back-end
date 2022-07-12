@@ -1,11 +1,9 @@
 package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.UserDtoResponse;
 import com.capstone15.alterra.service.UserService;
 import com.capstone15.alterra.util.ResponseUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

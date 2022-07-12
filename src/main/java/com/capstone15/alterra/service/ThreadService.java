@@ -1,8 +1,12 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.*;
-import com.capstone15.alterra.domain.dto.*;
+import com.capstone15.alterra.domain.dao.CategoryDao;
+import com.capstone15.alterra.domain.dao.ThreadDao;
+import com.capstone15.alterra.domain.dao.ThreadViewDao;
+import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dto.ThreadDto;
+import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
 import com.capstone15.alterra.repository.CategoryRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.ThreadViewRepository;
@@ -13,20 +17,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.*;
-import java.util.function.Function;
 
 @Slf4j
 @Service

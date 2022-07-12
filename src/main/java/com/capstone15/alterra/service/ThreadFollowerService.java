@@ -1,15 +1,14 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.*;
-import com.capstone15.alterra.domain.dto.CommentDto;
-import com.capstone15.alterra.domain.dto.ThreadDto;
-import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
+import com.capstone15.alterra.domain.dao.NotificationDao;
+import com.capstone15.alterra.domain.dao.ThreadDao;
+import com.capstone15.alterra.domain.dao.ThreadFollowerDao;
+import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.ThreadFollowerDto;
 import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadFollowerRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
-import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
