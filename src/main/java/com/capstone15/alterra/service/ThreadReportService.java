@@ -6,6 +6,7 @@ import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.ThreadReportDao;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.ThreadReportDto;
+import com.capstone15.alterra.domain.dto.ThreadReportDtoResponse;
 import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadReportRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
@@ -185,7 +186,7 @@ public class ThreadReportService {
                 log.info("report not found");
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            Page<ThreadReportDto> threadReportDtos = daoList.map(threadReportDao -> mapper.map(threadReportDao, ThreadReportDto.class));
+            Page<ThreadReportDtoResponse> threadReportDtos = daoList.map(threadReportDao -> mapper.map(threadReportDao, ThreadReportDtoResponse.class));
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadReportDtos, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all report. Error: {}", e.getMessage());
