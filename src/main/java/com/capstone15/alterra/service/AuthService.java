@@ -3,7 +3,6 @@ package com.capstone15.alterra.service;
 import com.capstone15.alterra.config.security.JwtTokenProvider;
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.domain.dto.payload.TokenResponse;
 import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
 import com.capstone15.alterra.domain.dto.payload.UsernamePasswordFGD;
@@ -13,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,8 +21,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Log4j2
 @Service

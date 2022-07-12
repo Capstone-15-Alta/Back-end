@@ -1,12 +1,10 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.CategoryDao;
-import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.*;
+import com.capstone15.alterra.domain.dto.UserDto;
+import com.capstone15.alterra.domain.dto.UserDtoResponse;
 import com.capstone15.alterra.repository.ThreadRepository;
-import com.capstone15.alterra.repository.ThreadViewRepository;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.FileUploadUtil;
 import com.capstone15.alterra.util.ResponseUtil;
@@ -37,8 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 

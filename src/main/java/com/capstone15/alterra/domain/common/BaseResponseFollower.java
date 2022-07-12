@@ -1,6 +1,5 @@
 package com.capstone15.alterra.domain.common;
 
-import com.capstone15.alterra.constant.AppConstant;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

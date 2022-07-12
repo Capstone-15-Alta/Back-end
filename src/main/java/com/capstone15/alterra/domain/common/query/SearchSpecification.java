@@ -1,6 +1,5 @@
 package com.capstone15.alterra.domain.common.query;
 
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
