@@ -33,6 +33,8 @@ public class ThreadDto implements Serializable {
 
     private Integer thread_likes;
 
+    private Integer totalComments;
+
     private ThreadViewDto view;
 
 }

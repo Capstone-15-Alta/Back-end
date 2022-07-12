@@ -78,6 +78,7 @@ public class ThreadService {
                         .user(UserDao.builder().id(user.getId()).build())
                         .thread_followers(0)
                         .thread_likes(0)
+                        .totalComments(0)
                         .view(ThreadViewDao.builder().views(0).build())
                         .build();
                 threadDao = threadRepository.save(threadDao);

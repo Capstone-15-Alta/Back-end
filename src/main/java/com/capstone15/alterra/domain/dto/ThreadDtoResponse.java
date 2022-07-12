@@ -42,7 +42,7 @@ public class ThreadDtoResponse implements Serializable {
 
     private UserDto user;
 
-    private List<CommentDto> comments;
+    private List<CommentDtoResponse> comments;
 
     private List<ThreadFollowerDto> followers;
 
@@ -55,6 +55,8 @@ public class ThreadDtoResponse implements Serializable {
     private Integer thread_followers;
 
     private Integer thread_likes;
+
+    private Integer totalComments;
 
     private ThreadViewDto view;
 

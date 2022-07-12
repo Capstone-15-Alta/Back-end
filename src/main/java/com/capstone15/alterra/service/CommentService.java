@@ -62,6 +62,11 @@ public class CommentService {
             Objects.requireNonNull(userDao.orElse(null)).setTotalPostComments(commentRepository.countComments(user.getId()));
             userRepository.save(userDao.get());
 
+            // total komen thread
+            Optional<ThreadDao> threadDao1 = threadRepository.findById(request.getThreadId());
+            Objects.requireNonNull(threadDao1.orElse(null)).setTotalComments(commentRepository.countCommentsThread(request.getThreadId()));
+            threadRepository.save(threadDao1.get());
+
             // fitur notification
             if(!user.getId().equals(threadDao.get().getUser().getId())){
                 NotificationDao notificationDao = NotificationDao.builder()
