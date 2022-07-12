@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider tokenProvider) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.httpBasic().and().cors().and().csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/v1/auth/**").permitAll()
@@ -94,19 +94,14 @@ public class SecurityConfig extends WebSecurityConfiguration {
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
-
-            @Value("#{'${app.allowed-origins:}'.split(',')}")
-            private List<String> allowedOrigins;
-
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                log.info("Allowed origin list: {}", allowedOrigins);
                 registry.addMapping("/**")
-                        .allowedOrigins(allowedOrigins.toArray(new String[0]))
+                        .allowedOrigins("*")
                         .allowedHeaders("X-Requested-With", "Origin", "Content-Type", "Accept", "Credential", "Authorization", "X-XSRF-TOKEN")
                         .allowedMethods("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH")
                         .maxAge(3600L)
-                        .allowCredentials(true);
+                        .allowCredentials(false);
             }
         };
     }
