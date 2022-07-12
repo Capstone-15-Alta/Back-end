@@ -18,7 +18,7 @@ public interface ThreadRepository extends JpaRepository<ThreadDao, Long> {
 
     Page<ThreadDao>findThreadDaoByCategoryCategoryNameContainingIgnoreCase(String categoryName, Pageable pageable);
 
-    @Query(value = "SELECT t FROM ThreadDao t ORDER BY t.thread_likes DESC")
+    @Query(value = "SELECT t FROM ThreadDao t ORDER BY t.thread_likes DESC, t.totalComments DESC")
     Page<ThreadDao> findAllPopularThread(Pageable pageable);
 
     Page<ThreadDao> findAllBy(Pageable pageable);

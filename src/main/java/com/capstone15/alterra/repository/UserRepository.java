@@ -19,6 +19,9 @@ public interface UserRepository extends JpaRepository<UserDao, Long> {
     @Query("SELECT c FROM UserDao c WHERE c.email = ?1")
     Optional<UserDao> findByEmails(String email);
 
+    @Query("SELECT c FROM UserDao c WHERE c.username = ?1")
+    Optional<UserDao> findByUsername(String username);
+
     public UserDao findByResetPasswordToken(String token);
 
     @Query(value = "SELECT t FROM UserDao t ORDER BY t.totalUserFollowers DESC")

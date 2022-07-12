@@ -80,6 +80,9 @@ public class ThreadDao extends BaseResponse {
     @Column(name = "likes")
     private Integer thread_likes = 0;
 
+    @Column(name = "total_comments")
+    private Integer totalComments = 0;
+
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     private ThreadViewDao view;
