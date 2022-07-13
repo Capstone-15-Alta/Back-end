@@ -10,9 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,8 +36,9 @@ public class UserDao  implements UserDetails {
 
     @Column(name = "email", unique = true, nullable = false)
     @Email
-    @NotBlank(message = "email cant null !")
+    @NotNull
     private String email;
+
 
     @Column(name = "password", nullable = false)
     private String password;
