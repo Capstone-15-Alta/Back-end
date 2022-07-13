@@ -41,7 +41,7 @@ public class ThreadDtoResponse2 implements Serializable {
 
     private String createdBy;
 
-    private UserDto user;
+    private Long userId;
 
     private List<CommentDto> comments;
 
