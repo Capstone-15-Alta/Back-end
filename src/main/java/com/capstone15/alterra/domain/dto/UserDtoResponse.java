@@ -68,11 +68,11 @@ public class UserDtoResponse implements Serializable {
 
     private List<UserFollowerDtoResponse> userFollowers;
 
-    private List<UserFollowerDtoResponse> userFollowing;
+    private List<UserFollowingDtoResponse> userFollowing;
 
     private List<NotificationDto> notifications;
 
-    private List<SaveThreadDto> saveThread;
+    private List<SaveThreadDtoResponse2> saveThread;
 
     private Integer totalUserFollowers;
 

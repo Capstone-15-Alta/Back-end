@@ -1,6 +1,5 @@
 package com.capstone15.alterra.domain.dto;
 
-import com.capstone15.alterra.domain.dao.UserDao;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -17,16 +16,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UserFollowerDtoResponse implements Serializable {
+public class SaveThreadDtoResponse2 implements Serializable {
 
-    private static final long serialVersionUID = 270556033119557186L;
 
-    private UserDto userFollower;
+    private static final long serialVersionUID = 4014444632518944938L;
+    private Long userId;
 
-    private Long userFollowedId;
+    private ThreadDto thread;
 
-    private Boolean isFollow;
+    private Boolean isSave;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
-    private LocalDateTime followTime;
+    private LocalDateTime saveTime;
+
 }
