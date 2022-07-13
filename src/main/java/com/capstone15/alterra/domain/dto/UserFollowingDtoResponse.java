@@ -17,13 +17,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UserFollowerDtoResponse implements Serializable {
+public class UserFollowingDtoResponse implements Serializable {
 
-    private static final long serialVersionUID = 270556033119557186L;
 
-    private UserDto userFollower;
+    private static final long serialVersionUID = -2127691367421804847L;
+    private Long userFollowerId;
 
-    private Long userFollowedId;
+    private UserDto userFollowedId;
 
     private Boolean isFollow;
 
