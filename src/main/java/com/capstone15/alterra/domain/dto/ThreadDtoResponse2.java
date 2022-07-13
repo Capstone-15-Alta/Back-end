@@ -1,6 +1,9 @@
 package com.capstone15.alterra.domain.dto;
 
 import com.capstone15.alterra.domain.dao.CategoryDao;
+import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
+import com.capstone15.alterra.domain.dto.payload.UsernamePasswordFGD;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
