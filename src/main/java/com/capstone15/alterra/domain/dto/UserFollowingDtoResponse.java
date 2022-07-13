@@ -23,7 +23,7 @@ public class UserFollowingDtoResponse implements Serializable {
     private static final long serialVersionUID = -2127691367421804847L;
     private Long userFollowerId;
 
-    private UserDto userFollowedId;
+    private UserDto userFollowed;
 
     private Boolean isFollow;
 
