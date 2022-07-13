@@ -58,7 +58,7 @@ public class SaveThreadService {
                         .build();
                 saveThreadDao = saveThreadRepository.save(saveThreadDao);
                 log.info("Executing save thread success");
-                return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(saveThreadDao, SaveThreadDtoResponse3.class), HttpStatus.OK);
+                return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(saveThreadDao, SaveThreadDtoResponse2.class), HttpStatus.OK);
 
             } else {
                 if (saveThreadDaoOptional.get().getIsSave().equals(false)) {
@@ -72,7 +72,7 @@ public class SaveThreadService {
                     log.info("Executing unsave thread success");
 
                 }
-                return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(saveThreadDaoOptional, SaveThreadDtoResponse3.class), HttpStatus.OK);
+                return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(saveThreadDaoOptional, SaveThreadDtoResponse2.class), HttpStatus.OK);
             }
         } catch (Exception e){
             log.error("Happened error when follow thread. Error: {}", e.getMessage());
