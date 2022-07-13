@@ -66,7 +66,7 @@ public class AuthService {
             UserDao user = new UserDao();
             user.setUsername(req.getUsername().toLowerCase(Locale.ROOT).replace(" ", ""));
             user.setPassword(passwordEncoder.encode(req.getPassword()));
-            user.setEmail(req.getEmail().toLowerCase());
+            user.setEmail(req.getEmail().toLowerCase(Locale.ROOT));
 
             user = userRepository.save(user);
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(user, UsernamePasswordFGD.class), HttpStatus.OK);
