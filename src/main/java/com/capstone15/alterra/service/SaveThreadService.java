@@ -7,6 +7,7 @@ import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.SaveThreadDto;
 import com.capstone15.alterra.domain.dto.SaveThreadDtoResponse2;
 import com.capstone15.alterra.domain.dto.SaveThreadDtoResponse3;
+import com.capstone15.alterra.domain.dto.SaveThreadDtoResponse4;
 import com.capstone15.alterra.repository.SaveThreadRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
@@ -91,9 +92,9 @@ public class SaveThreadService {
             }
             List<SaveThreadDao> daoList = userDaoOptional.get().getSaveThread();
             Collections.reverse(daoList);
-            List<SaveThreadDto> list = new ArrayList<>();
+            List<SaveThreadDtoResponse4> list = new ArrayList<>();
             for(SaveThreadDao dao : daoList){
-                    list.add(mapper.map(dao, SaveThreadDto.class));
+                    list.add(mapper.map(dao, SaveThreadDtoResponse4.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
