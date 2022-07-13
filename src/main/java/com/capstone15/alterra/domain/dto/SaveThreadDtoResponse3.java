@@ -22,7 +22,7 @@ public class SaveThreadDtoResponse3 implements Serializable {
     private static final long serialVersionUID = 1541132040032769204L;
     private Long userId;
 
-    private ThreadDtoResponse thread;
+    private ThreadDtoResponse2 thread;
 
     private Boolean isSave;
 
