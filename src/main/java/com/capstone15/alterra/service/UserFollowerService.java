@@ -118,7 +118,7 @@ public class UserFollowerService {
             throw e;   }
     }
 
-    public ResponseEntity<Object> getFollowerByIdUser(Long id) {
+    public ResponseEntity<Object>getFollowerByIdUser(Long id) {
         log.info("Executing get follower by id user.");
         try{
             Optional<UserDao> userDaoOptional = userRepository.findById(id);
