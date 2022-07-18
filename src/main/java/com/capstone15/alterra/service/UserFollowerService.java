@@ -1,10 +1,10 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.*;
-import com.capstone15.alterra.domain.dto.ThreadFollowerDto;
+import com.capstone15.alterra.domain.dao.NotificationDao;
+import com.capstone15.alterra.domain.dao.UserDao;
+import com.capstone15.alterra.domain.dao.UserFollowerDao;
 import com.capstone15.alterra.domain.dto.UserFollowerDto;
-import com.capstone15.alterra.domain.dto.UserFollowerDtoResponse;
 import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.UserFollowerRepository;
 import com.capstone15.alterra.repository.UserRepository;
@@ -46,6 +46,11 @@ public class UserFollowerService {
                 log.info("user [{}] not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
+            if(user.getId().equals(id)){
+                log.info("user [{}] cant follow yourself ", id);
+                return ResponseUtil.build(AppConstant.Message.UNKNOWN_ERROR, null, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
             Optional<UserFollowerDao> userFollowerDaoOptional = userFollowerRepository.findByUserFollowerIdAndUserFollowedId(user.getId(), id);
             if (userFollowerDaoOptional.isEmpty()) {
                 UserFollowerDao userFollowerDao = UserFollowerDao.builder()

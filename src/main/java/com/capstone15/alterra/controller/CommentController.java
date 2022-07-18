@@ -2,7 +2,6 @@ package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.CommentDto;
-import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,11 @@ public class CommentController {
     @GetMapping(value = "/user/{id}")
     public ResponseEntity<Object> getByIdUser(@PathVariable(value = "id") Long id){
         return commentService.getCommentByIdUser(id);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> getById(@PathVariable(value = "id") Long id){
+        return commentService.getCommentById(id);
     }
 
     @DeleteMapping(value = "/{id}")

@@ -1,7 +1,6 @@
 package com.capstone15.alterra.domain.dto;
 
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dao.UserFollowerDao;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -22,9 +21,9 @@ public class UserFollowerDtoResponse implements Serializable {
 
     private static final long serialVersionUID = 270556033119557186L;
 
-    private UserDao userFollower;
+    private UserDto userFollower;
 
-    private UserDao userFollowed;
+    private Long userFollowedId;
 
     private Boolean isFollow;
 

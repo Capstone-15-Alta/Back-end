@@ -19,7 +19,7 @@ public class CommentLikeController {
     private CommentLikeService commentLikeService;
 
     @PutMapping(value = "/comment/{id}")
-    public ResponseEntity<Object> likeThread(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Object> likeComment(@PathVariable(value = "id") Long id) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         return commentLikeService.likeComment(id, (UserDao) userDetails);

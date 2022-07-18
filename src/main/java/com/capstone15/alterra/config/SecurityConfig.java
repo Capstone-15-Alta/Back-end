@@ -2,26 +2,31 @@ package com.capstone15.alterra.config;
 
 import com.capstone15.alterra.config.security.SecurityFilter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig extends WebSecurityConfiguration {
 
-    private final UserDetailsService userDetailsService;
     private final SecurityFilter securityFilter;
 
     private static final String[] AUTH_WHITELIST = {
@@ -42,44 +47,59 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
+    @Bean
+    protected AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
-    @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeRequests()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.httpBasic().and().cors().and().csrf().disable()
+                .authorizeHttpRequests()
                 .antMatchers("/v1/auth/**").permitAll()
                 .antMatchers("/v1/user/**").permitAll()
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/thread/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/category/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/comment/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/sub_comment/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/follow/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/like/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/save/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/images/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/v1/report/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/v1/report/**").hasAuthority("MODERATOR")
-                .antMatchers(HttpMethod.DELETE, "/v1/report/**").hasAuthority("MODERATOR")
-                .antMatchers(HttpMethod.PUT, "/v1/report/**").hasAuthority("MODERATOR")
+                .antMatchers(HttpMethod.GET, "/v1/report_thread/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/report_comment/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/v1/report_thread/**").hasAuthority("MODERATOR")
+                .antMatchers(HttpMethod.DELETE, "/v1/report_thread/**").hasAuthority("MODERATOR")
+                .antMatchers(HttpMethod.PUT, "/v1/report_thread/**").hasAuthority("MODERATOR")
+                .antMatchers(HttpMethod.POST, "/v1/report_comment/**").hasAuthority("MODERATOR")
+                .antMatchers(HttpMethod.DELETE, "/v1/report_comment/**").hasAuthority("MODERATOR")
+                .antMatchers(HttpMethod.PUT, "/v1/report_comment/**").hasAuthority("MODERATOR")
                 .antMatchers(HttpMethod.DELETE, "/v1/category").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.POST, "/v1/category").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/v1/category").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.PUT, "/v1/admin/**").hasAuthority("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/v1/admin/**").hasAuthority("ADMIN")
-                .anyRequest().authenticated();
-        // remove session
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        // filter jwt
+                .antMatchers(HttpMethod.GET, "/v1/admin/**").hasAuthority("ADMIN")
+                .anyRequest().authenticated().and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("*")
+                        .allowedHeaders("X-Requested-With", "Origin", "Content-Type", "Accept", "Credential", "Authorization", "X-XSRF-TOKEN")
+                        .allowedMethods("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH")
+                        .maxAge(3600L)
+                        .allowCredentials(false);
+            }
+        };
+    }
+
 }

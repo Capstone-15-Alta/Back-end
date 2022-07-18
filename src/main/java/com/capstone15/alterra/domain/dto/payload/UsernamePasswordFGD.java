@@ -21,5 +21,10 @@ public class UsernamePasswordFGD implements Serializable {
     private String username;
     private String password;
     private String email;
+    private String roles;
     private Integer totalUserFollowers = 0;
+    private Integer totalUserFollowing = 0;
+    private Integer totalThreads = 0;
+    private Integer totalPostComments = 0;
+
 }

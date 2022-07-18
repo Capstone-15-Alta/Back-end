@@ -1,15 +1,14 @@
 package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.*;
-import com.capstone15.alterra.domain.dto.CommentDto;
-import com.capstone15.alterra.domain.dto.ThreadDto;
-import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
+import com.capstone15.alterra.domain.dao.NotificationDao;
+import com.capstone15.alterra.domain.dao.ThreadDao;
+import com.capstone15.alterra.domain.dao.ThreadFollowerDao;
+import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.ThreadFollowerDto;
 import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadFollowerRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
-import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -32,9 +31,6 @@ public class ThreadFollowerService {
 
     @Autowired
     private ThreadRepository threadRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -68,15 +64,19 @@ public class ThreadFollowerService {
                     res.setThread_followers(threadFollowerRepository.countFollowers(threadDao.get().getId()));
                     threadRepository.save(res);
                 });
+
                 // fitur notification
-                NotificationDao notificationDao = NotificationDao.builder()
-                        .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
-                        .title(user.getUsername() + " mengikuti thread anda: " + threadDao.get().getTitle())
-                        .threadId(threadDao.get().getId())
-                        .info("followthread")
-                        .isRead(false)
-                        .build();
-                notificationDao = notificationRepository.save(notificationDao);
+                if(!user.getId().equals(threadDao.get().getUser().getId())){
+                    NotificationDao notificationDao = NotificationDao.builder()
+                            .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                            .title(user.getUsername() + " mengikuti thread anda: " + threadDao.get().getTitle())
+                            .threadId(threadDao.get().getId())
+                            .info("followthread")
+                            .isRead(false)
+                            .build();
+                    notificationDao = notificationRepository.save(notificationDao);
+                }
+
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(threadFollowerDao, ThreadFollowerDto.class), HttpStatus.OK);
             } else {
                 if (threadFollowerDaoOptional.get().getIsFollow().equals(false)) {

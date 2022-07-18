@@ -6,8 +6,7 @@ import com.capstone15.alterra.domain.dao.NotificationDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.CommentDto;
-import com.capstone15.alterra.domain.dto.ThreadDto;
-import com.capstone15.alterra.domain.dto.ThreadDtoResponse;
+import com.capstone15.alterra.domain.dto.CommentDtoResponse;
 import com.capstone15.alterra.repository.CommentRepository;
 import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
@@ -20,10 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -58,6 +54,7 @@ public class CommentService {
             commentDao.setCreatedBy(user.getUsername());
             commentDao.setUser(UserDao.builder().id(user.getId()).build());
             commentDao.setThread(threadDao.get());
+            commentDao.setComment_likes(0);
             commentDao = commentRepository.save(commentDao);
 
             // fitur total komentar
@@ -65,14 +62,23 @@ public class CommentService {
             Objects.requireNonNull(userDao.orElse(null)).setTotalPostComments(commentRepository.countComments(user.getId()));
             userRepository.save(userDao.get());
 
+            // total komen thread
+            Optional<ThreadDao> threadDao1 = threadRepository.findById(request.getThreadId());
+            Objects.requireNonNull(threadDao1.orElse(null)).setTotalComments(commentRepository.countCommentsThread(request.getThreadId()));
+            threadRepository.save(threadDao1.get());
+
             // fitur notification
-            NotificationDao notificationDao = NotificationDao.builder()
-                    .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
-                    .title(user.getUsername() + " berkomentar pada thread " + threadDao.get().getTitle())
-                    .message(request.getComment())
-                    .isRead(false)
-                    .build();
-            notificationDao = notificationRepository.save(notificationDao);
+            if(!user.getId().equals(threadDao.get().getUser().getId())){
+                NotificationDao notificationDao = NotificationDao.builder()
+                        .user(UserDao.builder().id(threadDao.get().getUser().getId()).build())
+                        .title(user.getUsername() + " berkomentar pada thread anda: " + threadDao.get().getTitle())
+                        .threadId(threadDao.get().getId())
+                        .message(request.getComment())
+                        .isRead(false)
+                        .build();
+                notificationDao = notificationRepository.save(notificationDao);
+            }
+
 
             log.info("Executing add comment success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentDao, CommentDto.class), HttpStatus.OK);
@@ -92,9 +98,10 @@ public class CommentService {
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
             List<CommentDao> daoList = threadDaoOptional.get().getComments();
-            List<CommentDto> list = new ArrayList<>();
+            Collections.reverse(daoList);
+            List<CommentDtoResponse> list = new ArrayList<>();
             for(CommentDao dao : daoList){
-                list.add(mapper.map(dao, CommentDto.class));
+                list.add(mapper.map(dao, CommentDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
@@ -112,16 +119,36 @@ public class CommentService {
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
             List<CommentDao> daoList = userDaoOptional.get().getComments();
-            List<CommentDto> list = new ArrayList<>();
+            List<CommentDtoResponse> list = new ArrayList<>();
             for(CommentDao dao : daoList){
-                list.add(mapper.map(dao, CommentDto.class));
+                list.add(mapper.map(dao, CommentDtoResponse.class));
             }
             return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Happened error when get all comment. Error: {}", e.getMessage());
             log.trace("Get error when get all comment. ", e);
             throw e;
-        }  }
+        }
+    }
+
+    public ResponseEntity<Object> getCommentById(Long id) {
+        log.info("Executing get comment by id: {} ", id);
+        try {
+            Optional<CommentDao> commentDaoOptional = commentRepository.findById(id);
+            if(commentDaoOptional.isEmpty()) {
+                log.info("comment id: {} not found", id);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            log.info("Executing get comment by id success");
+            CommentDtoResponse commentDtoResponse = mapper.map(commentDaoOptional, CommentDtoResponse.class);
+
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, commentDtoResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when get comment by id. Error: {}", e.getMessage());
+            log.trace("Get error when get comment by id. ", e);
+            throw e;
+        }
+    }
 
     public ResponseEntity<Object> deleteComment(Long id, UserDao user) {
         log.info("Executing delete comment id: {}", id);

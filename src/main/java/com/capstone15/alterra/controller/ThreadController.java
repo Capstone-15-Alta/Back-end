@@ -2,9 +2,7 @@ package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.ThreadDto;
-import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.service.ThreadService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -51,15 +48,11 @@ public class ThreadController {
         return threadService.addThread(threadDto, multipartFile, (UserDao) userDetails);
     }
 
-    @GetMapping(value = "")
-    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
-        return threadService.getAllThread(pageable);
-    }
-
-//    @GetMapping(value = "/pages")
-//    public ResponseEntity<Object> getAllWithPaginate(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
-//        return threadService.getAllThreadWithPaginate(pageable);
+//    @GetMapping(value = "")
+//    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable) {
+//        return threadService.getAllThread(pageable);
 //    }
+
 
 
     @GetMapping(value = "/{id}")
@@ -68,16 +61,18 @@ public class ThreadController {
     }
 
     @GetMapping(value = "/user/{id}")
-    public ResponseEntity<Object> getByIdUser(@PathVariable(value = "id") Long id){
-        return threadService.getThreadByIdUser(id);
+    public ResponseEntity<Object> getByIdUser(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable,
+                                              @PathVariable(value = "id") Long id){
+        return threadService.getThreadByIdUser(id, pageable);
     }
 
     @GetMapping(value = "/search")
-    public ResponseEntity<Object> searchThreadByTitle(@RequestParam(value = "title", required = false) String title){
-        return threadService.searchThreadByTitle(title);
+    public ResponseEntity<Object> searchThreadByTitle(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable,
+                                                      @RequestParam(value = "title", required = false) String title){
+        return threadService.searchThreadByTitle(title, pageable);
     }
 
-    @GetMapping(value = "/")
+    @GetMapping(value = "")
     public ResponseEntity<Object> searchThreadByCategoryName(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5)  Pageable pageable,
                                                              @RequestParam(value = "category", required = false) String categoryName){
         return threadService.searchThreadByCategoryName(categoryName, pageable);

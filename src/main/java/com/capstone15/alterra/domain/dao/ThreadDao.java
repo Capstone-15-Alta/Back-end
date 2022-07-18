@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLUpdate;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -69,6 +68,10 @@ public class ThreadDao extends BaseResponse {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "thread")
+    private List<SaveThreadDao> saveThreads;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "thread")
     private List<ThreadReportDao> threadReports;
 
     @Column(name = "followers")
@@ -76,6 +79,9 @@ public class ThreadDao extends BaseResponse {
 
     @Column(name = "likes")
     private Integer thread_likes = 0;
+
+    @Column(name = "total_comments")
+    private Integer totalComments = 0;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)

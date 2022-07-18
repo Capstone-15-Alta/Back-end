@@ -1,8 +1,6 @@
 package com.capstone15.alterra.repository;
 
-import com.capstone15.alterra.domain.dao.CommentDao;
 import com.capstone15.alterra.domain.dao.CommentLikeDao;
-import com.capstone15.alterra.domain.dao.ThreadLikeDao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,7 +18,8 @@ public interface CommentLikeRepository extends JpaRepository<CommentLikeDao, Lon
     @Query(value = "SELECT count(tf) FROM CommentLikeDao tf WHERE tf.isLike = true AND tf.comment.id = :id")
     Integer countLikes(@Param("id") Long id);
 
-
+    @Query(value = "SELECT count(tf) FROM CommentLikeDao tf WHERE tf.isLike = true AND tf.user.id = :id ")
+    Integer countLikeComment(@Param("id") Long id);
 
 
 }

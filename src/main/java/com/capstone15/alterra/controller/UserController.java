@@ -1,11 +1,9 @@
 package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.UserDtoResponse;
 import com.capstone15.alterra.service.UserService;
 import com.capstone15.alterra.util.ResponseUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +31,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping(value = "")
-    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 5) Pageable pageable
+    public ResponseEntity<Object> getAll(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable
     ) {
         return userService.getAllUser(pageable);
     }
@@ -110,14 +108,14 @@ public class UserController {
         return userService.updateUserCover( multipartFile, (UserDao) userDetails);
     }
 
-    @GetMapping(value = "/rank")
-    public ResponseEntity<Object> getUserByRankingFollower(){
-        return userService.getUserByRanking();
-    }
+//    @GetMapping(value = "/rank")
+//    public ResponseEntity<Object> getUserByRankingFollower(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable){
+//        return userService.getUserRankingByFollowers(pageable);
+//    }
 
     @GetMapping(value = "/ranking")
-    public ResponseEntity<Object> getUserRankingByTotalThreadAndLike(){
-        return userService.getUserRankingByTotalThreadAndLike();
+    public ResponseEntity<Object> getUserRankingByTotalThreadAndLike(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable){
+        return userService.getUserRankingByTotalThreadAndLike(pageable);
     }
 
 

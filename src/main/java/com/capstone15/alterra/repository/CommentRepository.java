@@ -12,4 +12,7 @@ public interface CommentRepository extends JpaRepository<CommentDao, Long> {
     @Query(value = "SELECT count(tf) FROM CommentDao tf WHERE tf.isDeleted = false AND tf.user.id = :id ")
     Integer countComments(@Param("id") Long id);
 
+    @Query(value = "SELECT count(tf) FROM CommentDao tf WHERE tf.isDeleted = false AND tf.thread.id = :id ")
+    Integer countCommentsThread(@Param("id") Long id);
+
 }

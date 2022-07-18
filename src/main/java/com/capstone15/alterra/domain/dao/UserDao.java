@@ -5,12 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -33,8 +33,12 @@ public class UserDao  implements UserDetails {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "email", unique = true)
+
+    @Column(name = "email", unique = true, nullable = false)
+    @Email
+    @NotNull
     private String email;
+
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -99,6 +103,12 @@ public class UserDao  implements UserDetails {
     @Column(name = "total_post_comments")
     private Integer totalPostComments = 0;
 
+    @Column(name = "total_like_thread")
+    private Integer totalLikeThread = 0;
+
+    @Column(name = "total_like_comment")
+    private Integer totalLikeComment = 0;
+
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
 
@@ -133,6 +143,10 @@ public class UserDao  implements UserDetails {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private List<NotificationDao> notifications;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    private List<SaveThreadDao> saveThread;
 
 
     @Column(columnDefinition = "boolean default true")

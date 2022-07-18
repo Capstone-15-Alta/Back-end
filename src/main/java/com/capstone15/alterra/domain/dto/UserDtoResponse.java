@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -69,9 +68,11 @@ public class UserDtoResponse implements Serializable {
 
     private List<UserFollowerDtoResponse> userFollowers;
 
-    private List<UserFollowerDtoResponse> userFollowing;
+    private List<UserFollowingDtoResponse> userFollowing;
 
     private List<NotificationDto> notifications;
+
+    private List<SaveThreadDtoResponse3> saveThread;
 
     private Integer totalUserFollowers;
 
@@ -81,5 +82,8 @@ public class UserDtoResponse implements Serializable {
 
     private Integer totalPostComments;
 
+    private Integer totalLikeThread;
+
+    private Integer totalLikeComment;
 
 }

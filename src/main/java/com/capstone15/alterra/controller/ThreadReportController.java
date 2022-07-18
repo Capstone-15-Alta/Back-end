@@ -1,7 +1,6 @@
 package com.capstone15.alterra.controller;
 
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.CommentDto;
 import com.capstone15.alterra.domain.dto.ThreadReportDto;
 import com.capstone15.alterra.service.ThreadReportService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "/v1/report", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/v1/report_thread", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ThreadReportController {
 
     @Autowired
@@ -30,6 +29,11 @@ public class ThreadReportController {
     @GetMapping(value = "/thread/{id}")
     public ResponseEntity<Object> getByIdThread(@PathVariable(value = "id") Long id) {
         return threadReportService.getReportByIdThread(id);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Object> getById(@PathVariable(value = "id") Long id){
+        return threadReportService.getReportThreadById(id);
     }
 
     @DeleteMapping(value = "/{id}")

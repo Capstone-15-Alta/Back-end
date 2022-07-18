@@ -40,7 +40,15 @@ public class CommentDao extends BaseResponse {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
-    private List<CommentLikeDao> commentLikeDaoList;
+    private List<CommentLikeDao> commentLikes;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
+    private List<CommentReportDao> commentReports;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "comment")
+    private List<SubCommentDao> subComments;
 
     @Column(name = "likes")
     private Integer comment_likes = 0;

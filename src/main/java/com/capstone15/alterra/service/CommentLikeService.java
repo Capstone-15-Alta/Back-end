@@ -2,10 +2,15 @@ package com.capstone15.alterra.service;
 
 
 import com.capstone15.alterra.constant.AppConstant;
-import com.capstone15.alterra.domain.dao.*;
-import com.capstone15.alterra.domain.dto.ThreadLikeDto;
+import com.capstone15.alterra.domain.dao.CommentDao;
+import com.capstone15.alterra.domain.dao.CommentLikeDao;
+import com.capstone15.alterra.domain.dao.NotificationDao;
+import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.CommentLikeDto;
-import com.capstone15.alterra.repository.*;
+import com.capstone15.alterra.repository.CommentLikeRepository;
+import com.capstone15.alterra.repository.CommentRepository;
+import com.capstone15.alterra.repository.NotificationRepository;
+import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -63,15 +68,24 @@ public class CommentLikeService {
                     res.setComment_likes(commentLikeRepository.countLikes(commentDao.get().getId()));
                     commentRepository.save(res); //lamda expression
                 });
+
                 // fitur notification
-                NotificationDao notificationDao = NotificationDao.builder()
-                        .user(UserDao.builder().id(commentDao.get().getUser().getId()).build())
-                        .title(user.getUsername() + " menyukai komentar anda: " + commentDao.get().getComment())
-                        .commentId(commentDao.get().getId())
-                        .info("likecomment")
-                        .isRead(false)
-                        .build();
-                notificationDao = notificationRepository.save(notificationDao);
+                if(!user.getId().equals(commentDao.get().getUser().getId())){
+                    NotificationDao notificationDao = NotificationDao.builder()
+                            .user(UserDao.builder().id(commentDao.get().getUser().getId()).build())
+                            .title(user.getUsername() + " menyukai komentar anda: " + commentDao.get().getComment())
+                            .commentId(commentDao.get().getId())
+                            .info("likecomment")
+                            .isRead(false)
+                            .build();
+                    notificationDao = notificationRepository.save(notificationDao);
+                }
+
+                // total like comment
+                Optional<UserDao> userDao = userRepository.findById(user.getId());
+                Objects.requireNonNull(userDao.orElse(null)).setTotalLikeComment(commentLikeRepository.countLikeComment(user.getId()));
+                userRepository.save(userDao.get());
+
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(commentLikeDao, CommentLikeDto.class), HttpStatus.OK);
             } else {
                 if (optionalCommentLikeDao.get().getIsLike().equals(false)) {
@@ -85,6 +99,11 @@ public class CommentLikeService {
                     Optional<NotificationDao> notification = notificationRepository.findByUserIdAndCommentIdAndInfo(commentDao.get().getUser().getId(), commentDao.get().getId(), "likecomment");
                     Objects.requireNonNull(notification.orElse(null)).setIsRead(false);
                     notificationRepository.save(notification.get());
+
+                    Optional<UserDao> userDao = userRepository.findById(user.getId());
+                    Objects.requireNonNull(userDao.orElse(null)).setTotalLikeComment(commentLikeRepository.countLikeComment(user.getId()));
+                    userRepository.save(userDao.get());
+
                 } else {
                     optionalCommentLikeDao.get().setIsLike(false);
                     commentLikeRepository.save(optionalCommentLikeDao.get());
@@ -98,6 +117,10 @@ public class CommentLikeService {
                         Objects.requireNonNull(notification.orElse(null)).setIsRead(true);
                         notificationRepository.save(notification.get());
                     }
+
+                    Optional<UserDao> userDao = userRepository.findById(user.getId());
+                    Objects.requireNonNull(userDao.orElse(null)).setTotalLikeComment(commentLikeRepository.countLikeComment(user.getId()));
+                    userRepository.save(userDao.get());
 
                 }
                 return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(optionalCommentLikeDao, CommentLikeDto.class), HttpStatus.OK);
@@ -117,7 +140,7 @@ public class CommentLikeService {
                 log.info("comment id: {} not found", id);
                 return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
             }
-            List<CommentLikeDao> daoList = commentDaoOptional.get().getCommentLikeDaoList();
+            List<CommentLikeDao> daoList = commentDaoOptional.get().getCommentLikes();
             List<CommentLikeDto> list = new ArrayList<>();
             for (CommentLikeDao dao : daoList) {
                 if(dao.getIsLike().equals(true)){

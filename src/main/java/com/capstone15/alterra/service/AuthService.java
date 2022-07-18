@@ -3,7 +3,6 @@ package com.capstone15.alterra.service;
 import com.capstone15.alterra.config.security.JwtTokenProvider;
 import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.dao.UserDao;
-import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.domain.dto.payload.TokenResponse;
 import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
 import com.capstone15.alterra.domain.dto.payload.UsernamePasswordFGD;
@@ -13,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Locale;
 import java.util.Optional;
 
 @Log4j2
@@ -51,11 +50,23 @@ public class AuthService {
             if(req.getEmail() == null) {
                 return ResponseUtil.build("email cant null !", null, HttpStatus.BAD_REQUEST);
             }
+            Optional<UserDao> userDao = userRepository.findByEmails(req.getEmail());
+            if(userDao.isPresent()) {
+                return ResponseUtil.build("email already registered !", null, HttpStatus.BAD_REQUEST);
+            }
+            Optional<UserDao> userDao1 = userRepository.findByUsername(req.getUsername());
+            if(userDao1.isPresent()) {
+                return ResponseUtil.build("user already taken !", null, HttpStatus.BAD_REQUEST);
+            }
+            if(req.getUsername().length() < 6) {
+                return ResponseUtil.build("username must 6 character or more !", null, HttpStatus.BAD_REQUEST);
+            }
+
 
             UserDao user = new UserDao();
-            user.setUsername(req.getUsername());
+            user.setUsername(req.getUsername().toLowerCase(Locale.ROOT).replace(" ", ""));
             user.setPassword(passwordEncoder.encode(req.getPassword()));
-            user.setEmail(req.getEmail());
+            user.setEmail(req.getEmail().toLowerCase(Locale.ROOT));
 
             user = userRepository.save(user);
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(user, UsernamePasswordFGD.class), HttpStatus.OK);

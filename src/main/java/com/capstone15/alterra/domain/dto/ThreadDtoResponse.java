@@ -1,7 +1,6 @@
 package com.capstone15.alterra.domain.dto;
 
 import com.capstone15.alterra.domain.dao.CategoryDao;
-import com.capstone15.alterra.domain.dao.CommentDao;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -9,9 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,17 +42,21 @@ public class ThreadDtoResponse implements Serializable {
 
     private UserDto user;
 
-    private List<CommentDto> comments;
+    private List<CommentDtoResponse> comments;
 
     private List<ThreadFollowerDto> followers;
 
     private List<ThreadLikeDto> likes;
+
+    private List<SaveThreadDtoResponse> save;
 
     private List<ThreadReportDto> reports;
 
     private Integer thread_followers;
 
     private Integer thread_likes;
+
+    private Integer totalComments;
 
     private ThreadViewDto view;
 
