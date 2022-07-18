@@ -81,8 +81,8 @@ class NotificationServiceTest {
 
         ApiResponse apiResponse = (ApiResponse) response.getBody();
 
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
-        assertEquals(AppConstant.Message.NOT_FOUND, Objects.requireNonNull(apiResponse).getMessage());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
 
     }
 

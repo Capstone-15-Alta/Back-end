@@ -71,8 +71,8 @@ public class AuthService {
             user = userRepository.save(user);
             return ResponseUtil.build(AppConstant.Message.SUCCESS, mapper.map(user, UsernamePasswordFGD.class), HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Happened error when add thread. Error: {}", e.getMessage());
-            log.trace("Get error when add thread. ", e);
+            log.error("Happened error when add user. Error: {}", e.getMessage());
+            log.trace("Get error when add user. ", e);
             throw e;   }
 
 
