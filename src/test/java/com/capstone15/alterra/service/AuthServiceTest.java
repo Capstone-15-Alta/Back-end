@@ -21,7 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = AuthService.class)
@@ -46,13 +46,33 @@ public class AuthServiceTest {
     private AuthService service;
 
     @Test
-    void register_Failed_Test(){
+    void registerSuccess_Test(){
         UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
-                .id(1l)
+                .id(1L)
+                .username("user123")
+                .password("12345678")
+                .email("email@gmail.com")
+                .build();
+
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
+        when(userRepository.save(any())).thenReturn(userDao);
+        ResponseEntity<Object> response = service.register(usernamePasswordFGD);
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+
+    }
+
+    @Test
+    void registerUsernameIsNull_Test(){
+        UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
+                .id(1L)
                 .password("kikicantik123")
                 .build();
+
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
 
         when(userRepository.save(any())).thenReturn(userDao);
@@ -62,68 +82,111 @@ public class AuthServiceTest {
     }
 
     @Test
-    void register_Failed1_Test(){
+    void registerPasswordIsNull_Test(){
         UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
-                .id(1l)
-                .build();
-        UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .username("Kiki_")
                 .build();
+
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
     when(userRepository.save(any())).thenReturn(userDao);
     ResponseEntity<Object> response = service.register(usernamePasswordFGD);
     assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
     }
 
     @Test
-    void register_Failed2_Test(){
+    void registerEmailIsNull_Test(){
         UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
-                .id(1l)
+                .id(1L)
+                .username("Kiki_")
+                .password("kikicantik123")
                 .build();
+
         UserDao userDao = UserDao.builder()
-                .id(1l)
-                .email("kiki@gmail.com")
+                .id(1L)
                 .build();
+
         when(userRepository.save(any())).thenReturn(userDao);
         ResponseEntity<Object> response = service.register(usernamePasswordFGD);
         assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
     }
 
     @Test
-    void register_Exception_Test(){
+    void registerEmailIsPresent_Test(){
         UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
-                .id(1l)
-                .username("kiki")
-                .password("kiki123")
-                .email("kiki@gmail.com")
+                .id(1L)
+                .username("user123")
+                .password("12345678")
+                .email("user@gmail.com")
                 .build();
+
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
-        when(userRepository.save(any())).thenThrow(NullPointerException.class);
-        assertThrows(Exception.class ,() -> service.register(usernamePasswordFGD) );
+
+        when(userRepository.findByEmails(any())).thenReturn(Optional.of(userDao));
+        when(userRepository.save(any())).thenReturn(userDao);
+        ResponseEntity<Object> response = service.register(usernamePasswordFGD);
+        assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
+    }
+
+    @Test
+    void registerUserIsPresent_Test(){
+        UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
+                .id(1L)
+                .username("user123")
+                .password("12345678")
+                .email("user@gmail.com")
+                .build();
+
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
+        when(userRepository.findByUsername(any())).thenReturn(Optional.of(userDao));
+        when(userRepository.save(any())).thenReturn(userDao);
+        ResponseEntity<Object> response = service.register(usernamePasswordFGD);
+        assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
+    }
+
+    @Test
+    void registerUsernameLengthError_Test(){
+        UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
+                .id(1L)
+                .username("user")
+                .password("12345678")
+                .email("user@gmail.com")
+                .build();
+
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
+        when(userRepository.save(any())).thenReturn(userDao);
+        ResponseEntity<Object> response = service.register(usernamePasswordFGD);
+        assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
     }
 
     @Test
     void generateToken_Test(){
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
+
         UsernamePassword usernamePassword = new UsernamePassword();
         usernamePassword.setUsername("kiki");
         usernamePassword.setPassword("kiki123");
 
-
         when(userRepository.getDistinctTopByUsername(usernamePassword.getUsername())).thenReturn(userDao);
         TokenResponse response =service.generateToken(usernamePassword);
-        assertEquals(null,response.getToken());
+        assertNull(response.getToken());
     }
 
     @Test
-    void generateToken_BadCrudentialException_Test(){
-        UserDao userDao = UserDao.builder()
-                .id(1l)
-                .build();
+    void generateToken_BadCredentialException_Test(){
         UsernamePassword usernamePassword = new UsernamePassword();
         usernamePassword.setUsername("kiki");
         usernamePassword.setPassword("kiki123");
@@ -134,9 +197,6 @@ public class AuthServiceTest {
 
     @Test
     void generateToken_Exception_Test(){
-        UserDao userDao = UserDao.builder()
-                .id(1l)
-                .build();
         UsernamePassword usernamePassword = new UsernamePassword();
         usernamePassword.setUsername("kiki");
         usernamePassword.setPassword("kiki123");
@@ -145,6 +205,17 @@ public class AuthServiceTest {
 
     }
 
+    @Test
+    void register_Exception_Test(){
+        UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
+                .id(1L)
+                .username("kiki")
+                .password("kiki123")
+                .email("kiki@gmail.com")
+                .build();
 
+        when(userRepository.findByEmails(any())).thenThrow(NullPointerException.class);
+        assertThrows(Exception.class ,() -> service.register(usernamePasswordFGD) );
+    }
 
 }

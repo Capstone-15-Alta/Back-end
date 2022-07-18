@@ -206,25 +206,7 @@ public class CommentLikeServiceTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-    @Test
-    void getlikebyidcomment_Success_Test() {
 
-
-        CommentLikeDao commentLikeDao = CommentLikeDao.builder()
-                .id(1l)
-                .isLike(true)
-                .build();
-
-        CommentDao commentDao = CommentDao.builder()
-                .id(1l)
-                .commentLikeDaoList(List.of(commentLikeDao))
-                .build();
-
-        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(commentDao));
-
-        ResponseEntity<Object> response = service.getLikeByIdComment(anyLong());
-        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-    }
 
     @Test
     void getlikebyidcomment_Error_Test() {

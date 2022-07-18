@@ -34,7 +34,7 @@ public class NotificationService {
             Page<NotificationDao> notificationDaos = notificationRepository.getNotification(user.getId(), pageable);
             if(notificationDaos.isEmpty()) {
                 log.info("notification not found");
-                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+                return ResponseUtil.build(AppConstant.Message.SUCCESS, notificationDaos, HttpStatus.OK);
             }
             Page<NotificationDto> notificationDtos = notificationDaos.map(notificationDao -> mapper.map(notificationDao, NotificationDto.class));
 

@@ -2,6 +2,7 @@ package com.capstone15.alterra.service;
 
 import com.capstone15.alterra.domain.dao.*;
 import com.capstone15.alterra.domain.dto.CommentDto;
+import com.capstone15.alterra.domain.dto.ThreadDto;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.repository.CommentRepository;
 import com.capstone15.alterra.repository.NotificationRepository;
@@ -20,7 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -46,122 +47,75 @@ public class CommentServiceTest {
     @Autowired
     private CommentService service;
 
-
     @Test
-    void addcomment_Failed_Test() {
+    void addCommentSuccess_Test() {
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
+        UserDao userDao1 = UserDao.builder()
+                .id(2L)
+                .build();
+
+        ThreadDao threadDao = ThreadDao.builder()
+                .id(1L)
+                .user(userDao1)
+                .build();
 
         CommentDao commentDao = CommentDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
-        CommentDto commentDto = CommentDto.builder()
-                .id(1l)
-                .build();
-        UserDao userDao = UserDao.builder()
-                .id(1l)
-                .build();
-        ThreadDao threadDao = ThreadDao.builder()
-                .id(1l)
-                .build();
-
-        when(threadRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-        ResponseEntity<Object> response = service.addComment(commentDto, userDao);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
-
-    }
-
-    @Test
-    void addcomment_Success_Test() {
-
 
         CommentDto commentDto = CommentDto.builder()
-                .id(1l)
-                .threadId(1l)
-                .userId(12l)
-                .comment("like")
+                .id(1L)
+                .comment("oke")
+                .threadId(1L)
                 .build();
-        CommentLikeDao commentLikeDao = CommentLikeDao.builder()
-                .id(1l)
-                .isLike(true)
-                .build();
-        UserDao userDao = UserDao.builder()
-                .id(1l)
-                .build();
-        ThreadDao threadDao = ThreadDao.builder()
-                .id(1l)
-                .user(userDao)
-                .build();
-        CommentDao commentDao = CommentDao.builder()
-                .id(1l)
-                .thread(threadDao)
-                .user(userDao)
-                .commentLikeDaoList(List.of(commentLikeDao))
-                .build();
+
         NotificationDao notificationDao = NotificationDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
+
         when(threadRepository.findById(anyLong())).thenReturn(Optional.of(threadDao));
         when(mapper.map(any(), eq(CommentDao.class))).thenReturn(commentDao);
+        when(mapper.map(any(), eq(CommentDto.class))).thenReturn(commentDto);
         when(commentRepository.save(any())).thenReturn(commentDao);
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
-        when(commentRepository.countComments(anyLong())).thenReturn(12);
-        when(userRepository.save(any())).thenReturn(userDao);
         when(notificationRepository.save(any())).thenReturn(notificationDao);
 
-        ResponseEntity<Object> response = service.addComment(commentDto, userDao);
+        ResponseEntity<Object> response = service.addComment(commentDto,userDao);
         assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
 
     }
 
-
     @Test
-    void addcomment_Error_Test() {
-
+    void addCommentException_Test() {
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
 
         CommentDto commentDto = CommentDto.builder()
-                .id(1l)
-                .threadId(1l)
-                .userId(12l)
-                .comment("like")
-                .build();
-        CommentLikeDao commentLikeDao = CommentLikeDao.builder()
-                .id(1l)
-                .isLike(true)
-                .build();
-        UserDao userDao = UserDao.builder()
-                .id(1l)
-                .build();
-        ThreadDao threadDao = ThreadDao.builder()
-                .id(1l)
-                .user(userDao)
-                .build();
-        CommentDao commentDao = CommentDao.builder()
-                .id(1l)
-                .thread(threadDao)
-                .user(userDao)
-                .commentLikeDaoList(List.of(commentLikeDao))
-                .build();
-        NotificationDao notificationDao = NotificationDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
 
-        when(threadRepository.findById(anyLong())).thenReturn(Optional.of(threadDao));
-        when(mapper.map(any(), eq(CommentDao.class))).thenReturn(commentDao);
-        when(commentRepository.save(any())).thenThrow(NullPointerException.class);
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
-        when(commentRepository.countComments(anyLong())).thenReturn(12);
-        when(userRepository.save(any())).thenReturn(userDao);
-        when(notificationRepository.save(any())).thenThrow(NullPointerException.class);
+        when(threadRepository.findById(any())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> service.addComment(commentDto, userDao));
+    }
+
+    @Test
+    void addComment_Failed_Test() {
+        CommentDto commentDto = CommentDto.builder()
+                .id(1L)
+                .build();
+
+        when(threadRepository.findById(anyLong())).thenReturn(Optional.empty());
+        ResponseEntity<Object> response = service.addComment(commentDto, any());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
 
     }
 
     @Test
     void getCommentByIdThread_Failed_Test() {
-        ThreadDao threadDao = ThreadDao.builder()
-                .id(1l)
-                .build();
-
         when(threadRepository.findById(anyLong())).thenReturn(Optional.empty());
         ResponseEntity<Object> response = service.getCommentByIdThread(anyLong());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
@@ -169,13 +123,13 @@ public class CommentServiceTest {
     }
 
     @Test
-    void getCommentByIdThread_Succes_Test() {
+    void getCommentByIdThread_Success_Test() {
         CommentDao commentDao = CommentDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
 
         ThreadDao threadDao = ThreadDao.builder()
-                .id(1l)
+                .id(1L)
                 .comments(List.of(commentDao))
                 .build();
 
@@ -184,51 +138,27 @@ public class CommentServiceTest {
         assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
     }
 
-
     @Test
     void getCommentByIdThread_Exception_Test() {
-        CommentDao commentDao = CommentDao.builder()
-                .id(1l)
-                .build();
-
-        ThreadDao threadDao = ThreadDao.builder()
-                .id(1l)
-                .comments(List.of(commentDao))
-                .build();
-
         when(threadRepository.findById(anyLong())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> service.getCommentByIdThread(anyLong()));
     }
 
     @Test
     void getCommentByIdUser_Failed_Test() {
-        ThreadDao threadDao = ThreadDao.builder()
-                .id(1l)
-                .build();
-
         when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         ResponseEntity<Object> response = service.getCommentByIdUser(anyLong());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-
     @Test
     void getCommentByIdUser_Success_Test() {
-
-
         CommentDao commentDao = CommentDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .comments(List.of(commentDao))
-                .build();
-        ThreadDao threadDao = ThreadDao.builder()
-                .id(1l)
-                .comments(List.of(commentDao))
-                .build();
-        CommentDto commentDto = CommentDto.builder()
-                .id(1l)
                 .build();
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
@@ -238,30 +168,38 @@ public class CommentServiceTest {
 
     @Test
     void getCommentByIdUser_Exception_Test() {
-
-        CommentDao commentDao = CommentDao.builder()
-                .id(1l)
-                .build();
-        ThreadDao threadDao = ThreadDao.builder()
-                .id(1l)
-                .comments(List.of(commentDao))
-                .build();
-        CommentDto commentDto = CommentDto.builder()
-                .id(1l)
-                .build();
-
         when(userRepository.findById(anyLong())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> service.getCommentByIdUser(anyLong()));
     }
 
     @Test
-    void deleteComment_Failed_Test() {
-
+    void getCommentById_Success_Test() {
         CommentDao commentDao = CommentDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
+
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.of(commentDao));
+        ResponseEntity<Object> response = service.getCommentById(anyLong());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void getCommentById_IsEmpty_Test() {
+        when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
+        ResponseEntity<Object> response = service.getCommentById(anyLong());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void getCommentById_Exception_Test() {
+        when(commentRepository.findById(any())).thenThrow(NullPointerException.class);
+        assertThrows(Exception.class, () -> service.getCommentById(any()));
+    }
+
+    @Test
+    void deleteComment_Failed_Test() {
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .roles("USER")
                 .build();
         when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
@@ -269,20 +207,18 @@ public class CommentServiceTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
-
     @Test
     void deleteComment_Error_Test() {
-
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .roles("")
                 .build();
         UserDao userDao1 = UserDao.builder()
-                .id(2l)
+                .id(2L)
                 .roles("USER")
                 .build();
         CommentDao commentDao = CommentDao.builder()
-                .id(1l)
+                .id(1L)
                 .user(userDao)
                 .build();
         when(commentRepository.findById(anyLong())).thenReturn(Optional.of(commentDao));
@@ -291,40 +227,40 @@ public class CommentServiceTest {
     }
 
     @Test
-    void deleteComment_Succes_Test() {
-
+    void deleteComment_Success_Test() {
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .roles("USER")
                 .build();
         CommentDao commentDao = CommentDao.builder()
-                .id(1l)
+                .id(1L)
                 .user(userDao)
-                .build();
-        NotificationDao notificationDao = NotificationDao.builder()
-                .id(1l)
-                .isRead(true)
                 .build();
         when(commentRepository.findById(anyLong())).thenReturn(Optional.of(commentDao));
         doNothing().when(commentRepository).deleteById(anyLong());
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
-        when(commentRepository.countComments(anyLong())).thenReturn(12);
-        when(userRepository.save(any())).thenReturn(userDao);
+
         ResponseEntity<Object> response = service.deleteComment(anyLong(), userDao);
         assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
     }
 
     @Test
-    void updatecomment_Failed_Test() {
-
-        CommentDao commentDao = CommentDao.builder()
-                .id(1l)
+    void deleteCommentException_Test() {
+        UserDao userDao = UserDao.builder()
+                .id(1L)
                 .build();
+
+        when(commentRepository.findById(any())).thenThrow(NullPointerException.class);
+        assertThrows(Exception.class, () -> service.deleteComment(any(), userDao));
+    }
+
+    @Test
+    void updateComment_Failed_Test() {
         CommentDto commentDto = CommentDto.builder()
-                .id(1l)
+                .id(1L)
                 .build();
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
         when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
         ResponseEntity<Object> response = service.updateComment(anyLong(), commentDto, userDao);
@@ -333,52 +269,47 @@ public class CommentServiceTest {
 
 
     @Test
-    void updatecomment_Error_Test() {
-
-
+    void updateComment_Error_Test() {
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .roles("USER")
                 .build();
         UserDao userDao1 = UserDao.builder()
-                .id(2l)
+                .id(2L)
                 .roles("USER")
                 .build();
         CommentDao commentDao = CommentDao.builder()
-                .id(1l)
+                .id(1L)
                 .user(userDao)
                 .build();
         CommentDto commentDto = CommentDto.builder()
-                .id(1l)
-                .userId(2l)
+                .id(1L)
+                .userId(2L)
                 .comment("bagus")
-                .threadId(1l)
+                .threadId(1L)
                 .build();
 
         when(commentRepository.findById(anyLong())).thenReturn(Optional.of(commentDao));
         ResponseEntity<Object> response = service.updateComment(anyLong(), commentDto, userDao1);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
-
-
     }
 
-
     @Test
-    void updatecomment_Success_Test() {
+    void updateComment_Success_Test() {
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
 
         CommentDao commentDao = CommentDao.builder()
-                .id(1l)
+                .id(1L)
                 .user(userDao)
                 .build();
 
         CommentDto commentDto = CommentDto.builder()
-                .id(1l)
-                .userId(2l)
+                .id(1L)
+                .userId(2L)
                 .comment("bagus")
-                .threadId(1l)
+                .threadId(1L)
                 .build();
 
         when(commentRepository.findById(anyLong())).thenReturn(Optional.of(commentDao));
@@ -390,21 +321,16 @@ public class CommentServiceTest {
     }
 
     @Test
-    void updatecomment_Exception_Test() {
+    void updateComment_Exception_Test() {
         UserDao userDao = UserDao.builder()
-                .id(1l)
-                .build();
-
-        CommentDao commentDao = CommentDao.builder()
-                .id(1l)
-                .user(userDao)
+                .id(1L)
                 .build();
 
         CommentDto commentDto = CommentDto.builder()
-                .id(1l)
-                .userId(2l)
+                .id(1L)
+                .userId(2L)
                 .comment("bagus")
-                .threadId(1l)
+                .threadId(1L)
                 .build();
 
         when(commentRepository.findById(anyLong())).thenThrow(NullPointerException.class);
