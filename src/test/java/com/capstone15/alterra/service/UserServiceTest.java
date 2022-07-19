@@ -714,5 +714,5 @@ class UserServiceTest {
         when(userRepository.findByResetPasswordToken(any())).thenReturn(userDao);
         userService.getByResetPasswordToken(any());
     }
-    
+
 }

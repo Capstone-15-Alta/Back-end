@@ -208,4 +208,35 @@ public class UserFollowerServiceTest {
         when(userRepository.findById(anyLong())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> service.getFollowerByIdUser(1L));
     }
+
+    @Test
+    void getFollowingByIdUser_Failed_Test() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        ResponseEntity<Object> response = service.getFollowingByIdUser(anyLong());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void getFollowingByIdUser_Success_Test() {
+        UserFollowerDao userFollowerDao = UserFollowerDao.builder()
+                .id(1L)
+                .isFollow(true)
+                .build();
+
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .userFollowing(List.of(userFollowerDao))
+                .build();
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
+        ResponseEntity<Object> response = service.getFollowingByIdUser(anyLong());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+
+    }
+
+    @Test
+    void getFollowingByIdUser_Exception_Test() {
+        when(userRepository.findById(anyLong())).thenThrow(NullPointerException.class);
+        assertThrows(Exception.class, () -> service.getFollowingByIdUser(1L));
+    }
 }
