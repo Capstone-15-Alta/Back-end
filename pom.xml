@@ -161,6 +161,7 @@
 						<exclude>**/constant/*.class</exclude>
 						<exclude>**/domain/**/*.class</exclude>
 						<exclude>**/repository/*.class</exclude>
+						<exclude>**/exception/*.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>
