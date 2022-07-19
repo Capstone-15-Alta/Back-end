@@ -184,7 +184,7 @@ public class ThreadReportService {
             Page<ThreadReportDao> daoList = threadReportRepository.findAll(pageable);
             if(daoList.isEmpty()) {
                 log.info("report not found");
-                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, daoList, HttpStatus.OK);
             }
             Page<ThreadReportDtoResponse> threadReportDtos = daoList.map(threadReportDao -> mapper.map(threadReportDao, ThreadReportDtoResponse.class));
             return ResponseUtil.build(AppConstant.Message.SUCCESS, threadReportDtos, HttpStatus.OK);

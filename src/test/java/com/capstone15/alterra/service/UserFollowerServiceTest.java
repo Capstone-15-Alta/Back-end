@@ -22,7 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -46,12 +46,12 @@ public class UserFollowerServiceTest {
     private UserFollowerService service;
 
     @Test
-    void followUser_Usernotfound() {
+    void followUser_UserNotFound_Test() {
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
 
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         ResponseEntity<Object> response = service.followUser(anyLong(), userDao);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
@@ -59,25 +59,24 @@ public class UserFollowerServiceTest {
     }
 
     @Test
-    void followUser_Userfollowsucces() {
-
+    void followUser_UserFollowSuccess_Test() {
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
+
         UserFollowerDao userFollowerDao = UserFollowerDao.builder()
-                .id(1l)
+                .id(1L)
                 .userFollower(userDao)
                 .userFollowed(userDao)
                 .build();
 
         NotificationDao notificationDao = NotificationDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
 
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
         when(userFollowerRepository.findByUserFollowerIdAndUserFollowedId(anyLong(), anyLong())).thenReturn(Optional.empty());
         when(userFollowerRepository.save(any())).thenReturn(userFollowerDao);
-        when(userFollowerRepository.countFollowers(anyLong())).thenReturn(1);
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
         when(notificationRepository.save(any())).thenReturn(notificationDao);
 
         ResponseEntity<Object> response = service.followUser(anyLong(), userDao);
@@ -87,74 +86,116 @@ public class UserFollowerServiceTest {
 
 
     @Test
-    void followUser_Userfollowsucces1() {
+    void followUser_UserFollowSuccessTrue_Test() {
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
+
         UserFollowerDao userFollowerDao = UserFollowerDao.builder()
-                .id(1l)
+                .id(1L)
                 .userFollower(userDao)
                 .userFollowed(userDao)
                 .isFollow(true)
                 .build();
 
         NotificationDao notificationDao = NotificationDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
 
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
         when(userFollowerRepository.findByUserFollowerIdAndUserFollowedId(anyLong(), anyLong())).thenReturn(Optional.of(userFollowerDao));
         when(userFollowerRepository.save(any())).thenReturn(userFollowerDao);
-        when(userFollowerRepository.countFollowers(anyLong())).thenReturn(1);
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
+        when(notificationRepository.findByUserIdAndFollowerId(any(), any())).thenReturn(Optional.of(notificationDao));
         when(notificationRepository.save(any())).thenReturn(notificationDao);
 
         ResponseEntity<Object> response = service.followUser(anyLong(), userDao);
         assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
 
+    }
+
+    @Test
+    void followUser_UserFollowSuccessFalse_Test() {
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
+        UserFollowerDao userFollowerDao = UserFollowerDao.builder()
+                .id(1L)
+                .userFollower(userDao)
+                .userFollowed(userDao)
+                .isFollow(false)
+                .build();
+
+        NotificationDao notificationDao = NotificationDao.builder()
+                .id(1L)
+                .build();
+
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
+        when(userFollowerRepository.findByUserFollowerIdAndUserFollowedId(anyLong(), anyLong())).thenReturn(Optional.of(userFollowerDao));
+        when(userFollowerRepository.save(any())).thenReturn(userFollowerDao);
+        when(notificationRepository.findByUserIdAndFollowerId(any(), any())).thenReturn(Optional.of(notificationDao));
+        when(notificationRepository.save(any())).thenReturn(notificationDao);
+
+        ResponseEntity<Object> response = service.followUser(anyLong(), userDao);
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
 
     }
 
     @Test
-    void getFollowerByIdUser_Getfollowerfailed() {
+    void followUser_UserEquals_Test() {
         UserDao userDao = UserDao.builder()
-                .id(1l)
+                .id(1L)
                 .build();
 
         UserFollowerDao userFollowerDao = UserFollowerDao.builder()
-                .id(1l)
+                .id(1L)
                 .userFollower(userDao)
                 .userFollowed(userDao)
+                .isFollow(false)
                 .build();
 
-        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
+        NotificationDao notificationDao = NotificationDao.builder()
+                .id(1L)
+                .build();
 
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
+        when(userFollowerRepository.findByUserFollowerIdAndUserFollowedId(anyLong(), anyLong())).thenReturn(Optional.of(userFollowerDao));
+        when(userFollowerRepository.save(any())).thenReturn(userFollowerDao);
+        when(notificationRepository.findByUserIdAndFollowerId(any(), any())).thenReturn(Optional.of(notificationDao));
+        when(notificationRepository.save(any())).thenReturn(notificationDao);
+
+        ResponseEntity<Object> response = service.followUser(1L, userDao);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
+    }
+
+    @Test
+    void followUserException_Test() {
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
+        when(userRepository.findById(anyLong())).thenThrow(NullPointerException.class);
+        assertThrows(Exception.class, () -> service.followUser(anyLong(), userDao));
+    }
+
+    @Test
+    void getFollowerByIdUser_Failed_Test() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.empty());
         ResponseEntity<Object> response = service.getFollowerByIdUser(anyLong());
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
 
     @Test
-    void getFollowerByIdUser_Getfollowersucces() {
-
-        UserFollowerDao userFollowerDao2 = UserFollowerDao.builder()
-                .id(1l)
+    void getFollowerByIdUser_Success_Test() {
+        UserFollowerDao userFollowerDao = UserFollowerDao.builder()
+                .id(1L)
                 .isFollow(true)
                 .build();
-
 
         UserDao userDao = UserDao.builder()
-                .id(1l)
-                .userFollowers(List.of(userFollowerDao2))
+                .id(1L)
+                .userFollowers(List.of(userFollowerDao))
                 .build();
-
-        UserFollowerDao userFollowerDao = UserFollowerDao.builder()
-                .id(1l)
-                .userFollower(userDao)
-                .userFollowed(userDao)
-                .isFollow(true)
-                .build();
-        List<UserFollowerDao> userFollowerDaos = userDao.getUserFollowers();
-
-
 
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
         ResponseEntity<Object> response = service.getFollowerByIdUser(anyLong());
@@ -163,7 +204,7 @@ public class UserFollowerServiceTest {
     }
 
     @Test
-    void getFollowerByIdUser_error() {
+    void getFollowerByIdUser_Exception_Test() {
         when(userRepository.findById(anyLong())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () -> service.getFollowerByIdUser(1L));
     }

@@ -53,13 +53,9 @@ public class CommentServiceTest {
                 .id(1L)
                 .build();
 
-        UserDao userDao1 = UserDao.builder()
-                .id(2L)
-                .build();
-
         ThreadDao threadDao = ThreadDao.builder()
                 .id(1L)
-                .user(userDao1)
+                .user(UserDao.builder().id(2L).build())
                 .build();
 
         CommentDao commentDao = CommentDao.builder()
@@ -156,6 +152,7 @@ public class CommentServiceTest {
         CommentDao commentDao = CommentDao.builder()
                 .id(1L)
                 .build();
+
         UserDao userDao = UserDao.builder()
                 .id(1L)
                 .comments(List.of(commentDao))
@@ -202,6 +199,7 @@ public class CommentServiceTest {
                 .id(1L)
                 .roles("USER")
                 .build();
+
         when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
         ResponseEntity<Object> response = service.deleteComment(anyLong(), userDao);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
@@ -213,14 +211,17 @@ public class CommentServiceTest {
                 .id(1L)
                 .roles("")
                 .build();
+
         UserDao userDao1 = UserDao.builder()
                 .id(2L)
                 .roles("USER")
                 .build();
+
         CommentDao commentDao = CommentDao.builder()
                 .id(1L)
                 .user(userDao)
                 .build();
+
         when(commentRepository.findById(anyLong())).thenReturn(Optional.of(commentDao));
         ResponseEntity<Object> response = service.deleteComment(anyLong(), userDao1);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
@@ -232,10 +233,12 @@ public class CommentServiceTest {
                 .id(1L)
                 .roles("USER")
                 .build();
+
         CommentDao commentDao = CommentDao.builder()
                 .id(1L)
                 .user(userDao)
                 .build();
+
         when(commentRepository.findById(anyLong())).thenReturn(Optional.of(commentDao));
         doNothing().when(commentRepository).deleteById(anyLong());
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(userDao));
@@ -259,14 +262,15 @@ public class CommentServiceTest {
         CommentDto commentDto = CommentDto.builder()
                 .id(1L)
                 .build();
+
         UserDao userDao = UserDao.builder()
                 .id(1L)
                 .build();
+
         when(commentRepository.findById(anyLong())).thenReturn(Optional.empty());
         ResponseEntity<Object> response = service.updateComment(anyLong(), commentDto, userDao);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
     }
-
 
     @Test
     void updateComment_Error_Test() {
@@ -274,14 +278,12 @@ public class CommentServiceTest {
                 .id(1L)
                 .roles("USER")
                 .build();
-        UserDao userDao1 = UserDao.builder()
-                .id(2L)
-                .roles("USER")
-                .build();
+
         CommentDao commentDao = CommentDao.builder()
                 .id(1L)
-                .user(userDao)
+                .user(UserDao.builder().id(2L).build())
                 .build();
+
         CommentDto commentDto = CommentDto.builder()
                 .id(1L)
                 .userId(2L)
@@ -290,7 +292,7 @@ public class CommentServiceTest {
                 .build();
 
         when(commentRepository.findById(anyLong())).thenReturn(Optional.of(commentDao));
-        ResponseEntity<Object> response = service.updateComment(anyLong(), commentDto, userDao1);
+        ResponseEntity<Object> response = service.updateComment(anyLong(), commentDto, userDao);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
     }
 

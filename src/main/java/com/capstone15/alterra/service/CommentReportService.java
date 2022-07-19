@@ -178,7 +178,7 @@ public class CommentReportService {
             Page<CommentReportDao> daoList = commentReportRepository.findAll(pageable);
             if(daoList.isEmpty()) {
                 log.info("report not found");
-                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, daoList, HttpStatus.OK);
             }
             Page<CommentReportDto> commentReportDtos = daoList.map(commentReportDao -> mapper.map(commentReportDao, CommentReportDto.class));
             return ResponseUtil.build(AppConstant.Message.SUCCESS, commentReportDtos, HttpStatus.OK);

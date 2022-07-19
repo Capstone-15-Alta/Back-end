@@ -5,8 +5,11 @@ import com.capstone15.alterra.domain.common.ApiResponse;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.domain.dto.UserDtoResponse;
+import com.capstone15.alterra.domain.dto.payload.TokenResponse;
+import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
+import com.sendgrid.Request;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
@@ -28,11 +31,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = UserService.class)
@@ -672,4 +673,46 @@ class UserServiceTest {
         assertThrows(Exception.class, () -> userService.getUserRankingByTotalThreadAndLike(any()));
 
     }
+
+    @Test
+    void updateResetPasswordTokenException_Test() {
+        when(userRepository.findByEmail(any())).thenThrow(NullPointerException.class);
+        assertThrows(Exception.class, () -> userService.updateResetPasswordToken(any(), any()));
+
+    }
+
+    @Test
+    void updateResetPasswordTokenSuccess_Test() {
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .resetPasswordToken("")
+                .build();
+
+        when(userRepository.findByEmail(any())).thenReturn(userDao);
+        userService.updateResetPasswordToken("token", any());
+    }
+
+    @Test
+    void updatePassword_Test() {
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .password("password")
+                .resetPasswordToken("token")
+                .build();
+
+        userService.updatePassword( userDao, "password123");
+    }
+
+    @Test
+    void getByResetPasswordToken_Test() {
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .password("password")
+                .resetPasswordToken("token")
+                .build();
+
+        when(userRepository.findByResetPasswordToken(any())).thenReturn(userDao);
+        userService.getByResetPasswordToken(any());
+    }
+    
 }
