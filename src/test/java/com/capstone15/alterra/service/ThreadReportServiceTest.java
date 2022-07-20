@@ -1,5 +1,7 @@
 package com.capstone15.alterra.service;
 
+import com.capstone15.alterra.constant.AppConstant;
+import com.capstone15.alterra.domain.common.ApiResponse;
 import com.capstone15.alterra.domain.dao.NotificationDao;
 import com.capstone15.alterra.domain.dao.ThreadDao;
 import com.capstone15.alterra.domain.dao.ThreadReportDao;
@@ -16,12 +18,16 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -60,6 +66,7 @@ public class ThreadReportServiceTest {
                 .build();
 
         when(threadRepository.findById(anyLong())).thenReturn(Optional.empty());
+
         ResponseEntity<Object> response = service.addReport(threadReportDto, userDao);
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
 
@@ -97,13 +104,14 @@ public class ThreadReportServiceTest {
         when(mapper.map(any(),eq(ThreadReportDao.class))).thenReturn(threadReportDao);
         when(threadReportRepository.save(any())).thenReturn(threadReportDao);
         when(notificationRepository.save(any())).thenReturn(notificationDao);
+
         ResponseEntity<Object> response = service.addReport(threadReportDto, userDao);
         assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
 
     }
 
     @Test
-    void addReportNotificationNotEquals_Success_Test() {
+    void addReportNotEquals_Success_Test() {
         UserDao userDao = UserDao.builder()
                 .id(1L)
                 .build();
@@ -134,6 +142,7 @@ public class ThreadReportServiceTest {
         when(mapper.map(any(),eq(ThreadReportDao.class))).thenReturn(threadReportDao);
         when(threadReportRepository.save(any())).thenReturn(threadReportDao);
         when(notificationRepository.save(any())).thenReturn(notificationDao);
+
         ResponseEntity<Object> response = service.addReport(threadReportDto, userDao);
         assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
 
@@ -231,7 +240,7 @@ public class ThreadReportServiceTest {
     void updateReport_Success_Test(){
         UserDao userDao = UserDao.builder()
                 .id(1L)
-                .roles("")
+                .roles("MODERATOR")
                 .build();
 
         ThreadReportDao threadReportDao = ThreadReportDao.builder()
@@ -307,18 +316,19 @@ public class ThreadReportServiceTest {
 
     @Test
     void deleteReport_Success_Test() {
-        UserDao userDao1 = UserDao.builder()
-                .id(2L)
+        UserDao userDao = UserDao.builder()
+                .id(1L)
                 .build();
 
         ThreadReportDao threadReportDao = ThreadReportDao.builder()
                 .id(1L)
-                .user(userDao1)
+                .user(userDao)
                 .build();
 
         when(threadReportRepository.findById(anyLong())).thenReturn(Optional.of(threadReportDao));
         doNothing().when(threadReportRepository).deleteById(anyLong());
-        ResponseEntity<Object> response = service.deleteReport(anyLong(), userDao1);
+
+        ResponseEntity<Object> response = service.deleteReport(anyLong(), userDao);
         assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
     }
 
@@ -331,5 +341,75 @@ public class ThreadReportServiceTest {
 
         when(threadReportRepository.findById(anyLong())).thenThrow(NullPointerException.class);
         assertThrows(Exception.class, () ->  service.deleteReport(anyLong(),userDao));
+    }
+
+    @Test
+    void getAllReportIsEmpty_Test() {
+        Page<ThreadReportDao> threadReportDaos = new PageImpl<>(List.of());
+        when(threadReportRepository.findAll((Pageable) any())).thenReturn(threadReportDaos);
+
+        ResponseEntity<Object> response = service.getAllReport(any());
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.NOT_FOUND, Objects.requireNonNull(apiResponse).getMessage());
+
+    }
+
+    @Test
+    void getAllReportSuccess_Test() {
+        ThreadReportDao threadReportDao = ThreadReportDao.builder()
+                .id(1L)
+                .build();
+
+        Page<ThreadReportDao> threadReportDaos = new PageImpl<>(List.of(threadReportDao));
+        when(threadReportRepository.findAll((Pageable) any())).thenReturn(threadReportDaos);
+
+        ResponseEntity<Object> response = service.getAllReport(any());
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
+
+    }
+
+    @Test
+    void getAllReportException_Test() {
+        when(threadReportRepository.findById(anyLong())).thenThrow(NullPointerException.class);
+        assertThrows(Exception.class, () ->  service.getAllReport(any()));
+    }
+
+    @Test
+    void getReportThreadByIdSuccess_Test() {
+        ThreadReportDao threadReportDao = ThreadReportDao.builder()
+                .id(1L)
+                .build();
+
+        when(threadReportRepository.findById(any())).thenReturn(Optional.of(threadReportDao));
+
+        ResponseEntity<Object> response = service.getReportThreadById(any());
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.SUCCESS, Objects.requireNonNull(apiResponse).getMessage());
+
+    }
+
+    @Test
+    void getReportThreadByIdIsEmpty_Test() {
+        when(threadReportRepository.findById(any())).thenReturn(Optional.empty());
+
+        ResponseEntity<Object> response = service.getReportThreadById(any());
+        ApiResponse apiResponse = (ApiResponse) response.getBody();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatusCodeValue());
+        assertEquals(AppConstant.Message.NOT_FOUND, Objects.requireNonNull(apiResponse).getMessage());
+
+    }
+
+    @Test
+    void getReportThreadByIdException_Test() {
+        when(threadReportRepository.findById(anyLong())).thenThrow(NullPointerException.class);
+        assertThrows(Exception.class, () ->  service.getReportThreadById(1L));
     }
 }

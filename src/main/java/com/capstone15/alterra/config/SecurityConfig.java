@@ -67,6 +67,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
                 .antMatchers(HttpMethod.GET, "/v1/like/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/save/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/images/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/images/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/report_thread/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/v1/report_comment/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/v1/report_thread/**").hasAuthority("MODERATOR")

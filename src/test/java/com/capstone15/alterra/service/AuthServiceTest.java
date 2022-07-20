@@ -50,7 +50,7 @@ public class AuthServiceTest {
         UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
                 .id(1L)
                 .username("user123")
-                .password("12345678")
+                .password("Bismillah123")
                 .email("email@gmail.com")
                 .build();
 
@@ -119,7 +119,7 @@ public class AuthServiceTest {
         UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
                 .id(1L)
                 .username("user123")
-                .password("12345678")
+                .password("Bismillah123")
                 .email("user@gmail.com")
                 .build();
 
@@ -138,7 +138,7 @@ public class AuthServiceTest {
         UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
                 .id(1L)
                 .username("user123")
-                .password("12345678")
+                .password("Bismillah123")
                 .email("user@gmail.com")
                 .build();
 
@@ -156,9 +156,63 @@ public class AuthServiceTest {
     void registerUsernameLengthError_Test(){
         UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
                 .id(1L)
-                .username("user")
-                .password("12345678")
+                .username("user123")
+                .password("Bismillah123")
                 .email("user@gmail.com")
+                .build();
+
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
+        when(userRepository.save(any())).thenReturn(userDao);
+        ResponseEntity<Object> response = service.register(usernamePasswordFGD);
+        assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
+    }
+
+    @Test
+    void registerUsernamePattern_Test(){
+        UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
+                .id(1L)
+                .username("user@@@@")
+                .password("Bismillah123")
+                .email("user@gmail.com")
+                .build();
+
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
+        when(userRepository.save(any())).thenReturn(userDao);
+        ResponseEntity<Object> response = service.register(usernamePasswordFGD);
+        assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
+    }
+
+    @Test
+    void registerPasswordPattern_Test(){
+        UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
+                .id(1L)
+                .username("user123")
+                .password("pasword")
+                .email("user@gmail.com")
+                .build();
+
+        UserDao userDao = UserDao.builder()
+                .id(1L)
+                .build();
+
+        when(userRepository.save(any())).thenReturn(userDao);
+        ResponseEntity<Object> response = service.register(usernamePasswordFGD);
+        assertEquals(HttpStatus.BAD_REQUEST.value(),response.getStatusCodeValue());
+    }
+
+    @Test
+    void registerEmailPattern_Test(){
+        UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
+                .id(1L)
+                .username("user123")
+                .password("Bismillah123")
+                .email("email.com")
                 .build();
 
         UserDao userDao = UserDao.builder()

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Log4j2
 @Service
@@ -41,6 +42,19 @@ public class AuthService {
     public ResponseEntity<Object> register(UsernamePasswordFGD req) {
         log.info("Executing register user with request: {}", req);
         try {
+            final String PASSWORD_PATTERN =
+                    "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{6,}$";  // (?=.*[!@#&()–[{}]:;',?/*~$^+=<>])
+
+            final String USERNAME_PATTERN =
+                    "^(?=.{6,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$";
+
+            final String USERNAME_PATTERN2 =
+                    "^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){4,18}[a-zA-Z0-9]$";
+
+             final String EMAIL_ADDRESS_PATTERN =
+                    "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+
+
             if(req.getUsername() == null) {
                 return ResponseUtil.build("username cant null !", null, HttpStatus.BAD_REQUEST);
             }
@@ -50,16 +64,25 @@ public class AuthService {
             if(req.getEmail() == null) {
                 return ResponseUtil.build("email cant null !", null, HttpStatus.BAD_REQUEST);
             }
-            Optional<UserDao> userDao = userRepository.findByEmails(req.getEmail());
+            Optional<UserDao> userDao = userRepository.findByEmails(req.getEmail().toLowerCase(Locale.ROOT));
             if(userDao.isPresent()) {
                 return ResponseUtil.build("email already registered !", null, HttpStatus.BAD_REQUEST);
             }
-            Optional<UserDao> userDao1 = userRepository.findByUsername(req.getUsername());
+            Optional<UserDao> userDao1 = userRepository.findByUsername(req.getUsername().toLowerCase(Locale.ROOT));
             if(userDao1.isPresent()) {
                 return ResponseUtil.build("user already taken !", null, HttpStatus.BAD_REQUEST);
             }
             if(req.getUsername().length() < 6) {
                 return ResponseUtil.build("username must 6 character or more !", null, HttpStatus.BAD_REQUEST);
+            }
+            if(!req.getUsername().matches(USERNAME_PATTERN)) {
+                return ResponseUtil.build("username not valid !", null, HttpStatus.BAD_REQUEST);
+            }
+            if(!req.getPassword().matches(PASSWORD_PATTERN)){
+                return ResponseUtil.build("password must have at least 1 capital, 1 lower, 1 number, and 6 character or more !", null, HttpStatus.BAD_REQUEST);
+            }
+            if(!req.getEmail().matches(EMAIL_ADDRESS_PATTERN)){
+                return ResponseUtil.build("email not valid !", null, HttpStatus.BAD_REQUEST);
             }
 
 

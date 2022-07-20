@@ -145,6 +145,31 @@ public class UserFollowerService {
             log.error("Happened error when get follower by id user. Error: {}", e.getMessage());
             log.trace("Get error when get follower by id user. ", e);
             throw e;
+        }
+    }
+
+    public ResponseEntity<Object> getFollowingByIdUser(Long id) {
+        log.info("Executing get follower by id user.");
+        try{
+            Optional<UserDao> userDaoOptional = userRepository.findById(id);
+            if(userDaoOptional.isEmpty()) {
+                log.info("user id: {} not found", id);
+                return ResponseUtil.build(AppConstant.Message.NOT_FOUND, null, HttpStatus.BAD_REQUEST);
+            }
+            List<UserFollowerDao> daoList = userDaoOptional.get().getUserFollowing();
+            List<UserFollowerDto> list = new ArrayList<>();
+            for(UserFollowerDao dao : daoList){
+                if(dao.getIsFollow().equals(true))
+                {
+                    list.add(mapper.map(dao, UserFollowerDto.class));
+                }
+
+            }
+            return ResponseUtil.build(AppConstant.Message.SUCCESS, list, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Happened error when get follower by id user. Error: {}", e.getMessage());
+            log.trace("Get error when get follower by id user. ", e);
+            throw e;
         }  }
 
 }
