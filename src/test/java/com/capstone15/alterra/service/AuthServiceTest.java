@@ -156,7 +156,7 @@ public class AuthServiceTest {
     void registerUsernameLengthError_Test(){
         UsernamePasswordFGD usernamePasswordFGD = UsernamePasswordFGD.builder()
                 .id(1L)
-                .username("user123")
+                .username("user")
                 .password("Bismillah123")
                 .email("user@gmail.com")
                 .build();
