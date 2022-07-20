@@ -4,10 +4,7 @@ import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.domain.dto.UserDtoResponse;
-import com.capstone15.alterra.repository.NotificationRepository;
-import com.capstone15.alterra.repository.ThreadRepository;
-import com.capstone15.alterra.repository.UserFollowerRepository;
-import com.capstone15.alterra.repository.UserRepository;
+import com.capstone15.alterra.repository.*;
 import com.capstone15.alterra.util.FileUploadUtil;
 import com.capstone15.alterra.util.ResponseUtil;
 import com.sendgrid.Method;
@@ -55,6 +52,18 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserFollowerRepository userFollowerRepository;
+
+    @Autowired
+    private CommentLikeRepository commentLikeRepository;
+
+    @Autowired
+    private ThreadLikeRepository threadLikeRepository;
+
+    @Autowired
+    private ThreadFollowerRepository threadFollowerRepository;
+
+    @Autowired
+    private SaveThreadRepository saveThreadRepository;
 
     @Autowired
     private ModelMapper mapper;
@@ -217,6 +226,10 @@ public class UserService implements UserDetailsService {
             notificationRepository.deleteAllNotification(id);
             userFollowerRepository.deleteAll(id);
             userFollowerRepository.deleteAll2(id);
+            commentLikeRepository.deleteAll(id);
+            threadLikeRepository.deleteAll(id);
+            threadFollowerRepository.deleteAll(id);
+            saveThreadRepository.deleteAll(id);
             userRepository.deleteById(id);
             log.info("Executing delete user success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, null, HttpStatus.OK);
