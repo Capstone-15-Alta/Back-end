@@ -35,7 +35,7 @@ public class UserDao  implements UserDetails {
 
 
     @Column(name = "email", unique = true, nullable = false)
-    @Email
+
     @NotNull
     private String email;
 

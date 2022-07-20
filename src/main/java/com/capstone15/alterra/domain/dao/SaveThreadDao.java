@@ -21,6 +21,8 @@ import javax.persistence.*;
 @Where(clause = "is_save = true")
 public class SaveThreadDao extends BaseResponseSave {
 
+
+    private static final long serialVersionUID = -5949724034600312347L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
