@@ -27,6 +27,11 @@ public interface NotificationRepository extends JpaRepository<NotificationDao, L
     @Query(value = "UPDATE NotificationDao tf SET tf.isRead = true WHERE tf.user.id = :id")
     void readAllNotification(@Param("id") Long id);
 
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM NotificationDao tf WHERE tf.user.id = :id")
+    void deleteAllNotification(@Param("id") Long id);
+
     @Query(value = "SELECT tf FROM NotificationDao tf WHERE tf.user.id = :userid AND tf.threadId = :threadid AND tf.info = :info ")
     Optional<NotificationDao> findByUserIdAndThreadIdAndInfo(@Param("userid") Long userid, @Param("threadid") Long threadid, @Param("info") String info);
 

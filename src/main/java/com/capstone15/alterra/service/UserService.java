@@ -4,6 +4,7 @@ import com.capstone15.alterra.constant.AppConstant;
 import com.capstone15.alterra.domain.dao.UserDao;
 import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.domain.dto.UserDtoResponse;
+import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
 import com.capstone15.alterra.util.FileUploadUtil;
@@ -47,6 +48,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private ThreadRepository threadRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private ModelMapper mapper;
@@ -206,6 +210,7 @@ public class UserService implements UserDetailsService {
             }
 
             threadRepository.deleteCustom(id);
+            notificationRepository.deleteAllNotification(id);
             userRepository.deleteById(id);
             log.info("Executing delete user success");
             return ResponseUtil.build(AppConstant.Message.SUCCESS, null, HttpStatus.OK);
