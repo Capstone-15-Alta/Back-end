@@ -7,10 +7,7 @@ import com.capstone15.alterra.domain.dto.UserDto;
 import com.capstone15.alterra.domain.dto.UserDtoResponse;
 import com.capstone15.alterra.domain.dto.payload.TokenResponse;
 import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
-import com.capstone15.alterra.repository.NotificationRepository;
-import com.capstone15.alterra.repository.ThreadRepository;
-import com.capstone15.alterra.repository.UserFollowerRepository;
-import com.capstone15.alterra.repository.UserRepository;
+import com.capstone15.alterra.repository.*;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
 import com.sendgrid.Response;
@@ -58,6 +55,18 @@ class UserServiceTest {
 
     @MockBean
     private UserFollowerRepository userFollowerRepository;
+
+    @MockBean
+    private CommentLikeRepository commentLikeRepository;
+
+    @MockBean
+    private ThreadLikeRepository threadLikeRepository;
+
+    @MockBean
+    private ThreadFollowerRepository threadFollowerRepository;
+
+    @MockBean
+    private SaveThreadRepository saveThreadRepository;
 
     @MockBean
     private ModelMapper mapper;
