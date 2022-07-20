@@ -5,6 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @Configuration
 public class BeanConfiguration {
 
@@ -16,6 +19,14 @@ public class BeanConfiguration {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @PostConstruct
+    public void init() {
+
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
+
+
     }
 
 }

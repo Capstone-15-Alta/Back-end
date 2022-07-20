@@ -186,16 +186,14 @@ public class UserService implements UserDetailsService {
 
         SendGrid sg = new SendGrid(apiKey);
         Request request = new Request();
-        try {
+
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
             request.setBody(mail.build());
             Response response = sg.api(request);
 
             return ResponseUtil.build(AppConstant.Message.SUCCESS, response.getBody(), HttpStatus.OK);
-        } catch (IOException ex) {
-            throw ex;
-        }
+
     }
 
     public ResponseEntity<Object> deleteUser(Long id) {
