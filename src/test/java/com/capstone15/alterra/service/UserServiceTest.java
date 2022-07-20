@@ -9,7 +9,10 @@ import com.capstone15.alterra.domain.dto.payload.TokenResponse;
 import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
 import com.capstone15.alterra.repository.ThreadRepository;
 import com.capstone15.alterra.repository.UserRepository;
+import com.sendgrid.Method;
 import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
@@ -22,10 +25,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -713,6 +719,14 @@ class UserServiceTest {
 
         when(userRepository.findByResetPasswordToken(any())).thenReturn(userDao);
         userService.getByResetPasswordToken(any());
+    }
+
+    @Test
+    void forgotPassword_Test() throws IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        ResponseEntity<Object> response = userService.forgotPassword(request);
+        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
+
     }
 
 }
