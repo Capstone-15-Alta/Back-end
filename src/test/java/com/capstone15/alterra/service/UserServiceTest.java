@@ -9,6 +9,7 @@ import com.capstone15.alterra.domain.dto.payload.TokenResponse;
 import com.capstone15.alterra.domain.dto.payload.UsernamePassword;
 import com.capstone15.alterra.repository.NotificationRepository;
 import com.capstone15.alterra.repository.ThreadRepository;
+import com.capstone15.alterra.repository.UserFollowerRepository;
 import com.capstone15.alterra.repository.UserRepository;
 import com.sendgrid.Method;
 import com.sendgrid.Request;
@@ -54,6 +55,9 @@ class UserServiceTest {
 
     @MockBean
     private NotificationRepository notificationRepository;
+
+    @MockBean
+    private UserFollowerRepository userFollowerRepository;
 
     @MockBean
     private ModelMapper mapper;

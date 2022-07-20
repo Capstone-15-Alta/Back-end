@@ -2,9 +2,11 @@ package com.capstone15.alterra.repository;
 
 import com.capstone15.alterra.domain.dao.UserFollowerDao;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -19,5 +21,15 @@ public interface UserFollowerRepository extends JpaRepository <UserFollowerDao, 
 
     @Query(value = "SELECT count(tf) FROM UserFollowerDao tf WHERE tf.isFollow = true AND tf.userFollower.id = :id ")
     Integer countFollowing(@Param("id") Long id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM UserFollowerDao tf WHERE tf.userFollower.id = :id")
+    void deleteAll(@Param("id") Long id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM UserFollowerDao tf WHERE tf.userFollowed.id = :id")
+    void deleteAll2(@Param("id") Long id);
 
 }
